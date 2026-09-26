@@ -1,0 +1,29 @@
+# Servizi per lo sviluppo locale (WP-002). Solo dati sintetici.
+# Avvio: docker compose -f docker-compose.dev.yml up -d
+# Le porte sono legate a 127.0.0.1: mai esporre Postgres sulla rete (docs/04-PRIVACY-SICUREZZA.md §5).
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_USER: hr
+      POSTGRES_PASSWORD: hr_dev_only
+      POSTGRES_DB: hr
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hr -d hr"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mail:
+    # Cattura tutte le email in locale: interfaccia su http://localhost:8025
+    image: axllent/mailpit:v1.31
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+
+volumes:
+  db-data:

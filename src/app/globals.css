@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Palette provvisoria (docs/09-DOMANDE-APERTE.md, Q12): verde salvia + arancio tenue, neutri caldi.
+   Contrasti testo/sfondo pensati per WCAG 2.1 AA. */
+:root {
+  --background: #fbfaf7;
+  --foreground: #1f2421;
+  --muted: #5b6360;
+  --primary: #3f6b52;
+  --primary-foreground: #ffffff;
+  --accent: #c8672e;
+  --surface: #ffffff;
+  --border: #dcdad3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #141816;
+    --foreground: #eef0ec;
+    --muted: #a9b1ac;
+    --primary: #8fc0a2;
+    --primary-foreground: #0f1a14;
+    --accent: #eea46f;
+    --surface: #1c211e;
+    --border: #2f3632;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  /* Font di sistema: niente download esterni, veloce sui telefoni economici. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  font-size: 100%; /* 16 px minimo (docs/03-ARCHITETTURA.md §10) */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
