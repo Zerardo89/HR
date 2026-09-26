@@ -20,7 +20,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
-    "keys:generate": "tsx scripts/generate-keys.ts"
+    "keys:generate": "tsx scripts/generate-keys.ts",
+    "test:integration": "vitest run --config vitest.integration.config.mts"
   },
   "dependencies": {
     "drizzle-orm": "0.45.3",

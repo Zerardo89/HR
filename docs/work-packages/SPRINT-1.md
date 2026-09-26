@@ -4,6 +4,21 @@
 > aggiustamenti di Claude. Prompt da usare: [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md).
 > **Obiettivo dello sprint:** fondamenta solide + **app Android in test chiuso entro venerdì 02/10** (gate G1).
 
+## Stato (aggiornato sabato 26/09/2026, sessione di avvio con Claude)
+
+| WP | Stato | Note |
+|----|-------|------|
+| 001 | ✅ Fatto (Claude) | shadcn/ui rimandato al WP-009 (serve solo con le prime pagine vere). Confini con `import/no-restricted-paths` al posto di `eslint-plugin-boundaries` (ADR-0001, aggiornamento). |
+| 002 | ✅ Fatto (Claude) | Validazione env all'avvio in `src/instrumentation.ts`; flag letti a runtime (layout dinamico). |
+| 003 | ✅ Fatto (Claude) | Da verificare al primo push su GitHub: gitleaks, Semgrep, PostGIS in CI, controllo "schema cambiato senza migrazione". |
+| 004 | ✅ Fatto (Claude) | 26 tabelle, 3 migrazioni, audit append-only, CHECK su stipendio/scadenza/agenzie. 8 test di integrazione. **Scoperto il limite dello stemmer italiano** (ADR-0003, aggiornamento). Tabelle di Better Auth: nel WP-008. |
+| 005 | 🟡 Metà | ✅ dominio (`distanceKm`, zona gratuita, candidati con trasferimento) + verifica SQL = dominio. ⏳ script di import dei comuni ISTAT (serve il dataset in `data/`). |
+| 006 | ⏳ Da fare | Serve G-05 di Gemini (300 mansioni con sinonimi). |
+| 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
+| 008 | ⏳ Da fare | Better Auth con email cifrata: adattatore da scrivere (Claude). |
+| 009 | ⏳ Da fare | Home provvisoria già presente (italiano, accessibile, palette provvisoria). |
+| 010 | ⏳ Da fare | Serve: account Play, VPS, dominio, nome del pacchetto (Q1-Q2). |
+
 ---
 
 ## WP-001 — Scaffold del progetto
@@ -15,7 +30,7 @@
 - `pnpm create next-app` con App Router, TypeScript, ESLint, Tailwind v4, `src/`, alias `@/*`.
 - TypeScript `strict: true`, `noUncheckedIndexedAccess: true`.
 - shadcn/ui inizializzato (solo `button`, `input`, `label`, `card` per ora).
-- ESLint + `eslint-plugin-boundaries` configurato sui moduli `src/modules/*` (un modulo importa gli altri solo da `index.ts`).
+- ESLint con confini tra moduli `src/modules/*` (un modulo importa gli altri solo da `index.ts`) — *realizzato con `import/no-restricted-paths`, vedi ADR-0001.*
 - Prettier.
 - Vitest (unità) + Playwright (e2e) con un test d'esempio ciascuno.
 - Script in `package.json`: `dev`, `build`, `start`, `lint`, `typecheck`, `test`, `test:e2e`, **`check`** (= lint + typecheck + test).
