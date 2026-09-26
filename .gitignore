@@ -1,0 +1,37 @@
+# Dipendenze e build
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# Segreti: mai nel repository
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.keystore
+*.jks
+
+# App Android (TWA)
+twa/app/build/
+twa/.gradle/
+twa/local.properties
+
+# Dati locali
+*.dump
+*.sql.gz
+backups/
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
