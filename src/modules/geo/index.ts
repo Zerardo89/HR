@@ -1,4 +1,3 @@
 // Modulo `geo` — API pubblica (lato server).
-// Comuni ISTAT, regioni, province, distanze.
-// Struttura: domain/ (puro) · server/ (DB, servizi) · ui/ (componenti) · index.ts
-export {};
+// Comuni ISTAT, regioni, province, distanze. Parte pura in `./domain`.
+export { importMunicipalities, type ImportSummary } from "./server/import-municipalities";

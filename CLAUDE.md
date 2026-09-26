@@ -59,7 +59,8 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 
 ## Stato del progetto
 - 26/09/2026: progettazione completata.
-- 26/09/2026 (in anticipo sul calendario): WP-001, WP-002, WP-003, WP-004, WP-005 (dominio + verifica SQL), WP-007 completati
+- 26/09/2026 (in anticipo sul calendario): WP-001, WP-002, WP-003, WP-004, WP-005, WP-007 completati
   da Claude nella sessione di avvio. Stato dettagliato in `docs/work-packages/SPRINT-1.md`.
-- Prossimi: WP-005 import comuni ISTAT, WP-006 mansioni, WP-008 auth, WP-009 landing + lista d'attesa, WP-010 PWA/TWA.
+- Prossimi: WP-006 mansioni (serve G-05), WP-008 auth, WP-009 landing + lista d'attesa, WP-010 PWA/TWA (servono Q1-Q2).
+- Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

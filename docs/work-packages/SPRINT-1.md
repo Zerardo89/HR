@@ -12,7 +12,7 @@
 | 002 | ✅ Fatto (Claude) | Validazione env all'avvio in `src/instrumentation.ts`; flag letti a runtime (layout dinamico). |
 | 003 | ✅ Fatto (Claude) | Da verificare al primo push su GitHub: gitleaks, Semgrep, PostGIS in CI, controllo "schema cambiato senza migrazione". |
 | 004 | ✅ Fatto (Claude) | 26 tabelle, 3 migrazioni, audit append-only, CHECK su stipendio/scadenza/agenzie. 8 test di integrazione. **Scoperto il limite dello stemmer italiano** (ADR-0003, aggiornamento). Tabelle di Better Auth: nel WP-008. |
-| 005 | 🟡 Metà | ✅ dominio (`distanceKm`, zona gratuita, candidati con trasferimento) + verifica SQL = dominio. ⏳ script di import dei comuni ISTAT (serve il dataset in `data/`). |
+| 005 | ✅ Fatto (Claude) | Dominio (`distanceKm`, zona gratuita, candidati con trasferimento), verifica SQL = dominio, `pnpm geo:build` (elenco ISTAT + coordinate) e `pnpm geo:import` idempotente. **Tocca a te in locale:** scaricare l'elenco ISTAT e calcolare le coordinate dai confini ufficiali (istruzioni in `data/README.md`). ⚠️ Il dataset comunitario ha coordinate sbagliate di km: non usarlo. |
 | 006 | ⏳ Da fare | Serve G-05 di Gemini (300 mansioni con sinonimi). |
 | 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
 | 008 | ⏳ Da fare | Better Auth con email cifrata: adattatore da scrivere (Claude). |

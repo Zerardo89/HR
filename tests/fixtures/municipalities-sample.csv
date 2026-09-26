@@ -1,0 +1,11 @@
+istat_code,name,province_code,province_abbr,province_name,region_code,region_name,lat,lon,population
+015146,Milano,015,MI,Milano,03,Lombardia,45.4642,9.1900,
+098031,Lodi,098,LO,Lodi,03,Lombardia,45.3097,9.5037,
+016024,Bergamo,016,BG,Bergamo,03,Lombardia,45.6983,9.6773,
+033032,Piacenza,033,PC,Piacenza,08,Emilia-Romagna,45.0526,9.6934,
+037006,Bologna,037,BO,Bologna,08,Emilia-Romagna,44.4949,11.3426,
+001272,Torino,001,TO,Torino,01,Piemonte,45.0703,7.6869,
+048017,Firenze,048,FI,Firenze,09,Toscana,43.7696,11.2558,
+058091,Roma,058,RM,Roma,12,Lazio,41.9028,12.4964,
+063049,Napoli,063,NA,Napoli,15,Campania,40.8518,14.2681,
+082053,Palermo,082,PA,Palermo,19,Sicilia,38.1157,13.3615,

@@ -43,17 +43,19 @@ export async function closePool(): Promise<void> {
 /** Dati di riferimento minimi e sintetici (codici ISTAT reali, nessun dato personale). */
 export async function seedReference(c: PoolClient): Promise<void> {
   await c.query(
-    `insert into regions (code, name) values ('03','Lombardia'), ('08','Emilia-Romagna')`,
+    `insert into regions (code, name) values ('03','Lombardia'), ('08','Emilia-Romagna') on conflict do nothing`,
   );
   await c.query(
     `insert into provinces (code, name, abbreviation, region_code) values
-      ('015','Milano','MI','03'), ('098','Lodi','LO','03'), ('033','Piacenza','PC','08')`,
+      ('015','Milano','MI','03'), ('098','Lodi','LO','03'), ('033','Piacenza','PC','08')
+     on conflict do nothing`,
   );
   await c.query(
     `insert into municipalities (istat_code, name, province_code, region_code, lat, lon) values
       ('015146','Milano','015','03',45.4642,9.1900),
       ('098031','Lodi','098','03',45.3097,9.5037),
-      ('033032','Piacenza','033','08',45.0526,9.6934)`,
+      ('033032','Piacenza','033','08',45.0526,9.6934)
+     on conflict do nothing`,
   );
   await c.query(`insert into occupations (id, label_it, synonyms, isco_code, group_code) values
       (9001,'Cameriere di sala','{cameriera,"cameriere/a"}','5131','513')`);

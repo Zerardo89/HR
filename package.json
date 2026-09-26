@@ -21,7 +21,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
     "keys:generate": "tsx scripts/generate-keys.ts",
-    "test:integration": "vitest run --config vitest.integration.config.mts"
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "geo:build": "tsx scripts/geo-build.ts",
+    "geo:import": "tsx scripts/geo-import.ts"
   },
   "dependencies": {
     "drizzle-orm": "0.45.3",

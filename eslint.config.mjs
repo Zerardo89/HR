@@ -49,6 +49,7 @@ const eslintConfig = defineConfig([
   },
   {
     files: ["src/modules/*/domain/**/*.ts"],
+    ignores: ["**/*.test.ts"], // i test possono leggere file di fixture
     rules: {
       "no-restricted-imports": [
         "error",
