@@ -41,3 +41,4 @@ next-env.d.ts
 
 # Dati di terzi generati in locale (vedi data/README.md)
 data/*.csv
+!data/occupations.csv

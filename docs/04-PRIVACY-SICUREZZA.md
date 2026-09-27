@@ -78,6 +78,13 @@ Formula consigliata per il sito:
 **Perché non OpenBao subito:** aggiunge operatività (sblocco dopo riavvii, un'altra macchina) nel mese più
 critico. L'interfaccia `KeyProvider` rende la migrazione un lavoro di 1-2 giorni.
 
+## 4-bis. Se il server è un computer di casa (ADR-0012)
+- **Disco cifrato** obbligatorio (BitLocker, FileVault o LUKS): se il computer viene rubato, i dati restano illeggibili.
+- **Utente del sistema dedicato** solo al servizio, senza privilegi di amministratore; niente navigazione o giochi con quell'utente.
+- **Nessuna porta aperta sul router**: tutto passa dal tunnel Cloudflare in uscita.
+- Aggiornamenti automatici del sistema operativo e di Docker.
+- Il custode delle chiavi resta: la KEK non va copiata su altri dispositivi personali.
+
 ## 5. "Niente accesso diretto al DB" — misure concrete
 
 1. **Postgres non espone porte** verso l'esterno: rete Docker interna. **Attenzione:** Docker scavalca `ufw`;

@@ -14,6 +14,26 @@
    coprono i costi nello scenario base intorno al **mese 6-9**.
 4. **Senza associazione con P.IVA non si incassa nulla di commerciale** (niente fatture, niente Stripe, niente AdSense intestato correttamente). Per questo il lancio è "periodo fondatori" gratuito e i pagamenti si accendono dopo (ADR-0010).
 
+## 1-bis. Piano "costi quasi zero" (in vigore dal 27/09/2026)
+Il fondatore non può anticipare spese: si parte spendendo **il minimo indispensabile** e ogni costo ricorrente
+si attiva solo quando c'è un'entrata che lo copre.
+
+| Voce | Prima (piano originale) | Ora | Come |
+|------|------------------------|-----|------|
+| Server | VPS 15-25 €/mese | **0-3 €/mese** | Cloudflare Tunnel + PC di casa / Oracle Always Free (ADR-0012) |
+| Dominio | — | **0 €** | `inspectio.cloud` già pagato, sottodominio per l'app |
+| Email | 0-25 €/mese | **0 €** | Brevo gratuito (300 email/giorno) |
+| Backup | 3-6 €/mese | **0 €** | Cloudflare R2 gratuito (10 GB), backup cifrati |
+| Banner cookie certificato (CMP) | 100-250 €/anno | **0 €** | Niente pubblicità Google finché non c'è l'associazione; solo sponsor senza tracciamento (niente consenso cookie) |
+| Commercialista (associazione) | 600-1.200 €/anno | **0 €** all'inizio | **CSV — Centri di Servizio per il Volontariato**: consulenza gratuita per costituire un ente del Terzo settore (statuto, fisco, RUNTS) |
+| Parere legale | 500-1.500 € | **0 €** all'inizio | CSV + richiesta scritta (PEC) al Ministero del Lavoro sulla procedura art. 6 + Fase A "bacheca" prudente; professionista a pagamento solo dopo il crowdfunding |
+| Google Play | 25 $ | **25 $** | Unico costo inevitabile se si vuole l'app sullo Store il 01/11 (in alternativa: solo web installabile, Play dopo il crowdfunding) |
+| Associazione | 250-350 € | **0-250 €** | Il CSV indica la forma che costa meno (alcuni atti degli ETS hanno imposte ridotte o esenzioni) |
+| Marketing | 500-1.500 € | **0 €** | Passaparola, gruppi Facebook locali, volantini stampati in proprio, associazioni del territorio |
+
+**Spesa per arrivare al lancio: circa 25-50 €** (+ l'eventuale registrazione dell'associazione, che può aspettare il crowdfunding).
+Le cifre delle sezioni 6-7 restano come obiettivo **dopo** il crowdfunding.
+
 ## 2. Le fonti di entrata
 
 | # | Fonte | Chi paga | Impatto sui lavoratori | Redditività | Quando |

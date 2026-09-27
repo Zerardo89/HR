@@ -5,7 +5,8 @@ Dove c'è una **proposta**, se non rispondi entro lunedì 28/09 si procede con q
 
 ## Bloccanti per la settimana 1
 
-**Q1 — Nome del progetto e dominio.** Qual è il dominio che hai già su Aruba (es. `qualcosa.it`)?
+**Q1 — Nome del progetto e dominio.** ✅ Dominio: **inspectio.cloud** (Aruba). L'app userà un sottodominio con il nome scelto,
+es. `dintorni.inspectio.cloud` (vedi ADR-0012). **Resta da scegliere il nome.**
 
 Rosa di 10 nomi (27/09/2026, verifica rapida sul web: nessun portale di lavoro con lo stesso nome trovato per i 🟢;
 prima della scelta finale servono ricerca marchi su UIBM/TMview e disponibilità del dominio su Aruba):
@@ -59,8 +60,8 @@ gli utenti la vedono solo nell'indirizzo della pagina Play Store, ma **non si pu
 **Q10 — Periodo fondatori** gratuito fino al 31/01/2027? *Proposta:* sì (toglie i pagamenti dal percorso critico).
 > Risposta:
 
-**Q11 — Hosting.** Aruba Cloud (dati in Italia) o Hetzner (Germania, più economico)? *Proposta:* Aruba Cloud.
-> Risposta:
+**Q11 — Hosting.** ✅ Deciso il 27/09/2026: niente VPS a pagamento per ora → Cloudflare Tunnel + PC di casa, poi Oracle Always Free
+o un vecchio portatile/mini PC; VPS solo con le prime entrate ([ADR-0012](adr/ADR-0012-hosting-costo-zero.md)).
 
 **Q12 — Stile visivo.** Colori o riferimenti che ti piacciono? *Proposta:* caldo e affidabile (es. verde salvia + arancio tenue), niente blu "corporate".
 > Risposta:

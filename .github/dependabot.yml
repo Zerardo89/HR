@@ -1,14 +1,20 @@
 # Aggiornamenti automatici proposti come PR (docs/04-PRIVACY-SICUREZZA.md §6).
+# `cooldown`: si aspettano 7 giorni prima di proporre una versione appena pubblicata
+# (le versioni malevole vengono di solito scoperte e ritirate nei primi giorni).
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     groups:
       patch-e-minor:

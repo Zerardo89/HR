@@ -37,4 +37,7 @@ DATABASE_URL=postgres://… pnpm geo:import ./data/municipalities.csv
 ```
 
 ## Mansioni (WP-006)
-In arrivo: `data/occupations.csv` (Gemini G-05 + verifica umana).
+`data/occupations.csv` **è nel repository** (dato nostro, non di terzi). Non modificarlo a mano: si modifica
+`scripts/data-src/occupations.py` e si rigenera con `python3 scripts/data-src/occupations.py`.
+Il test `src/modules/taxonomy/domain/occupations-data.test.ts` controlla che nessun sinonimo sia conteso tra due mansioni
+e che non ci siano termini discriminatori. I codici ISCO con `note` = "verificare codice ISCO" vanno confrontati con ESCO.
