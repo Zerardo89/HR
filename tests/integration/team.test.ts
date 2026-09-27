@@ -4,7 +4,11 @@ import { Pool } from "pg";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { FileKeyProvider } from "@/lib/crypto";
 import type { Mailer, MailMessage } from "@/lib/mail";
-import { MAX_INVITES_PER_DAY, MAX_OPEN_INVITES } from "@/modules/companies/domain";
+import {
+  MAX_INVITES_PER_DAY,
+  MAX_OPEN_INVITES,
+  MAX_SITES_PER_COMPANY,
+} from "@/modules/companies/domain";
 import {
   acceptInvite,
   createInvite,
@@ -331,5 +335,27 @@ describe.skipIf(!DATABASE_URL)("sedi operative e inviti (WP-011c)", () => {
       await createInvite(deps(), owner, { companyId, email: "giro.finto+domani@esempio.it" }),
     ).toEqual({ status: "sent" });
     clock = saved;
+  });
+
+  it("al massimo 5 sedi, sede legale compresa (01-PRODOTTO §5.4); le rifiutate non contano", async () => {
+    expect(MAX_SITES_PER_COMPANY).toBe(5);
+    const owner = await user("company_member");
+    const companyId = await company(owner); // ha già la sede legale
+    const places = ["Milano", "Lodi", "Piacenza", "Milano"];
+    const labels = ["Negozio 1", "Negozio 2", "Negozio 3", "Negozio 4"];
+    const ids: string[] = [];
+    for (let i = 0; i < places.length; i++) {
+      const r = await addSite(deps(), owner, { companyId, label: labels[i]!, place: places[i]! });
+      expect(r.status).toBe("added");
+      if (r.status === "added") ids.push(r.siteId);
+    }
+    expect(await addSite(deps(), owner, { companyId, label: "Negozio 5", place: "Lodi" })).toEqual({
+      status: "too_many",
+    });
+    const moderator = await user("moderator");
+    await decideSite(deps(), moderator, { decision: "reject", siteId: ids[0]!, reason: "unclear" });
+    expect(
+      (await addSite(deps(), owner, { companyId, label: "Negozio 5", place: "Lodi" })).status,
+    ).toBe("added");
   });
 });

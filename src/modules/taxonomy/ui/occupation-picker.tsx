@@ -13,12 +13,18 @@ export function OccupationPicker({
   entries,
   name,
   defaultId,
+  label,
+  required = true,
 }: {
   entries: CatalogEntry[];
   name: string;
   defaultId?: number;
+  /** Etichetta diversa da "Mansione" (es. più mansioni nello stesso form). */
+  label?: string;
+  required?: boolean;
 }) {
   const t = useTranslations("occupationPicker");
+  const labelText = label ?? t("label");
   const catalog = useMemo(() => prepareCatalog(entries), [entries]);
   const initial = entries.find((e) => e.id === defaultId);
   const [selected, setSelected] = useState<CatalogEntry | undefined>(initial);
@@ -39,7 +45,7 @@ export function OccupationPicker({
   return (
     <div className="relative flex flex-col gap-2">
       <label htmlFor={inputId} className="text-base font-medium">
-        {t("label")}
+        {labelText}
       </label>
       <input
         id={inputId}
@@ -50,7 +56,7 @@ export function OccupationPicker({
         aria-activedescendant={hits.length > 0 ? `${listId}-${active}` : undefined}
         aria-describedby={helpId}
         autoComplete="off"
-        required
+        required={required}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -84,7 +90,7 @@ export function OccupationPicker({
         <ul
           id={listId}
           role="listbox"
-          aria-label={t("label")}
+          aria-label={labelText}
           className="absolute top-full z-10 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-border bg-surface shadow-lg"
         >
           {hits.map((hit, i) => (

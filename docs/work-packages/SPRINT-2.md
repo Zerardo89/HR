@@ -172,7 +172,7 @@ approvare" in `/moderazione`, migrazione `0007`
 - **Sedi**: le aggiunge solo il titolare (nome + comune, con "forse cercavi" e scelta tra omonimi); restano **in attesa**
   finché un moderatore non le approva (ADR-0009: niente sedi di comodo per allargare la zona gratuita). Il moderatore
   vede la distanza dalla sede legale, se la regione è diversa e quante sedi aspetta la stessa azienda. Rifiuto con
-  motivo visibile all'azienda (DSA art. 17). Il titolare può togliere una sede operativa, mai la legale. Max 20 sedi.
+  motivo visibile all'azienda (DSA art. 17). Il titolare può togliere una sede operativa, mai la legale. Max 5 sedi (01-PRODOTTO §5.4).
 - **Inviti**: solo il titolare di un'azienda **verificata**; l'email serve solo a spedire il link e **non si salva**
   (nel DB l'indice cieco, come `users.email_bidx`, e l'hash SHA-256 del token). Vale 7 giorni; un nuovo invito alla
   stessa persona sostituisce il vecchio; revoca; max 10 aperti e 20 spediti al giorno per azienda.

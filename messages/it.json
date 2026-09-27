@@ -77,7 +77,8 @@
     "comingSoon": "Qui troverai il tuo profilo e le tue candidature. Stiamo preparando queste pagine.",
     "signOut": "Esci",
     "companyArea": "Vai all'area azienda",
-    "security": "Sicurezza dell'account"
+    "security": "Sicurezza dell'account",
+    "profileLink": "Il tuo profilo"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -698,6 +699,119 @@
       "expired": "L'invito è scaduto.",
       "used": "L'invito non è più valido.",
       "not_found": "Invito non trovato."
+    }
+  },
+  "profile": {
+    "metaTitle": "Il tuo profilo",
+    "title": "Il tuo profilo",
+    "introNew": "Completa il profilo in pochi minuti: così trovi le offerte giuste e, quando arriveranno le candidature, ti candidi con un tocco.",
+    "introEdit": "Aggiorna il profilo quando vuoi: le modifiche valgono subito.",
+    "privacyNote": "🔒 I tuoi dati personali sono cifrati nel database. Nemmeno chi gestisce la piattaforma li vede durante il lavoro quotidiano: l'app li decifra solo quando servono a te o all'azienda a cui hai scelto di candidarti, e ogni accesso viene registrato. Sono cifrati nome, cognome, telefono, presentazione, esperienze e formazione. Non ti chiediamo mai foto, età, sesso, nazionalità o stipendio precedente.",
+    "stateLegend": "Cosa stai cercando?",
+    "states": {
+      "seeking": {
+        "label": "🟢 Cerco lavoro",
+        "help": "Ricevi gli avvisi con le offerte adatte a te."
+      },
+      "open": {
+        "label": "🟡 Ho un lavoro, ma sono aperto a proposte",
+        "help": "Niente avvisi: una volta al mese, se vuoi, ti mandiamo le offerte migliori."
+      },
+      "hidden": {
+        "label": "⚪ Non visibile",
+        "help": "Nessun avviso e nessuna email. Il profilo resta salvato."
+      }
+    },
+    "monthlyCheck": "Una volta al mese mandami le offerte migliori e chiedimi se sto ancora cercando.",
+    "whoLegend": "Chi sei",
+    "whoHelp": "Questi dati sono cifrati.",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "phone": "Telefono (facoltativo)",
+    "phoneHelp": "Lo vedranno solo le aziende a cui ti candidi.",
+    "about": "Presentati in poche righe (facoltativo)",
+    "aboutHelp": "Cosa sai fare, cosa ti piace del tuo lavoro. Niente dati sulla salute o sulla famiglia.",
+    "workLegend": "Il tuo lavoro",
+    "occupationMain": "Mansione principale",
+    "occupationOther": "Altra mansione (facoltativa, {n} di 5)",
+    "experienceBand": "Esperienza nel lavoro che cerchi",
+    "bands": {
+      "none": "Nessuna, voglio imparare",
+      "lt1": "Meno di un anno",
+      "y1_3": "Da 1 a 3 anni",
+      "y3_5": "Da 3 a 5 anni",
+      "y5_10": "Da 5 a 10 anni",
+      "gt10": "Più di 10 anni"
+    },
+    "whereLegend": "Dove",
+    "place": "Il tuo comune",
+    "placeHelp": "Serve per trovare le offerte vicine. Alle aziende, in futuro, mostreremo al massimo la provincia.",
+    "placeChoose": "Scegli il comune giusto:",
+    "placeNotFound": "Non troviamo questo comune: controlla come è scritto.",
+    "radius": "Quanto lontano puoi andare",
+    "radiusOption": "Fino a {km} km",
+    "relocation": "Sei disposto a trasferirti? (facoltativo)",
+    "relocationHelp": "Scegli le regioni dove andresti a vivere per lavoro: le aziende di quelle regioni potranno trovarti.",
+    "wishLegend": "Cosa cerchi",
+    "contracts": "Contratti che ti interessano",
+    "schedules": "Orari che preferisci",
+    "availableFrom": "Disponibile da (facoltativo)",
+    "skillsLegend": "Patenti e lingue",
+    "licenses": "Patenti",
+    "languages": "Lingue che parli",
+    "language": "Lingua {n}",
+    "level": "Livello lingua {n}",
+    "languageNames": {
+      "it": "Italiano",
+      "en": "Inglese",
+      "fr": "Francese",
+      "de": "Tedesco",
+      "es": "Spagnolo",
+      "pt": "Portoghese",
+      "ro": "Rumeno",
+      "sq": "Albanese",
+      "ar": "Arabo",
+      "zh": "Cinese",
+      "ru": "Russo",
+      "uk": "Ucraino",
+      "pl": "Polacco",
+      "hi": "Hindi",
+      "bn": "Bengalese",
+      "ur": "Urdu",
+      "tl": "Filippino"
+    },
+    "levels": {
+      "a1": "A1 — base",
+      "a2": "A2 — elementare",
+      "b1": "B1 — intermedio",
+      "b2": "B2 — buono",
+      "c1": "C1 — avanzato",
+      "c2": "C2 — ottimo",
+      "native": "Madrelingua"
+    },
+    "experiencesLegend": "Esperienze (facoltative)",
+    "experiencesHelp": "Scrivi solo quello che vuoi far sapere. Anche lavori brevi o stagionali contano.",
+    "expRole": "Ruolo {n}",
+    "expEmployer": "Dove (esperienza {n})",
+    "expPeriod": "Quando (esperienza {n})",
+    "expDescription": "Cosa facevi (esperienza {n})",
+    "educationLegend": "Formazione (facoltativa)",
+    "eduTitle": "Titolo o corso {n}",
+    "eduSchool": "Scuola o ente {n}",
+    "eduYear": "Anno {n}",
+    "save": "Salva il profilo",
+    "saving": "Salvataggio…",
+    "searchLink": "Cerca le offerte",
+    "outcome": {
+      "saved": "Profilo salvato.",
+      "state": "Stato aggiornato."
+    },
+    "errors": {
+      "invalid": "Controlla i campi: qualcosa non è scritto nel formato giusto.",
+      "occupations": "Scegli almeno una mansione dall'elenco dei suggerimenti.",
+      "name": "Scrivi nome e cognome.",
+      "phone": "Il telefono può contenere solo numeri, spazi e il segno +.",
+      "invalid_occupation": "Una delle mansioni non esiste più: sceglila di nuovo dall'elenco."
     }
   }
 }
