@@ -38,6 +38,8 @@ export type EditableOffer = {
   companyId: string;
   status: CompanyOfferRow["status"];
   values: Record<string, string>;
+  /** Ultimo rifiuto del moderatore (DSA art. 17: l'azienda vede il motivo), se l'offerta è tornata bozza. */
+  rejection: { reason: string; note?: string } | null;
 };
 
 /** Offerta da modificare, solo se appartiene a un'azienda dell'utente. Valori già pronti per il form. */
@@ -57,7 +59,11 @@ export async function getOfferForMember(
     .limit(1);
   if (!o) return null;
   const offer = o.offer;
-  const moderation = offer.moderation as { validDays?: number };
+  const moderation = offer.moderation as {
+    validDays?: number;
+    decision?: { decision?: string; reason?: string; note?: string };
+  };
+  const rejected = offer.status === "draft" && moderation.decision?.decision === "rejected";
   return {
     id: offer.id,
     companyId: offer.companyId,
@@ -77,5 +83,8 @@ export async function getOfferForMember(
       ccnl: offer.ccnl ?? "",
       validDays: String(moderation.validDays ?? 30),
     },
+    rejection: rejected
+      ? { reason: moderation.decision?.reason ?? "other", note: moderation.decision?.note }
+      : null,
   };
 }

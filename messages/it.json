@@ -388,6 +388,56 @@
       "valid_through_past": "La scadenza deve essere nel futuro.",
       "valid_through_too_far": "Un'offerta resta online al massimo 60 giorni (si può rinnovare).",
       "first_offers": "Le prime 3 offerte di ogni azienda passano da un moderatore: è una protezione contro le truffe."
+    },
+    "rejected": "Il moderatore ha rimandato indietro l'offerta. Correggila e ripubblicala.",
+    "rejectionReasons": {
+      "discriminatory": "Contiene richieste discriminatorie (età, sesso, nazionalità, aspetto…).",
+      "salary": "Lo stipendio manca o non è credibile.",
+      "payment_request": "Chiede soldi o acquisti ai candidati.",
+      "scam_suspected": "Ha le caratteristiche di un'offerta truffa (contatti esterni, dati bancari, promesse irrealistiche).",
+      "incomplete": "Mancano informazioni essenziali sul lavoro.",
+      "other": "Non rispetta il regolamento degli annunci."
+    }
+  },
+  "moderation": {
+    "metaTitle": "Moderazione",
+    "title": "Moderazione",
+    "offersTitle": "Offerte da controllare ({count})",
+    "offersEmpty": "Nessuna offerta in attesa.",
+    "companiesTitle": "Aziende da verificare ({count})",
+    "companiesEmpty": "Nessuna azienda in attesa.",
+    "noSalary": "stipendio non indicato",
+    "approve": "Approva e pubblica",
+    "reject": "Rifiuta con motivo",
+    "reason": "Motivo (lo vede l'azienda)",
+    "note": "Nota per l'azienda (facoltativa, solo sull'annuncio: niente dati personali)",
+    "reasons": {
+      "discriminatory": "Contiene richieste discriminatorie (età, sesso, nazionalità, aspetto…).",
+      "salary": "Lo stipendio manca o non è credibile.",
+      "payment_request": "Chiede soldi o acquisti ai candidati.",
+      "scam_suspected": "Ha le caratteristiche di un'offerta truffa (contatti esterni, dati bancari, promesse irrealistiche).",
+      "incomplete": "Mancano informazioni essenziali sul lavoro.",
+      "other": "Non rispetta il regolamento degli annunci."
+    },
+    "verify": "Segna come verificata",
+    "kinds": {
+      "employer": "datore di lavoro",
+      "agency": "agenzia per il lavoro"
+    },
+    "authorization": "Autorizzazione dichiarata: {value}",
+    "vies": "Esito VIES alla registrazione: {status}",
+    "checkVat": "Prima di verificare: controlla la P.IVA sul sito VIES della Commissione europea o sul registro imprese.",
+    "checkAgency": "Prima di verificare: controlla l'autorizzazione sull'Albo informatico delle agenzie per il lavoro (Ministero del Lavoro).",
+    "outcome": {
+      "approved": "Offerta approvata e pubblicata.",
+      "rejected": "Offerta rifiutata: l'azienda vede il motivo.",
+      "not_found": "L'offerta non è più in moderazione (forse l'ha già decisa qualcun altro).",
+      "not_allowed": "Non hai i permessi per moderare.",
+      "company_not_verified": "L'azienda non è verificata: verificala prima di approvare l'offerta.",
+      "invalid": "Richiesta non valida.",
+      "company_verified": "Azienda verificata.",
+      "company_not_found": "L'azienda non è più in verifica.",
+      "company_not_allowed": "Non hai i permessi per verificare le aziende."
     }
   }
 }

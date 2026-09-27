@@ -9,7 +9,7 @@
 |----|-------|------|
 | 011 | 🟡 Parti a e b fatte (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ✅ **11b** 2FA TOTP obbligatoria per aziende, moderatori e admin (facoltativa per i lavoratori). ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
-| 013 | 🟡 Parte a fatta (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ⏳ **13b** pannello del moderatore (offerte in moderazione, aziende "in verifica"), decisioni motivate. |
+| 013 | ✅ Fatto (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ✅ **13b** pannello del moderatore `/moderazione` (approva / rifiuta con motivo visibile all'azienda, verifica manuale delle aziende), log di audit. |
 | 014 | ⏳ Da fare | Pagina offerta SSR + JSON-LD JobPosting + sitemap. |
 | 015 | ⏳ Da fare | Ricerca (full-text + trigrammi, ADR-0003) + "perché la vedi". |
 | 016 | ⏳ Da fare | Zona gratuita (già nel dominio, WP-005) + entitlement + periodo fondatori. |
@@ -98,3 +98,22 @@ tabella dei minimi regionali dei tirocini da compilare con le fonti (`regional_i
   blocco per discriminazione, bozza incompleta e modifica, autorizzazioni), 1 e2e (dal form alla moderazione).
   In CI il job e2e importa le mansioni (`pnpm taxonomy:import`).
 - Miglioria da fare: nel riquadro dei problemi mostrare la frase originale (ora è quella normalizzata, senza accenti).
+
+---
+
+## WP-013b — Pannello del moderatore ✅
+**Esecutore:** Claude · **Codice:** `src/modules/offers/server/moderation*.ts`, `src/modules/companies/server/verification*.ts`,
+pagina `/moderazione`, script `pnpm users:role`
+
+- Solo `moderator` e `admin` (con 2FA); il servizio ricontrolla il ruolo nel DB. Si vedono solo annunci e dati
+  pubblici delle aziende, nessun dato personale dei lavoratori (docs/04 §5).
+- Offerte in moderazione, dalla più vecchia: **approva** → pubblicata ora, scadenza = giorni chiesti dall'azienda
+  (≤ 60); **rifiuta** con motivo (6 motivi) e nota facoltativa → torna bozza, l'azienda vede motivo e nota nella
+  pagina dell'offerta (DSA art. 17). Un'azienda non più verificata non si approva.
+- Aziende "in verifica": dati e esito VIES, promemoria di cosa controllare (VIES / Albo delle agenzie), **segna come
+  verificata**.
+- Ogni decisione nel log di audit (`offer.moderate`, `company.verify`, `user.role`).
+- `pnpm users:role <email> <ruolo>`: promuove un utente già registrato (l'email non si salva né si stampa: indice cieco).
+- Test: 4 di integrazione, 1 e2e (lavoratore escluso, promozione a moderatore, 2FA obbligatoria, approvazione e
+  rifiuto con motivo).
+- Da fare: email all'azienda con l'esito (WP-020, notifiche), segnalazioni DSA nello stesso pannello (WP-024).

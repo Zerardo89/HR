@@ -39,6 +39,13 @@ export default async function OfferPage({
       <p>
         {t("statusLabel")}: <strong>{t(`status.${offer.status}`)}</strong>
       </p>
+      {offer.rejection && (
+        <div role="note" className="flex flex-col gap-1 rounded-lg border border-accent px-4 py-3">
+          <p className="font-semibold">{t("rejected")}</p>
+          <p>{t(`rejectionReasons.${offer.rejection.reason}`)}</p>
+          {offer.rejection.note && <p className="whitespace-pre-line">{offer.rejection.note}</p>}
+        </div>
+      )}
       {editable ? (
         <OfferForm
           nowIso={new Date().toISOString()}

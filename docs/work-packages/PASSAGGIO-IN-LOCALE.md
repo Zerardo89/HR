@@ -31,6 +31,8 @@ pnpm taxonomy:import                  # 263 mansioni
 pnpm dev                              # http://localhost:3000
 ```
 Comuni ISTAT: `pnpm geo:build` e `pnpm geo:import` (istruzioni in `data/README.md`).
+Per diventare moderatore/admin: registrati dal sito, poi `pnpm users:role tua@email.it admin` (al primo accesso
+attivi la verifica in due passaggi). Il pannello è su `/moderazione`.
 Per lavorare con Claude in quella cartella: app **Claude Desktop**, oppure `claude` (o `claude remote-control`) nel
 terminale aperto in `PROGETTO HR`.
 Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATABASE_URL` del DB di sviluppo), poi
@@ -41,7 +43,6 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
 | 011c | Sedi operative (comune + approvazione del moderatore) e inviti ai colleghi (email con token, ruolo `recruiter`) | Ollama, test di Claude | Moduli `companies`, niente crittografia |
-| 013 | Form offerta con anteprima del validatore (WP-012) e selettore delle mansioni (WP-006); stati bozza → in moderazione → pubblicata; pannello moderatore (anche verifica manuale aziende "in verifica") | Ollama (UI) + Claude (autorizzazioni, test) | Il validatore e la ricerca mansioni sono già pronti e testati |
 | 014 | Pagina offerta SSR + JSON-LD JobPosting + sitemap | Ollama | |
 | 015 | Ricerca offerte (full-text `italian_unaccent` + trigrammi, ADR-0003) + "perché la vedi" | Ollama, test di Claude | |
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
