@@ -60,7 +60,28 @@
       "rate_limited": "Troppi tentativi. Riprova tra qualche minuto.",
       "send_failed": "Non siamo riusciti a inviare l'email. Riprova tra poco.",
       "signup_expired": "È passato troppo tempo. Ricomincia dall'email: ti mandiamo un nuovo codice.",
-      "signup_incomplete": "Scegli perché sei qui e spunta le due caselle per continuare."
+      "signup_incomplete": "Scegli perché sei qui e spunta le due caselle per continuare.",
+      "mfa_expired": "È passato troppo tempo o hai sbagliato troppe volte. Ricomincia dall'email: ti mandiamo un nuovo codice.",
+      "invalid_recovery": "Il codice di recupero è fatto di 10 lettere e cifre, come xxxxx-xxxxx."
+    },
+    "mfa": {
+      "title": "Codice dell'app di autenticazione",
+      "intro": "Apri l'app di autenticazione sul telefono e scrivi il codice di 6 cifre che vedi adesso.",
+      "enrollTitle": "Proteggi il tuo account",
+      "enrollIntro": "Per questo tipo di account serve un secondo controllo. Installa un'app di autenticazione (per esempio Google Authenticator, Microsoft Authenticator o Aegis), inquadra il codice QR e scrivi qui sotto il codice di 6 cifre che compare nell'app.",
+      "qrLabel": "Codice QR da inquadrare con l'app di autenticazione",
+      "manualLabel": "Non riesci a inquadrarlo? Scrivi nell'app questa chiave:",
+      "openApp": "Sei sul telefono? Apri l'app di autenticazione",
+      "codeLabel": "Codice di 6 cifre dell'app",
+      "activate": "Attiva ed entra",
+      "useRecovery": "Non hai il telefono? Usa un codice di recupero",
+      "recoveryLabel": "Codice di recupero",
+      "recoverySubmit": "Entra con il codice di recupero",
+      "codesTitle": "Salva i codici di recupero",
+      "codesIntro": "Se perdi il telefono, ognuno di questi codici ti fa entrare una volta al posto del codice dell'app. Scrivili su carta o salvali in un posto sicuro.",
+      "codesWarning": "Non te li mostreremo più.",
+      "codesDone": "Li ho salvati, continua",
+      "restart": "Ricomincia dall'email"
     }
   },
   "account": {

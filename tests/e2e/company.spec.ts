@@ -1,5 +1,6 @@
 import { randomInt, randomUUID } from "node:crypto";
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
+import { enrollSecondFactor } from "./mfa-helpers";
 
 // Test di accettazione WP-011: un'azienda si registra e vede lo stato della verifica.
 // VIES negli e2e non è raggiungibile (playwright.config.ts): l'azienda resta "in verifica".
@@ -50,6 +51,8 @@ async function signUpAsCompany(page: Page, request: APIRequestContext) {
     .getByLabel("Ho letto l'informativa sulla privacy e accetto le condizioni d'uso")
     .check();
   await page.getByRole("button", { name: "Crea l'account" }).click();
+  // WP-011b: le aziende attivano la 2FA prima di entrare.
+  await enrollSecondFactor(page);
   await expect(page).toHaveURL(/\/account$/);
 }
 

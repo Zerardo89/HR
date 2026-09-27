@@ -14,6 +14,7 @@ const linkButton = "text-base font-medium text-primary underline underline-offse
 
 /**
  * "Accedi o registrati" in tre passi (ADR-0013): email → codice → (solo la prima volta) account.
+ * Aziende, moderatori e admin hanno un passo in più: il codice dell'app di autenticazione (WP-011b).
  * L'email resta nello stato del componente e nel corpo delle richieste, mai nell'URL.
  */
 export function SignInFlow({ initialRole }: { initialRole?: SelfSignupRole }) {
@@ -114,6 +115,142 @@ export function SignInFlow({ initialRole }: { initialRole?: SelfSignupRole }) {
           </button>
         </div>
       </form>
+    );
+  }
+
+  if (state.step === "mfa") {
+    const enrollment = state.enrollment;
+    return (
+      <section className="flex flex-col gap-5" key={enrollment ? "mfa-enroll" : "mfa"}>
+        <h2 ref={heading} tabIndex={-1} className="text-xl font-semibold">
+          {enrollment ? t("mfa.enrollTitle") : t("mfa.title")}
+        </h2>
+        {enrollment ? (
+          <>
+            <p>{t("mfa.enrollIntro")}</p>
+            <svg
+              role="img"
+              aria-label={t("mfa.qrLabel")}
+              viewBox={`0 0 ${enrollment.qr.size} ${enrollment.qr.size}`}
+              shapeRendering="crispEdges"
+              className="size-56 self-center rounded-lg bg-white"
+            >
+              <path d={enrollment.qr.path} fill="#000" />
+            </svg>
+            <p className="flex flex-col gap-1">
+              <span>{t("mfa.manualLabel")}</span>
+              <code
+                data-testid="mfa-secret"
+                className="select-all break-all rounded-lg border border-border bg-surface px-3 py-2 font-mono text-lg"
+              >
+                {enrollment.secret}
+              </code>
+              <a href={enrollment.uri} className={linkButton}>
+                {t("mfa.openApp")}
+              </a>
+            </p>
+          </>
+        ) : (
+          <p>{t("mfa.intro")}</p>
+        )}
+        <form action={action} className="flex flex-col gap-4">
+          <input type="hidden" name="email" value={state.email} />
+          <label className="flex flex-col gap-2 text-base font-medium">
+            {t("mfa.codeLabel")}
+            <input
+              name="code"
+              required
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              pattern="[0-9 \-]{6,7}"
+              maxLength={7}
+              aria-invalid={error ? true : undefined}
+              aria-describedby={describedBy}
+              className={`${input} tracking-[0.3em]`}
+            />
+          </label>
+          {errorBox}
+          <button
+            type="submit"
+            name="intent"
+            value="mfa"
+            disabled={pending}
+            className={primaryButton}
+          >
+            {pending ? t("pending") : enrollment ? t("mfa.activate") : t("verify")}
+          </button>
+          <button
+            type="submit"
+            name="intent"
+            value="restart"
+            formNoValidate
+            disabled={pending}
+            className={`${linkButton} self-start`}
+          >
+            {t("mfa.restart")}
+          </button>
+        </form>
+        {!enrollment && (
+          <details className="flex flex-col gap-3">
+            <summary className={`${linkButton} cursor-pointer`}>{t("mfa.useRecovery")}</summary>
+            <form action={action} className="mt-3 flex flex-col gap-3">
+              <input type="hidden" name="email" value={state.email} />
+              <label className="flex flex-col gap-2 text-base font-medium">
+                {t("mfa.recoveryLabel")}
+                <input
+                  name="recovery"
+                  required
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  maxLength={16}
+                  className={`${input} font-mono`}
+                />
+              </label>
+              <button
+                type="submit"
+                name="intent"
+                value="mfa_recovery"
+                disabled={pending}
+                className={primaryButton}
+              >
+                {pending ? t("pending") : t("mfa.recoverySubmit")}
+              </button>
+            </form>
+          </details>
+        )}
+      </section>
+    );
+  }
+
+  if (state.step === "recovery_codes") {
+    return (
+      <section className="flex flex-col gap-4">
+        <h2 ref={heading} tabIndex={-1} className="text-xl font-semibold">
+          {t("mfa.codesTitle")}
+        </h2>
+        <p>{t("mfa.codesIntro")}</p>
+        <ul
+          data-testid="recovery-codes"
+          className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface p-3 font-mono text-lg"
+        >
+          {state.codes.map((code) => (
+            <li key={code}>{code}</li>
+          ))}
+        </ul>
+        <p className="font-medium">{t("mfa.codesWarning")}</p>
+        <form action={action}>
+          <button
+            type="submit"
+            name="intent"
+            value="codes_saved"
+            disabled={pending}
+            className={primaryButton}
+          >
+            {pending ? t("pending") : t("mfa.codesDone")}
+          </button>
+        </form>
+      </section>
     );
   }
 

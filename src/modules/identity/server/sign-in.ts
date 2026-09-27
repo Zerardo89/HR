@@ -1,21 +1,22 @@
 import { randomUUID } from "node:crypto";
 import { and, desc, eq, gt, isNull, lt, sql } from "drizzle-orm";
 import { dekContextFor, encryptJson, newDataKey, normalizeEmail } from "@/lib/crypto";
-import { auditLog, authOtpChallenges, authSignupTickets, consents, users } from "@/lib/db/schema";
+import { authOtpChallenges, authSignupTickets, consents, users } from "@/lib/db/schema";
 import {
   emailCodeLimitReached,
-  isPrivilegedRole,
   LEGAL_VERSIONS,
   OTP_MAX_ATTEMPTS,
   OTP_TTL_MS,
   otpChallengeStatus,
+  requiresMfa,
   SIGNUP_TICKET_TTL_MS,
   type SignupInput,
   type UserRole,
 } from "../domain";
 import type { IdentityDeps } from "./deps";
+import { startMfa, type MfaRequired } from "./mfa";
 import { renderOtpEmail } from "./otp-email";
-import { createSession, type NewSession } from "./sessions";
+import { finishSignIn, type SignedIn } from "./sessions";
 import { hashToken, newOtpCode, newToken, safeEqual } from "./tokens";
 
 /*
@@ -80,10 +81,11 @@ export async function requestLoginCode(
   return { status: "sent" };
 }
 
-export type SignedIn = { status: "signed_in"; userId: string; role: UserRole; session: NewSession };
+export type { SignedIn } from "./sessions";
 
 export type VerifyCodeResult =
   | SignedIn
+  | MfaRequired // aziende, moderatori e admin: prima della sessione serve il secondo fattore (mfa.ts)
   | { status: "signup_required"; ticket: string; ticketExpiresAt: Date }
   | { status: "wrong_code"; attemptsLeft: number }
   | { status: "expired" } // nessun codice valido (scaduto, tentativi finiti, già usato): chiederne un altro
@@ -151,7 +153,8 @@ export async function verifyLoginCode(
   return signIn(deps, user, ip);
 }
 
-export type SignupResult = SignedIn | { status: "expired" } | { status: "account_unavailable" };
+export type SignupResult =
+  SignedIn | MfaRequired | { status: "expired" } | { status: "account_unavailable" };
 
 /**
  * Crea l'account dopo il codice giusto. Il biglietto vale una volta sola e solo per l'email che ha
@@ -228,25 +231,13 @@ export async function completeSignup(
   return signIn(deps, existing, null);
 }
 
+/** Primo fattore superato: sessione subito per chi cerca lavoro, secondo fattore per tutti gli altri. */
 async function signIn(
   deps: IdentityDeps,
   user: { id: string; role: UserRole; status: string },
   ip: string | null,
-): Promise<SignedIn | { status: "account_unavailable" }> {
+): Promise<SignedIn | MfaRequired | { status: "account_unavailable" }> {
   if (user.status !== "active") return { status: "account_unavailable" };
-  const now = deps.now();
-  const session = await createSession(deps, user.id, user.role);
-  await deps.db.update(users).set({ lastActiveAt: now }).where(eq(users.id, user.id));
-  if (isPrivilegedRole(user.role)) {
-    // docs/04 §7: gli accessi di moderatori e admin restano nel log di audit, con l'IP pseudonimizzato.
-    await deps.db.insert(auditLog).values({
-      actorId: user.id,
-      action: "auth.login",
-      targetTable: "users",
-      targetId: user.id,
-      ipHash: ip ? await deps.keys.mac(ip, "ip") : null,
-      at: now,
-    });
-  }
-  return { status: "signed_in", userId: user.id, role: user.role, session };
+  if (requiresMfa(user.role)) return startMfa(deps, user);
+  return finishSignIn(deps, user, ip);
 }

@@ -24,6 +24,7 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | pg | 8.23.0 | |
 | pino | 10.3.1 | usa sempre `src/lib/logger.ts` (redazione dei dati personali) |
 | nodemailer | 10.0.10 | solo tramite `src/lib/mail` (`getMailer()`); tipi inclusi nel pacchetto |
+| qrcode (+ @types/qrcode) | 1.5.4 / 1.5.6 | solo in `identity/server/qr.ts` (QR della 2FA, WP-011b): si usa `QRCode.create()` e si disegna l'SVG in React |
 | eslint | 9.39.5 | configurazione flat `eslint.config.mjs`; confini tra moduli con `import/no-restricted-paths` |
 | vitest | 5.0.2 (+ vite 8.3.1) | unitari: `pnpm test`; integrazione: `pnpm test:integration` |
 | @playwright/test | 1.63.0 | progetti `mobile` (Pixel 5) e `desktop` |
@@ -36,5 +37,6 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0003_auth.sql` — generata: tabelle dell'accesso (codici, sessioni, biglietti di registrazione) — WP-008.
 - `0004_occupations_slug.sql` — generata: `slug` e `category` delle mansioni (import idempotente) — WP-006.
 - `0005_company_verification.sql` — generata: `companies.verification` (esito VIES, nessun dato personale) — WP-011.
+- `0006_mfa_totp.sql` — generata: `auth_totp` (segreto cifrato con la DEK), `auth_recovery_codes` (solo HMAC), `auth_mfa_tickets` — WP-011b.
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
 - Le migrazioni che toccano colonne cifrate o `audit_log` le scrive/valida l'architetto (CLAUDE.md).

@@ -60,3 +60,24 @@ tabella dei minimi regionali dei tirocini da compilare con le fonti (`regional_i
 - Test: 8 unitari, 7 di integrazione (VIES finto), 2 e2e (registrazione con VIES irraggiungibile, area riservata).
 - Corretto anche un difetto dei form con React 19 (i campi si svuotavano dopo un errore): ora i valori restano, anche
   nella lista d'attesa.
+
+---
+
+## WP-011b — 2FA TOTP per aziende, moderatori e admin ✅
+**Esecutore:** Claude · **Codice:** `src/modules/identity/` (ADR-0013 punto 8)
+
+- Dopo il codice email, chi non cerca lavoro dà anche il codice dell'app di autenticazione (TOTP RFC 6238: SHA-1,
+  30 secondi, 6 cifre, ±30 secondi di tolleranza). La sessione nasce solo dopo.
+- Prima volta (anche subito dopo la registrazione): QR + chiave da copiare, conferma con un codice, 10 codici di
+  recupero mostrati una volta sola; si entra solo dopo "Li ho salvati, continua".
+- Nel DB: segreto cifrato con la DEK dell'utente (`decryptCredential`, senza audit a ogni accesso: non è un dato
+  personale), codici di recupero solo come HMAC, biglietto del passo in più solo come SHA-256. Un codice TOTP non vale
+  due volte (`last_used_step`). Biglietto: 10 minuti, 5 tentativi. Migrazione 0006.
+- Audit: `auth.mfa_enrolled`, `auth.recovery_code_used`, `auth.mfa_reset`; `auth.login` di moderatori e admin ora
+  si scrive dopo il secondo fattore.
+- Telefono e codici persi: `pnpm mfa:reset <email>` (admin, dopo aver verificato chi chiede).
+- TOTP scritto in casa con `node:crypto` (vettori ufficiali di RFC 4226 e RFC 6238 nei test); unica dipendenza nuova
+  `qrcode` per disegnare il QR.
+- Test: 37 unitari, 18 di integrazione, 1 e2e (attivazione, accesso con il codice dell'app, accesso con un codice di
+  recupero). Aggiornati il test di audit degli admin (WP-008) e l'e2e di registrazione azienda (WP-011a): ora passano
+  dal secondo fattore, come richiede docs/04.

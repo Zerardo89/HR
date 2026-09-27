@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   bigserial,
   char,
   check,
@@ -8,6 +9,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -153,4 +155,55 @@ export const authSignupTickets = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("auth_signup_tickets_expires_idx").on(t.expiresAt)],
+);
+
+// ─── Secondo fattore (WP-011b) ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Segreto TOTP dell'utente, cifrato con la sua DEK (AAD `auth_totp.secret_enc:<user_id>`).
+ * `confirmed_at` null = attivazione in corso (il segreto non vale finché l'utente non conferma un codice).
+ * `last_used_step`: ultimo passo di 30 secondi accettato; un codice non vale due volte.
+ */
+export const authTotp = pgTable("auth_totp", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  secretEnc: encryptedText("secret_enc").notNull(),
+  confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+  lastUsedStep: bigint("last_used_step", { mode: "number" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Codici di recupero monouso: solo l'HMAC (`mac:recovery:<user_id>:<codice>`), mai il codice. */
+export const authRecoveryCodes = pgTable(
+  "auth_recovery_codes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    codeMac: text("code_mac").notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("auth_recovery_codes_user_code_idx").on(t.userId, t.codeMac)],
+);
+
+/** Dopo il codice email giusto, per chi deve dare il secondo fattore: 10 minuti, 5 tentativi. */
+export const authMfaTickets = pgTable(
+  "auth_mfa_tickets",
+  {
+    id: text("id").primaryKey(), // SHA-256 (base64url) del token nel cookie
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    attempts: integer("attempts").notNull().default(0),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("auth_mfa_tickets_user_idx").on(t.userId),
+    index("auth_mfa_tickets_expires_idx").on(t.expiresAt),
+    check("auth_mfa_tickets_attempts_range", sql`${t.attempts} between 0 and 5`),
+  ],
 );

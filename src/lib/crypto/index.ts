@@ -16,6 +16,7 @@ export {
 export { FileKeyProvider, type KeyProvider } from "./key-provider";
 export {
   aadFor,
+  decryptCredential,
   decryptPii,
   dekContextFor,
   encryptJson,

@@ -1,6 +1,13 @@
 import { and, eq, lt } from "drizzle-orm";
-import { authOtpChallenges, authSessions, authSignupTickets, users } from "@/lib/db/schema";
-import { renewedSessionExpiry, sessionExpiresAt, type UserRole } from "../domain";
+import {
+  auditLog,
+  authMfaTickets,
+  authOtpChallenges,
+  authSessions,
+  authSignupTickets,
+  users,
+} from "@/lib/db/schema";
+import { isPrivilegedRole, renewedSessionExpiry, sessionExpiresAt, type UserRole } from "../domain";
 import type { IdentityDeps } from "./deps";
 import { hashToken, newToken } from "./tokens";
 
@@ -21,6 +28,33 @@ export async function createSession(
     .insert(authSessions)
     .values({ id: hashToken(token), userId, expiresAt, createdAt: now });
   return { token, expiresAt };
+}
+
+export type SignedIn = { status: "signed_in"; userId: string; role: UserRole; session: NewSession };
+
+/**
+ * Ultimo passo dell'accesso, a fattori già controllati: sessione, attività e, per moderatori e admin,
+ * la riga di audit (docs/04 §7) con l'IP pseudonimizzato.
+ */
+export async function finishSignIn(
+  deps: Pick<IdentityDeps, "db" | "now" | "keys">,
+  user: SessionUser,
+  ip: string | null,
+): Promise<SignedIn> {
+  const now = deps.now();
+  const session = await createSession(deps, user.id, user.role);
+  await deps.db.update(users).set({ lastActiveAt: now }).where(eq(users.id, user.id));
+  if (isPrivilegedRole(user.role)) {
+    await deps.db.insert(auditLog).values({
+      actorId: user.id,
+      action: "auth.login",
+      targetTable: "users",
+      targetId: user.id,
+      ipHash: ip ? await deps.keys.mac(ip, "ip") : null,
+      at: now,
+    });
+  }
+  return { status: "signed_in", userId: user.id, role: user.role, session };
 }
 
 /**
@@ -74,7 +108,7 @@ export async function deleteUserSessions(
 }
 
 /**
- * Pulizia (job giornaliero, WP-020): sessioni e biglietti scaduti; codici più vecchi di 24 ore
+ * Pulizia (job giornaliero, WP-020): sessioni e biglietti scaduti (anche quelli del secondo fattore); codici più vecchi di 24 ore
  * (fino ad allora servono a contare i limiti per email).
  */
 export async function deleteExpiredAuthRows(deps: Deps): Promise<number> {
@@ -89,6 +123,10 @@ export async function deleteExpiredAuthRows(deps: Deps): Promise<number> {
       .delete(authSignupTickets)
       .where(lt(authSignupTickets.expiresAt, now))
       .returning({ id: authSignupTickets.id }),
+    deps.db
+      .delete(authMfaTickets)
+      .where(lt(authMfaTickets.expiresAt, now))
+      .returning({ id: authMfaTickets.id }),
     deps.db
       .delete(authOtpChallenges)
       .where(and(lt(authOtpChallenges.createdAt, dayAgo), lt(authOtpChallenges.expiresAt, now)))

@@ -87,3 +87,26 @@ export async function decryptPii<T>(input: DecryptPiiInput<T>): Promise<T> {
     dek.fill(0);
   }
 }
+
+export type DecryptCredentialInput<T> = {
+  provider: KeyProvider;
+  dekWrapped: string;
+  dekContext: string;
+  token: string;
+  location: PiiLocation;
+  schema: z.ZodType<T>;
+};
+
+/**
+ * Segreti di accesso dell'utente (il segreto TOTP, WP-011b): cifrati con la sua DEK come i dati personali,
+ * così spariscono con il crypto-shredding, ma NON sono dati personali. Si decifrano solo per controllare un
+ * codice che l'utente stesso sta digitando, mai per mostrarli a qualcuno: niente riga di audit a ogni accesso.
+ */
+export async function decryptCredential<T>(input: DecryptCredentialInput<T>): Promise<T> {
+  const dek = await input.provider.unwrapKey(input.dekWrapped, input.dekContext);
+  try {
+    return decryptJson(dek, input.token, input.location, input.schema);
+  } finally {
+    dek.fill(0);
+  }
+}

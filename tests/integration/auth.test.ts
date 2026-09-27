@@ -5,7 +5,9 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { z } from "zod";
 import { decryptPii, dekContextFor, FileKeyProvider, type AuditEvent } from "@/lib/crypto";
 import type { Mailer, MailMessage } from "@/lib/mail";
+import { base32Decode, totpStep } from "@/modules/identity/domain";
 import type { IdentityDeps } from "@/modules/identity/server/deps";
+import { verifyMfaCode } from "@/modules/identity/server/mfa";
 import {
   deleteExpiredAuthRows,
   deleteSession,
@@ -17,6 +19,7 @@ import {
   verifyLoginCode,
 } from "@/modules/identity/server/sign-in";
 import { hashToken } from "@/modules/identity/server/tokens";
+import { hotp } from "@/modules/identity/server/totp";
 import { DATABASE_URL } from "./db";
 
 // Test di accettazione WP-008 (ADR-0013) sul DB reale. Scritti dall'architetto: NON modificarli per farli passare.
@@ -334,7 +337,11 @@ describe.skipIf(!DATABASE_URL)("accesso con codice via email (WP-008)", () => {
     await pool.query(`update users set role = 'admin' where id = $1`, [userId]);
     await requestLoginCode(deps(), email);
     const ip = "203.0.113.7";
-    expect(await verifyLoginCode(deps(), email, lastCode(), ip)).toMatchObject({
+    // WP-011b: per gli admin la sessione (e la riga di audit) arriva dopo il secondo fattore.
+    const first = await verifyLoginCode(deps(), email, lastCode(), ip);
+    if (first.status !== "mfa_required" || !first.enrollment) throw new Error(first.status);
+    const code = hotp(base32Decode(first.enrollment.secret)!, totpStep(clock));
+    expect(await verifyMfaCode(deps(), first.ticket, code, ip)).toMatchObject({
       status: "signed_in",
       role: "admin",
     });
