@@ -15,7 +15,7 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | Pacchetto | Versione | Differenze da ricordare (per i modelli locali) |
 |-----------|----------|-----------------------------------------------|
 | next | 16.3.6 | `params`, `searchParams`, `cookies()`, `headers()` sono **asincroni**; l'intercettazione delle richieste è in `proxy.ts` (non `middleware.ts`); i tipi `PageProps`/`LayoutProps` sono globali generati da `next typegen`. **Documentazione della versione installata: `node_modules/next/dist/docs/`** — leggila prima di scrivere codice Next. |
-| react / react-dom | 19.2.8 | Server Components di default; `"use client"` solo se servono stato/eventi |
+| react / react-dom | 19.3.0 | Server Components di default; `"use client"` solo se servono stato/eventi |
 | typescript | 5.9.3 | **Non** passare a TS 6/7: typescript-eslint supporta TS < 6.1 |
 | tailwindcss | 4.3.3 | configurazione in CSS (`@theme` in `src/app/globals.css`), niente `tailwind.config.js` |
 | next-intl | 4.14.7 | una sola lingua (`it`), senza routing per lingua; `getTranslations()` lato server |
