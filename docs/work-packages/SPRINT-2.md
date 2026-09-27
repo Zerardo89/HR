@@ -10,7 +10,7 @@
 | 011 | 🟡 Parti a e b fatte (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ✅ **11b** 2FA TOTP obbligatoria per aziende, moderatori e admin (facoltativa per i lavoratori). ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
 | 013 | ✅ Fatto (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ✅ **13b** pannello del moderatore `/moderazione` (approva / rifiuta con motivo visibile all'azienda, verifica manuale delle aziende), log di audit. |
-| 014 | ⏳ Da fare | Pagina offerta SSR + JSON-LD JobPosting + sitemap. |
+| 014 | 🟡 Pagina offerta fatta (Claude, 27/09) | ✅ `/offerte/[id]` SSR con dati strutturati **JobPosting** (Google for Jobs), sitemap e robots. ⏳ Pagine SEO "Lavoro [mansione] a [provincia]" (testi da Gemini). |
 | 015 | ⏳ Da fare | Ricerca (full-text + trigrammi, ADR-0003) + "perché la vedi". |
 | 016 | ⏳ Da fare | Zona gratuita (già nel dominio, WP-005) + entitlement + periodo fondatori. |
 
@@ -117,3 +117,24 @@ pagina `/moderazione`, script `pnpm users:role`
 - Test: 4 di integrazione, 1 e2e (lavoratore escluso, promozione a moderatore, 2FA obbligatoria, approvazione e
   rifiuto con motivo).
 - Da fare: email all'azienda con l'esito (WP-020, notifiche), segnalazioni DSA nello stesso pannello (WP-024).
+
+## WP-014 — Pagina pubblica dell'offerta ✅ (senza pagine SEO)
+**Esecutore:** Claude · **Codice:** `src/modules/offers/domain/job-posting.ts`, `src/modules/offers/server/public-offer.ts`,
+pagina `/offerte/[id]`, `src/app/sitemap.ts`, `src/app/robots.ts`
+
+- Visibile solo se **pubblicata, non scaduta e di un'azienda verificata**. Scaduta o chiusa → pagina "non è più
+  disponibile" con `noindex` (anche se il job che cambia lo stato non è ancora passato). Bozza, in moderazione,
+  rimossa, azienda non verificata o sospesa → 404.
+- Stipendio sempre in vista (R-ANN-01): "Da 1600 € a 1800 € lordi al mese". Contratto, orario, CCNL, date in ora
+  italiana, descrizione come testo (mai HTML dell'azienda).
+- **JSON-LD JobPosting**: titolo, descrizione (HTML con testo dell'azienda sempre "escapato"), date, tipo di impiego,
+  azienda, luogo (comune, provincia, IT), `baseSalary` in EUR con unità. Serializzato con `<` → `\u003c` (guida
+  Next.js): il testo dell'azienda non può chiudere il tag script. `directApply: false` finché non arriva la
+  candidatura (WP-019).
+- `sitemap.xml` (home + offerte visibili) e `robots.txt` (esclude aree private) calcolati a ogni richiesta; in
+  anteprima (`PREVIEW_MODE`) sitemap vuota e tutto bloccato.
+- Dalla pagina dell'offerta in `/azienda` c'è il link alla pagina pubblica quando è pubblicata.
+- Test: 4 unitari (JSON-LD), 3 di integrazione (stati visibile / non più disponibile / 404), 4 e2e × 2 dispositivi
+  (pagina, JSON-LD, `noindex`, 404, sitemap e robots).
+- Da fare: pagine "Lavoro [mansione] a [provincia]" (con testi di Gemini, dopo WP-015), immagine per la condivisione,
+  pulsante "Candidati" (WP-019).

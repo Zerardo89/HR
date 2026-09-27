@@ -397,7 +397,8 @@
       "scam_suspected": "Ha le caratteristiche di un'offerta truffa (contatti esterni, dati bancari, promesse irrealistiche).",
       "incomplete": "Mancano informazioni essenziali sul lavoro.",
       "other": "Non rispetta il regolamento degli annunci."
-    }
+    },
+    "viewPublic": "Vedi la pagina pubblica"
   },
   "moderation": {
     "metaTitle": "Moderazione",
@@ -439,5 +440,35 @@
       "company_not_found": "L'azienda non è più in verifica.",
       "company_not_allowed": "Non hai i permessi per verificare le aziende."
     }
+  },
+  "publicOffer": {
+    "notFound": "Offerta non trovata",
+    "metaTitle": "{title} a {municipality}",
+    "metaDescription": "{company} cerca {title} a {municipality}.",
+    "gone": "Questa offerta non è più disponibile: è scaduta o l'azienda l'ha chiusa.",
+    "backHome": "Torna alla pagina iniziale",
+    "salaryRange": "Da {min} a {max}",
+    "salary": "{amount} {basis} {period}",
+    "periods": {
+      "hour": "all'ora",
+      "month": "al mese",
+      "year": "all'anno"
+    },
+    "bases": {
+      "gross": "lordi",
+      "net": "netti"
+    },
+    "salaryLabel": "Stipendio",
+    "salaryNotRequired": "Da concordare (lavoro autonomo o collaborazione)",
+    "contractLabel": "Contratto",
+    "scheduleLabel": "Orario",
+    "hours": "{hours} ore a settimana",
+    "ccnlLabel": "Contratto collettivo",
+    "publishedLabel": "Pubblicata il",
+    "validThroughLabel": "Scade il",
+    "descriptionTitle": "Il lavoro",
+    "applySoon": "Le candidature dalla piattaforma arrivano a breve: con l'apertura del 1° novembre potrai candidarti da qui con un clic.",
+    "safety": "Per candidarti non devi mai pagare nulla né dare IBAN o documenti. Se qualcuno te lo chiede, segnalalo.",
+    "report": "Segnala questa offerta"
   }
 }

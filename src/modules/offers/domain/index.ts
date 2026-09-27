@@ -30,3 +30,10 @@ export {
   type ModerationDecision,
   type RejectionReason,
 } from "./moderation";
+export {
+  employmentTypes,
+  escapeHtml,
+  jobPostingJsonLd,
+  serializeJsonLd,
+  type PublicOffer,
+} from "./job-posting";

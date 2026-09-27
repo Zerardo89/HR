@@ -39,6 +39,14 @@ export default async function OfferPage({
       <p>
         {t("statusLabel")}: <strong>{t(`status.${offer.status}`)}</strong>
       </p>
+      {offer.status === "published" && (
+        <Link
+          href={`/offerte/${offer.id}`}
+          className="self-start font-semibold text-primary underline underline-offset-4"
+        >
+          {t("viewPublic")}
+        </Link>
+      )}
       {offer.rejection && (
         <div role="note" className="flex flex-col gap-1 rounded-lg border border-accent px-4 py-3">
           <p className="font-semibold">{t("rejected")}</p>
