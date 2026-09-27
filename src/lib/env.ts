@@ -23,6 +23,14 @@ const serverEnvSchema = z.object({
   SMTP_PASS: z.string().optional(),
   MAIL_FROM: z.string().min(3),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
+  // Intestazione con l'IP del visitatore, usata SOLO in memoria per i limiti di frequenza (ADR-0013).
+  // Dietro Cloudflare Tunnel: `cf-connecting-ip`. Il server non ha porte aperte, quindi il valore è affidabile.
+  // Servizio VIES della Commissione europea (verifica della P.IVA, WP-011). Irraggiungibile → azienda "in verifica".
+  VIES_API_URL: z.url().default("https://ec.europa.eu/taxation_customs/vies/rest-api"),
+  CLIENT_IP_HEADER: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .default("x-forwarded-for"),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

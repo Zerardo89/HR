@@ -43,7 +43,10 @@ Opzioni valutate (settembre 2026):
   va indicato nell'informativa come responsabile del trattamento (R-PRIV-08). Il database resta in Italia (a casa o a Milano).
 - ⚠️ **Macchina a casa:** disco cifrato obbligatorio (BitLocker/LUKS/FileVault), utente dedicato, aggiornamenti automatici,
   niente altri servizi esposti. Se va via la corrente o internet, il sito è giù: accettabile in anteprima, da evitare dopo il lancio.
-- ⚠️ Oracle ARM: le immagini Docker devono essere multi-architettura (Node, PostGIS ufficiale e `cloudflared` lo sono; da verificare al deploy).
+- ⚠️ Processori ARM (Oracle, Raspberry Pi): le immagini Docker devono essere multi-architettura. Node e `cloudflared` lo sono.
+  **Correzione del 27/09/2026 (verificato su Docker Hub):** `postgis/postgis` esiste **solo per amd64**. Per ARM si usa una piccola
+  immagine nostra basata su `postgres:17` ufficiale (multi-architettura) + il pacchetto `postgresql-17-postgis-3` del repository
+  ufficiale di PostgreSQL (WP-010).
 
 ## Verifica
 WP-010: l'app risponde su `https://<nome>.inspectio.cloud` tramite tunnel; `assetlinks.json` raggiungibile; nessuna porta aperta

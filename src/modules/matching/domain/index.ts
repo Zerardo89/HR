@@ -10,3 +10,29 @@ export {
   type FreeZoneMatch,
   type PlaceForZone,
 } from "./free-zone";
+export {
+  ageInDays,
+  DEFAULT_HOURS_PER_WEEK,
+  DEFAULT_RADIUS_KM,
+  FRESHNESS_DAYS,
+  MAX_CANDIDATES,
+  MAX_PAGE,
+  monthlyEquivalent,
+  MONTHS_PER_YEAR_SALARY,
+  PAGE_SIZE,
+  parseSearchParams,
+  PUBLISHED_WITHIN_DAYS,
+  rankOffers,
+  SCORE_WEIGHTS,
+  scoreOffer,
+  SEARCH_RADII_KM,
+  toSearchParams,
+  type RankedOffer,
+  type Reason,
+  type SearchCandidate,
+  type SearchContext,
+  type SearchPage,
+  type SearchQuery,
+} from "./search";
+// Il testo dei comuni si interpreta nel modulo geo; qui resta per chi usa la ricerca.
+export { parsePlaceText } from "@/modules/geo/domain";

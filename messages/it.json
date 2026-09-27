@@ -6,7 +6,10 @@
   },
   "common": {
     "previewBanner": "Anteprima con dati di prova: le offerte non sono reali.",
-    "skipToContent": "Vai al contenuto"
+    "skipToContent": "Vai al contenuto",
+    "signIn": "Accedi o registrati",
+    "mainNav": "Menu principale",
+    "searchJobs": "Cerca lavoro"
   },
   "home": {
     "title": "Il lavoro vicino a casa",
@@ -18,6 +21,683 @@
       "freeCompanies": "Gratis per le aziende nella loro regione o entro 50 km.",
       "salary": "Ogni offerta dice quanto si guadagna.",
       "privacy": "I tuoi dati personali sono cifrati e decidi tu a chi mostrarli."
+    },
+    "waitlistCta": "Avvisami quando apre"
+  },
+  "auth": {
+    "metaTitle": "Accedi o registrati",
+    "title": "Accedi o registrati",
+    "intro": "Niente password: ti mandiamo un codice di 6 cifre via email. Se è la prima volta, dopo il codice crei il tuo account.",
+    "emailLabel": "La tua email",
+    "sendCode": "Ricevi il codice",
+    "codeTitle": "Controlla la tua email",
+    "codeSentTo": "Abbiamo inviato un codice di 6 cifre a {email}. Se non lo trovi, guarda anche nella posta indesiderata (spam).",
+    "codeResent": "Ti abbiamo inviato un nuovo codice. Vale solo l'ultimo arrivato.",
+    "codeLabel": "Codice di 6 cifre",
+    "verify": "Entra",
+    "resend": "Mandami un nuovo codice",
+    "changeEmail": "Cambia email",
+    "signupTitle": "Crea il tuo account",
+    "signupIntro": "Non c'è ancora un account con {email}. Ti servono pochi secondi.",
+    "roleLegend": "Sei qui per…",
+    "roles": {
+      "worker": "Cercare lavoro",
+      "company_member": "Cercare personale per un'azienda"
+    },
+    "adultLabel": "Ho almeno 18 anni",
+    "legalLabel": "Ho letto l'informativa sulla privacy e accetto le condizioni d'uso",
+    "privacyLink": "Informativa sulla privacy",
+    "termsLink": "Condizioni d'uso",
+    "createAccount": "Crea l'account",
+    "pending": "Attendi…",
+    "unavailableTitle": "Account non disponibile",
+    "unavailable": "Questo account è sospeso. Scrivici se pensi che sia un errore.",
+    "errors": {
+      "invalid_email": "Controlla l'email: sembra scritta in modo sbagliato.",
+      "invalid_code": "Il codice è fatto di 6 cifre.",
+      "wrong_code": "Codice sbagliato. Tentativi rimasti: {attemptsLeft}.",
+      "no_attempts": "Codice sbagliato troppe volte. Chiedi un nuovo codice.",
+      "expired": "Il codice non è più valido. Chiedine uno nuovo.",
+      "rate_limited": "Troppi tentativi. Riprova tra qualche minuto.",
+      "send_failed": "Non siamo riusciti a inviare l'email. Riprova tra poco.",
+      "signup_expired": "È passato troppo tempo. Ricomincia dall'email: ti mandiamo un nuovo codice.",
+      "signup_incomplete": "Scegli perché sei qui e spunta le due caselle per continuare."
+    }
+  },
+  "account": {
+    "metaTitle": "Il mio account",
+    "title": "Il mio account",
+    "signedInAs": "Sei entrato come: {role}",
+    "roles": {
+      "worker": "persona in cerca di lavoro",
+      "company_member": "azienda",
+      "moderator": "moderatore",
+      "admin": "amministratore"
+    },
+    "comingSoon": "Qui troverai il tuo profilo e le tue candidature. Stiamo preparando queste pagine.",
+    "signOut": "Esci",
+    "companyArea": "Vai all'area azienda",
+    "security": "Sicurezza dell'account"
+  },
+  "legal": {
+    "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
+    "privacy": {
+      "title": "Informativa sulla privacy",
+      "p1": "I tuoi dati personali sono cifrati nel database. Nemmeno chi gestisce la piattaforma li vede durante il lavoro quotidiano: l'app li decifra solo quando servono a te o all'azienda a cui hai scelto di candidarti, e ogni accesso viene registrato.",
+      "p2": "L'informativa completa (chi tratta i dati, per quali scopi, per quanto tempo e quali sono i tuoi diritti) sarà pubblicata qui prima del lancio del 1° novembre 2026."
+    },
+    "terms": {
+      "title": "Condizioni d'uso",
+      "p1": "Il servizio è gratuito per chi cerca lavoro, sempre. Per le aziende è gratuito nella loro regione o entro 50 km dalle loro sedi.",
+      "p2": "Le condizioni d'uso complete saranno pubblicate qui prima del lancio."
+    },
+    "cookies": {
+      "title": "Cookie",
+      "p1": "Usiamo solo cookie tecnici, necessari al funzionamento: «sessione» ti tiene dentro al tuo account (fino a 30 giorni, o finché esci); «registrazione» serve mentre crei l'account (al massimo 30 minuti). Non richiedono il consenso e non ti seguono su altri siti.",
+      "p2": "Nessun cookie di profilazione o di pubblicità. Se in futuro ne aggiungeremo, te lo chiederemo prima, con «Accetta» e «Rifiuta» ugualmente visibili."
+    },
+    "contacts": {
+      "title": "Contatti",
+      "p1": "L'associazione che gestirà il servizio è in costituzione: indirizzo email e PEC saranno pubblicati qui.",
+      "p2": "Per le richieste sui tuoi dati personali potrai usare anche le funzioni del tuo account (scarica i dati, cancella l'account)."
+    },
+    "reports": {
+      "title": "Segnalazioni",
+      "p1": "Hai visto un annuncio sospetto, una richiesta di denaro o un'offerta discriminatoria? Qui potrai segnalarlo: ogni segnalazione riceverà una risposta motivata.",
+      "p2": "La funzione di segnalazione arriva insieme alle prime offerte."
+    },
+    "about": {
+      "title": "Chi siamo",
+      "p1": "Un servizio senza scopo di lucro per trovare lavoro vicino a casa, con offerte a norma di legge e lo stipendio sempre indicato.",
+      "p2": "Lo gestirà un'associazione del Terzo settore, oggi in costituzione. I suoi dati sono qui sotto e nel piè di pagina di ogni pagina.",
+      "organizationTitle": "Dati dell'ente"
+    }
+  },
+  "emails": {
+    "otp": {
+      "subject": "{code} è il tuo codice per {siteName}",
+      "intro": "Ciao,",
+      "code": "per entrare in {siteName} usa questo codice: {code}",
+      "validity": "Il codice vale {minutes} minuti e si può usare una volta sola.",
+      "ignore": "Se non l'hai chiesto tu, ignora questa email: senza il codice nessuno può entrare nel tuo account.",
+      "signature": "{siteName} — {appUrl}"
+    },
+    "waitlistConfirm": {
+      "subject": "Conferma la tua iscrizione a {siteName}",
+      "intro": "Ciao,",
+      "link": "per ricevere un'email quando {siteName} apre, conferma la tua iscrizione da questa pagina: {link}",
+      "validity": "Il link vale {days} giorni. Nella pagina premi il pulsante «Conferma»: aprire il link da solo non basta.",
+      "ignore": "Se non ti sei iscritto tu, ignora questa email: senza conferma il tuo indirizzo viene cancellato.",
+      "signature": "{siteName} — {appUrl}"
+    },
+    "companyInvite": {
+      "subject": "{company} ti invita su {siteName}",
+      "intro": "Ciao,",
+      "invite": "{company} ti invita a pubblicare e gestire le sue offerte di lavoro su {siteName}.",
+      "link": "Per accettare apri questo link: {link}",
+      "account": "Serve un account azienda con questo indirizzo email: se non ce l'hai, lo crei dalla stessa pagina. Il link vale {days} giorni.",
+      "ignore": "Se non conosci questa azienda, ignora questa email: senza di te l'invito non ha effetto.",
+      "signature": "{siteName} — {appUrl}"
+    }
+  },
+  "waitlist": {
+    "title": "Avvisami quando apre",
+    "intro": "Lasciaci la tua email: ti scriviamo quando il servizio apre. Niente pubblicità.",
+    "emailLabel": "La tua email",
+    "kindLegend": "Sei…",
+    "kinds": {
+      "worker": "Una persona che cerca lavoro",
+      "company": "Un'azienda che cerca personale"
+    },
+    "provinceLabel": "Provincia (facoltativa)",
+    "provinceNone": "Preferisco non dirlo",
+    "consentLabel": "Voglio ricevere un'email al lancio del servizio. Ho letto l'informativa sulla privacy.",
+    "privacyLink": "Informativa sulla privacy",
+    "submit": "Avvisami",
+    "pending": "Attendi…",
+    "sent": "Fatto! Controlla la tua email: se non eri già iscritto, ti abbiamo mandato un link. Aprilo e premi «Conferma» per completare l'iscrizione. Guarda anche nella posta indesiderata (spam).",
+    "errors": {
+      "invalid": "Controlla i campi: serve un'email valida, scegli chi sei e spunta la casella del consenso.",
+      "rate_limited": "Troppi tentativi. Riprova tra qualche minuto.",
+      "send_failed": "Non siamo riusciti a inviare l'email. Riprova tra poco."
+    },
+    "confirm": {
+      "title": "Conferma l'iscrizione",
+      "intro": "Premi il pulsante per confermare che vuoi ricevere un'email quando il servizio apre.",
+      "button": "Conferma",
+      "pending": "Attendi…",
+      "confirmed": "Iscrizione confermata. Ti scriveremo quando il servizio apre. Grazie!",
+      "already_confirmed": "L'iscrizione era già confermata: sei a posto.",
+      "invalid": "Il link non è valido o è scaduto. Puoi iscriverti di nuovo dalla pagina principale."
+    }
+  },
+  "footer": {
+    "linksLabel": "Informazioni legali",
+    "links": {
+      "about": "Chi siamo",
+      "privacy": "Privacy",
+      "cookies": "Cookie",
+      "terms": "Condizioni d'uso",
+      "contacts": "Contatti",
+      "reports": "Segnalazioni"
+    },
+    "organization": {
+      "name": "Ente",
+      "seat": "Sede",
+      "taxCode": "Codice fiscale",
+      "vatNumber": "Partita IVA",
+      "pec": "PEC",
+      "legalRepresentative": "Legale rappresentante",
+      "contactEmail": "Email"
+    },
+    "pending": "in costituzione",
+    "nonProfit": "Servizio senza scopo di lucro. Gratis per chi cerca lavoro, sempre."
+  },
+  "company": {
+    "metaTitle": "Area azienda",
+    "title": "La tua azienda",
+    "register": {
+      "title": "Registra la tua azienda",
+      "intro": "Ci serve la Partita IVA: la controlliamo sul registro europeo VIES e da lì prendiamo la ragione sociale e la sede legale. Le offerte mostrano sempre il nome dell'azienda: niente annunci anonimi.",
+      "vatLabel": "Partita IVA",
+      "vatHelp": "11 cifre, anche con «IT» davanti.",
+      "displayNameLabel": "Nome che vedranno i candidati",
+      "displayNameHelp": "Per esempio l'insegna del locale o il marchio. La ragione sociale resta visibile nella pagina dell'azienda.",
+      "kindLegend": "Tipo di azienda",
+      "kinds": {
+        "employer": "Assumo per la mia azienda",
+        "agency": "Agenzia per il lavoro autorizzata"
+      },
+      "agencyAuthorizationLabel": "Estremi dell'autorizzazione ministeriale",
+      "agencyAuthorizationHelp": "La controlliamo sull'Albo informatico delle agenzie per il lavoro prima di pubblicare le offerte.",
+      "submit": "Registra l'azienda",
+      "pending": "Verifica in corso…",
+      "errors": {
+        "invalid": "Controlla i campi: servono la Partita IVA, il nome e il tipo di azienda.",
+        "vat": "La Partita IVA non è corretta: controlla le 11 cifre.",
+        "agency_authorization": "Per un'agenzia per il lavoro servono gli estremi dell'autorizzazione.",
+        "already_registered": "Questa azienda è già registrata. Chiedi a chi l'ha registrata di invitarti.",
+        "vat_invalid": "Il registro europeo VIES dice che questa Partita IVA non è attiva. Controllala e riprova."
+      }
+    },
+    "status": {
+      "verified": "✓ Azienda verificata: potrai pubblicare le offerte.",
+      "pending": "In verifica: il registro VIES non ha risposto. Completiamo noi la verifica, di solito entro un giorno lavorativo.",
+      "pendingAgency": "In verifica: controlliamo l'autorizzazione sull'Albo delle agenzie per il lavoro.",
+      "suspended": "Azienda sospesa. Scrivici se pensi che sia un errore."
+    },
+    "legalName": "Ragione sociale",
+    "vat": "Partita IVA",
+    "legalSeat": "Sede legale",
+    "legalSeatUnknown": "da confermare",
+    "nextSteps": "Da qui pubblichi le offerte, aggiungi le sedi e inviti i colleghi.",
+    "manage": "Gestione dell'azienda",
+    "sitesLink": "Sedi",
+    "teamLink": "Colleghi",
+    "joined": "Fatto: ora fai parte dell'azienda e puoi gestire le sue offerte.",
+    "pendingInvite": "Hai un invito di {company} in sospeso.",
+    "openInvite": "Apri l'invito",
+    "sites": {
+      "metaTitle": "Sedi dell'azienda",
+      "title": "Sedi di {company}",
+      "intro": "Le offerte si pubblicano nelle sedi approvate. Ogni nuova sede la controlla un moderatore, di solito entro un giorno lavorativo: serve a impedire sedi di comodo per uscire dalla zona gratuita.",
+      "legalSeat": "Sede legale (dalla verifica della Partita IVA)",
+      "state": {
+        "approved": "✓ Approvata",
+        "pending": "In attesa di approvazione",
+        "rejected": "Non approvata"
+      },
+      "reasons": {
+        "not_found": "l'attività non risulta in quel comune",
+        "duplicate": "sede già presente",
+        "unclear": "indicazioni insufficienti: scrivici per chiarire",
+        "other": "non rispetta le regole delle sedi"
+      },
+      "remove": "Togli questa sede",
+      "addTitle": "Aggiungi una sede",
+      "addIntro": "Per esempio un punto vendita, un magazzino, un cantiere stabile.",
+      "labelLabel": "Nome della sede",
+      "labelHelp": "Come la chiamate voi, per esempio «Negozio di corso Roma».",
+      "placeLabel": "Comune",
+      "add": "Aggiungi la sede",
+      "pending": "Attendi…",
+      "limit": "Hai raggiunto il massimo di {max} sedi. Scrivici se ne servono altre.",
+      "ownerOnly": "Solo il titolare dell'azienda può aggiungere o togliere sedi.",
+      "back": "Torna all'area azienda",
+      "outcome": {
+        "added": "Sede aggiunta: la controlla un moderatore.",
+        "removed": "Sede tolta.",
+        "not_found": "La sede non c'è più.",
+        "not_allowed": "Non puoi modificare questa sede."
+      },
+      "errors": {
+        "invalid": "Scrivi il nome della sede e il comune.",
+        "place_ambiguous": "Ci sono più comuni con questo nome: scegli quello giusto.",
+        "place_not_found": "Non troviamo questo comune.",
+        "duplicate": "Questa sede c'è già.",
+        "too_many": "Hai raggiunto il numero massimo di sedi."
+      }
+    },
+    "team": {
+      "metaTitle": "Colleghi",
+      "title": "Colleghi di {company}",
+      "intro": "Invita chi ti aiuta con le offerte: riceve un'email con un link che vale {days} giorni. Per accettare serve un account azienda con quello stesso indirizzo. I colleghi gestiscono le offerte, non le sedi né gli inviti.",
+      "inviteTitle": "Invita un collega",
+      "emailLabel": "Email del collega",
+      "emailHelp": "La usiamo solo per spedire l'invito: non la conserviamo.",
+      "send": "Invia l'invito",
+      "pending": "Invio…",
+      "openTitle": "Inviti in attesa ({count} su {max})",
+      "openEmpty": "Nessun invito in attesa.",
+      "inviteOpen": "Inviato il {sent}, vale fino al {expires}",
+      "inviteExpired": "Inviato il {sent}, scaduto il {expires}",
+      "revoke": "Annulla",
+      "ownerOnly": "Solo il titolare dell'azienda può invitare i colleghi.",
+      "back": "Torna all'area azienda",
+      "outcome": {
+        "sent": "Invito spedito.",
+        "revoked": "Invito annullato: il link non vale più.",
+        "not_found": "L'invito non è più in attesa.",
+        "not_allowed": "Non puoi modificare questo invito."
+      },
+      "errors": {
+        "invalid_email": "Controlla l'indirizzo email.",
+        "company_not_verified": "Potrai invitare i colleghi appena l'azienda è verificata.",
+        "already_member": "Questa persona fa già parte dell'azienda.",
+        "too_many": "Troppi inviti: annullane qualcuno, aspetta che vengano accettati o riprova domani.",
+        "send_failed": "Non siamo riusciti a spedire l'email. Riprova tra qualche minuto."
+      }
+    },
+    "plan": {
+      "title": "Piano",
+      "free": "Gratis nella tua zona: pubblichi senza costi nelle regioni delle sedi approvate e entro 50 km da ciascuna.",
+      "founders": "Azienda fondatrice: Piano Nazionale gratis fino al {until}. Puoi pubblicare offerte in tutta Italia.",
+      "national": "Piano Nazionale attivo fino al {until}: puoi pubblicare offerte in tutta Italia.",
+      "nationalOpen": "Piano Nazionale attivo: puoi pubblicare offerte in tutta Italia."
+    }
+  },
+  "mfa": {
+    "accountLabel": "Il mio account",
+    "setup": {
+      "metaTitle": "Sicurezza dell'account",
+      "title": "Verifica in due passaggi",
+      "required": "Per le aziende la verifica in due passaggi è obbligatoria: protegge l'account anche se qualcuno legge la tua email.",
+      "optional": "Facoltativa: aggiunge un secondo controllo dopo il codice via email.",
+      "step1": "1. Installa sul telefono un'app di autenticazione, per esempio Google Authenticator, Microsoft Authenticator o Aegis.",
+      "step2": "2. Inquadra il QR code con l'app, oppure, se sei sul telefono, tocca il pulsante qui sotto.",
+      "openApp": "Apri l'app di autenticazione",
+      "qrAlt": "QR code per aggiungere l'account all'app di autenticazione",
+      "manualKey": "Non riesci a inquadrarlo? Inserisci a mano questa chiave nell'app:",
+      "step3": "3. Scrivi il codice di 6 cifre che vedi nell'app.",
+      "codeLabel": "Codice dell'app (6 cifre)",
+      "confirm": "Attiva la verifica",
+      "pending": "Attendi…",
+      "enabledTitle": "Verifica in due passaggi attiva",
+      "enabled": "Ogni volta che entri, dopo il codice via email ti chiederemo anche il codice dell'app.",
+      "recoveryTitle": "Salva questi codici di recupero",
+      "recoveryIntro": "Servono se perdi il telefono: ognuno vale una sola volta. Scrivili su carta o salvali in un posto sicuro. Non te li mostreremo più.",
+      "continue": "Ho salvato i codici, continua",
+      "errors": {
+        "wrong_code": "Il codice non è giusto o è scaduto. Aspetta il prossimo codice nell'app e riprova.",
+        "not_started": "Ricarica la pagina e riprova.",
+        "already_enabled": "La verifica in due passaggi è già attiva."
+      }
+    },
+    "verify": {
+      "metaTitle": "Verifica in due passaggi",
+      "title": "Ancora un passaggio",
+      "intro": "Apri l'app di autenticazione e scrivi il codice di 6 cifre. Se hai perso il telefono, usa uno dei codici di recupero.",
+      "codeLabel": "Codice dell'app o codice di recupero",
+      "submit": "Verifica",
+      "pending": "Attendi…",
+      "recoveryUsed": "Hai usato un codice di recupero: vale una volta sola.",
+      "errors": {
+        "wrong_code": "Codice non valido. Tentativi rimasti: {attemptsLeft}.",
+        "locked": "Troppi tentativi: per sicurezza devi ricominciare dall'email."
+      },
+      "restart": "Torna all'accesso"
+    }
+  },
+  "occupationPicker": {
+    "label": "Mansione",
+    "help": "Scrivi il lavoro con parole tue (es. «barman», «lavapiatti», «OSS») e scegli dall'elenco.",
+    "selected": "Scelta: {label}",
+    "synonym": "trovato come «{term}»"
+  },
+  "offers": {
+    "listTitle": "Le tue offerte",
+    "empty": "Nessuna offerta per ora.",
+    "newTitle": "Nuova offerta",
+    "editTitle": "Offerta",
+    "noSites": "Per pubblicare un'offerta serve almeno una sede approvata. La sede legale arriva dalla verifica della Partita IVA; le altre sedi le aggiungi dalla pagina «Sedi» dell'area azienda.",
+    "backToCompany": "Torna all'area azienda",
+    "statusLabel": "Stato",
+    "notEditable": "Un'offerta pubblicata non si modifica: presto potrai chiuderla o rinnovarla da qui.",
+    "status": {
+      "draft": "Bozza",
+      "pending_review": "In moderazione",
+      "published": "Pubblicata",
+      "expired": "Scaduta",
+      "closed": "Chiusa",
+      "removed": "Rimossa"
+    },
+    "outcome": {
+      "draft": "Bozza salvata. Puoi completarla quando vuoi.",
+      "pending_review": "Offerta inviata: la controlla un moderatore, di solito entro un giorno lavorativo. Poi sarà visibile a tutti.",
+      "published": "Offerta pubblicata: è visibile a tutti."
+    },
+    "form": {
+      "title": "Titolo dell'offerta",
+      "titleHelp": "Per esempio «Cameriere/a di sala». Rivolgiti a entrambi i sessi.",
+      "site": "Luogo di lavoro",
+      "otherPlace": "Altro comune…",
+      "placeLabel": "Comune del luogo di lavoro",
+      "placeHelp": "Nella tua regione o entro 50 km da una sede approvata è gratis. Più lontano serve il Piano Nazionale: le aziende fondatrici lo hanno gratis fino al 31 gennaio 2027.",
+      "placeChoose": "Scegli il comune giusto:",
+      "placeNotFound": "Non troviamo questo comune: controlla come è scritto.",
+      "description": "Descrizione",
+      "descriptionHelp": "Cosa si fa, orari, cosa serve davvero per il lavoro. Niente età, aspetto, nazionalità o foto.",
+      "contractType": "Tipo di contratto",
+      "contracts": {
+        "permanent": "Tempo indeterminato",
+        "fixed_term": "Tempo determinato",
+        "apprenticeship": "Apprendistato",
+        "agency": "Somministrazione",
+        "internship": "Tirocinio",
+        "seasonal": "Stagionale",
+        "collaboration": "Collaborazione",
+        "self_employed": "Lavoro autonomo / P.IVA",
+        "occasional": "Lavoro occasionale"
+      },
+      "schedule": "Orario",
+      "schedules": {
+        "full_time": "Tempo pieno",
+        "part_time": "Part-time",
+        "shifts": "Turni",
+        "weekends": "Fine settimana",
+        "flexible": "Flessibile"
+      },
+      "salaryLegend": "Stipendio",
+      "salaryHelp": "Obbligatorio per il lavoro dipendente (D.Lgs. 96/2026): indica almeno la cifra minima.",
+      "salaryMin": "Da (€)",
+      "salaryMax": "A (€, facoltativo)",
+      "salaryPeriod": "Ogni",
+      "salaryPeriodNone": "—",
+      "periods": {
+        "hour": "ora",
+        "month": "mese",
+        "year": "anno"
+      },
+      "salaryBasis": "Importo",
+      "bases": {
+        "gross": "lordo",
+        "net": "netto"
+      },
+      "hoursPerWeek": "Ore a settimana (facoltativo)",
+      "validDays": "Resta online per (giorni, massimo 60)",
+      "ccnl": "Contratto collettivo applicato (consigliato)",
+      "internshipDeclaration": "Dichiaro che il tirocinio non sostituisce un lavoro dipendente e rispetta le regole della regione.",
+      "checkTitle": "Controllo dell'annuncio",
+      "checkOk": "Nessun problema: l'annuncio è a norma.",
+      "checkErrors": "Da correggere prima di pubblicare:",
+      "checkReviews": "Lo controllerà un moderatore:",
+      "hints": {
+        "title_gender": "Consiglio: nel titolo rivolgiti a entrambi i sessi, per esempio «Cameriere/a» o «(m/f)».",
+        "ccnl_missing": "Consiglio: indica il contratto collettivo applicato."
+      },
+      "blocked": "L'offerta è stata salvata come bozza: correggi i punti indicati e riprova a pubblicarla.",
+      "errors": {
+        "invalid": "Controlla i campi: mancano dati obbligatori o qualche numero non è valido.",
+        "not_allowed": "Non puoi modificare offerte di questa azienda.",
+        "invalid_site": "Scegli uno dei luoghi di lavoro dell'elenco.",
+        "invalid_occupation": "Scegli la mansione dall'elenco dei suggerimenti.",
+        "not_editable": "Questa offerta non si può più modificare."
+      },
+      "publish": "Pubblica",
+      "saveDraft": "Salva bozza",
+      "pending": "Attendi…"
+    },
+    "issues": {
+      "company_not_verified": "L'azienda non è ancora verificata: potrai pubblicare appena completiamo la verifica.",
+      "agency_authorization_missing": "Manca l'autorizzazione ministeriale dell'agenzia per il lavoro.",
+      "title_length": "Il titolo deve avere tra 3 e 120 caratteri.",
+      "description_too_short": "La descrizione è troppo corta: spiega meglio il lavoro (almeno qualche riga).",
+      "age_limit": "Non si possono chiedere limiti di età",
+      "age_mention": "Riferimenti all'età o ai «giovani»: ammessi solo se motivati",
+      "nationality": "Non si possono chiedere nazionalità o cittadinanza",
+      "native_speaker": "Non chiedere «madrelingua»: scrivi «ottima conoscenza» della lingua (es. livello C2)",
+      "appearance": "Requisiti sull'aspetto fisico: ammessi solo se essenziali per il lavoro",
+      "own_car": "«Automunito/a»: indicalo solo se l'auto serve davvero per il lavoro",
+      "gender": "L'annuncio è rivolto a un solo sesso: ammesso solo per un requisito essenziale motivato",
+      "irrelevant_personal_data": "Non si possono chiedere foto, stato civile, figli o gravidanza",
+      "salary_history": "Non si può chiedere lo stipendio attuale o precedente",
+      "payment_request": "Sembra che si chiedano soldi ai candidati: non è ammesso",
+      "off_platform_contact": "Numeri di telefono, WhatsApp o Telegram: i candidati rispondono dalla piattaforma",
+      "sensitive_request": "Non chiedere IBAN, documenti o dati bancari in fase di candidatura",
+      "external_link": "Link esterni nell'annuncio: li controlla un moderatore",
+      "salary_missing": "Manca lo stipendio: per il lavoro dipendente è obbligatorio.",
+      "salary_invalid": "Lo stipendio deve essere un numero maggiore di zero.",
+      "salary_range": "La cifra massima deve essere uguale o più alta della minima.",
+      "salary_period_missing": "Indica se lo stipendio è all'ora, al mese o all'anno.",
+      "salary_implausible": "Lo stipendio sembra strano per il periodo scelto (ora/mese/anno): controllalo.",
+      "internship_minimum_unknown": "Il minimo regionale del tirocinio non è ancora in elenco: lo verifica un moderatore.",
+      "internship_below_minimum": "L'indennità del tirocinio è sotto il minimo della regione (va indicata al mese).",
+      "internship_declaration_missing": "Per un tirocinio serve la dichiarazione qui sotto.",
+      "valid_through_missing": "Indica per quanti giorni resta online l'offerta.",
+      "valid_through_past": "La scadenza deve essere nel futuro.",
+      "valid_through_too_far": "Un'offerta resta online al massimo 60 giorni (si può rinnovare).",
+      "first_offers": "Le prime 3 offerte di ogni azienda passano da un moderatore: è una protezione contro le truffe.",
+      "outside_free_zone": "Il luogo di lavoro è fuori dalla zona gratuita (la tua regione o 50 km dalle sedi approvate): serve il Piano Nazionale."
+    },
+    "rejected": "Il moderatore ha rimandato indietro l'offerta. Correggila e ripubblicala.",
+    "rejectionReasons": {
+      "discriminatory": "Contiene richieste discriminatorie (età, sesso, nazionalità, aspetto…).",
+      "salary": "Lo stipendio manca o non è credibile.",
+      "payment_request": "Chiede soldi o acquisti ai candidati.",
+      "scam_suspected": "Ha le caratteristiche di un'offerta truffa (contatti esterni, dati bancari, promesse irrealistiche).",
+      "incomplete": "Mancano informazioni essenziali sul lavoro.",
+      "other": "Non rispetta il regolamento degli annunci."
+    },
+    "viewPublic": "Vedi la pagina pubblica"
+  },
+  "moderation": {
+    "metaTitle": "Moderazione",
+    "title": "Moderazione",
+    "offersTitle": "Offerte da controllare ({count})",
+    "offersEmpty": "Nessuna offerta in attesa.",
+    "companiesTitle": "Aziende da verificare ({count})",
+    "companiesEmpty": "Nessuna azienda in attesa.",
+    "noSalary": "stipendio non indicato",
+    "approve": "Approva e pubblica",
+    "reject": "Rifiuta con motivo",
+    "reason": "Motivo (lo vede l'azienda)",
+    "note": "Nota per l'azienda (facoltativa, solo sull'annuncio: niente dati personali)",
+    "reasons": {
+      "discriminatory": "Contiene richieste discriminatorie (età, sesso, nazionalità, aspetto…).",
+      "salary": "Lo stipendio manca o non è credibile.",
+      "payment_request": "Chiede soldi o acquisti ai candidati.",
+      "scam_suspected": "Ha le caratteristiche di un'offerta truffa (contatti esterni, dati bancari, promesse irrealistiche).",
+      "incomplete": "Mancano informazioni essenziali sul lavoro.",
+      "other": "Non rispetta il regolamento degli annunci."
+    },
+    "verify": "Segna come verificata",
+    "kinds": {
+      "employer": "datore di lavoro",
+      "agency": "agenzia per il lavoro"
+    },
+    "authorization": "Autorizzazione dichiarata: {value}",
+    "vies": "Esito VIES alla registrazione: {status}",
+    "checkVat": "Prima di verificare: controlla la P.IVA sul sito VIES della Commissione europea o sul registro imprese.",
+    "checkAgency": "Prima di verificare: controlla l'autorizzazione sull'Albo informatico delle agenzie per il lavoro (Ministero del Lavoro).",
+    "outcome": {
+      "approved": "Offerta approvata e pubblicata.",
+      "rejected": "Offerta rifiutata: l'azienda vede il motivo.",
+      "not_found": "L'offerta non è più in moderazione (forse l'ha già decisa qualcun altro).",
+      "not_allowed": "Non hai i permessi per moderare.",
+      "company_not_verified": "L'azienda non è verificata: verificala prima di approvare l'offerta.",
+      "invalid": "Richiesta non valida.",
+      "company_verified": "Azienda verificata.",
+      "company_not_found": "L'azienda non è più in verifica.",
+      "company_not_allowed": "Non hai i permessi per verificare le aziende.",
+      "site_approved": "Sede approvata.",
+      "site_rejected": "Sede non approvata: l'azienda vede il motivo.",
+      "site_not_found": "La sede non è più in attesa.",
+      "site_not_allowed": "Non hai i permessi per approvare le sedi."
+    },
+    "sitesTitle": "Sedi da approvare ({count})",
+    "sitesEmpty": "Nessuna sede in attesa.",
+    "siteDistance": "A {km} km dalla sede legale ({seat}), {region}.",
+    "siteSameRegion": "stessa regione",
+    "siteOtherRegion": "altra regione",
+    "siteNoLegalSeat": "Sede legale non ancora nota: verifica prima l'azienda.",
+    "siteManyPending": "Questa azienda ha {count} sedi in attesa: controlla che non siano di comodo.",
+    "siteCheck": "Prima di approvare: cerca l'attività in quel comune (sito, mappe, registro imprese). Una sede serve a pubblicare gratis nella sua regione e nei 50 km.",
+    "siteApprove": "Approva la sede",
+    "siteReject": "Non approvare",
+    "siteReasons": {
+      "not_found": "L'attività non risulta in quel comune.",
+      "duplicate": "Sede già presente.",
+      "unclear": "Indicazioni insufficienti.",
+      "other": "Non rispetta le regole delle sedi."
+    }
+  },
+  "publicOffer": {
+    "notFound": "Offerta non trovata",
+    "metaTitle": "{title} a {municipality}",
+    "metaDescription": "{company} cerca {title} a {municipality}.",
+    "gone": "Questa offerta non è più disponibile: è scaduta o l'azienda l'ha chiusa.",
+    "backHome": "Torna alla pagina iniziale",
+    "salaryRange": "Da {min} a {max}",
+    "salary": "{amount} {basis} {period}",
+    "periods": {
+      "hour": "all'ora",
+      "month": "al mese",
+      "year": "all'anno"
+    },
+    "bases": {
+      "gross": "lordi",
+      "net": "netti"
+    },
+    "salaryLabel": "Stipendio",
+    "salaryNotRequired": "Da concordare (lavoro autonomo o collaborazione)",
+    "contractLabel": "Contratto",
+    "scheduleLabel": "Orario",
+    "hours": "{hours} ore a settimana",
+    "ccnlLabel": "Contratto collettivo",
+    "publishedLabel": "Pubblicata il",
+    "validThroughLabel": "Scade il",
+    "descriptionTitle": "Il lavoro",
+    "applySoon": "Le candidature dalla piattaforma arrivano a breve: con l'apertura del 1° novembre potrai candidarti da qui con un clic.",
+    "safety": "Per candidarti non devi mai pagare nulla né dare IBAN o documenti. Se qualcuno te lo chiede, segnalalo.",
+    "report": "Segnala questa offerta"
+  },
+  "search": {
+    "metaTitle": "Cerca lavoro",
+    "metaDescription": "Offerte di lavoro vicino a casa, con lo stipendio sempre indicato. Cerca per mansione e comune.",
+    "title": "Cerca lavoro",
+    "whatLabel": "Cosa",
+    "whatHelp": "La mansione o qualche parola, per esempio «cameriere» o «magazzino».",
+    "whereLabel": "Dove",
+    "whereHelp": "Il comune da cui parti. Se ci sono più comuni con lo stesso nome, aggiungi la provincia: «Castro (LE)».",
+    "radiusLabel": "Distanza massima",
+    "radiusOption": "{km} km",
+    "radiusHelp": "In linea d'aria dal comune indicato.",
+    "moreFilters": "Altri filtri",
+    "contractLegend": "Tipo di contratto",
+    "scheduleLegend": "Orario",
+    "salaryLabel": "Stipendio minimo al mese (€)",
+    "salaryHelp": "Confronto sulla cifra più alta dell'offerta. Per le offerte a ore o all'anno facciamo una stima: vedi «Come ordiniamo le offerte».",
+    "publishedLabel": "Pubblicate",
+    "publishedAny": "In qualsiasi momento",
+    "publishedWithin": "{days, plural, =1 {Nelle ultime 24 ore} other {Negli ultimi # giorni}}",
+    "submit": "Cerca",
+    "resultsTitle": "{total, plural, =0 {Nessuna offerta} =1 {1 offerta} other {# offerte}}",
+    "understoodOccupation": "Mansione riconosciuta: {label}.",
+    "understoodPlace": "Entro {km} km da {place}.",
+    "empty": "Nessuna offerta con questi criteri. Prova ad aumentare la distanza o a togliere qualche filtro.",
+    "truncated": "Ci sono molte offerte: mostriamo le 1000 più recenti. Aggiungi un comune o una mansione per restringere.",
+    "ambiguousPlace": "Ci sono più comuni che si chiamano «{name}». Quale intendi?",
+    "placeNotFound": "Non troviamo il comune «{name}».",
+    "placeSuggestions": "Forse cercavi:",
+    "placeCheck": "Controlla come è scritto e riprova.",
+    "placeOption": "{name} ({province})",
+    "where": "{municipality} ({province})",
+    "salaryMissing": "Compenso da concordare (lavoro autonomo o collaborazione)",
+    "whyTitle": "Perché la vedi:",
+    "reasons": {
+      "same_occupation": "Stessa mansione ({label})",
+      "similar_occupation": "Mansione simile a {label}",
+      "title_words": "Le parole cercate sono nel titolo",
+      "description_words": "Le parole cercate sono nella descrizione",
+      "distance": "{km, plural, =0 {Nel comune cercato} other {A # km}}",
+      "published": "{days, plural, =0 {Pubblicata oggi} =1 {Pubblicata ieri} other {Pubblicata # giorni fa}}"
+    },
+    "howItWorks": "Come ordiniamo le offerte",
+    "pagination": "Pagine dei risultati",
+    "previous": "Pagina precedente",
+    "next": "Pagina successiva",
+    "pageOf": "Pagina {page} di {count}"
+  },
+  "howItWorks": {
+    "metaTitle": "Come ordiniamo le offerte",
+    "title": "Come ordiniamo le offerte",
+    "intro": "Nessuna intelligenza artificiale e nessun trucco: l'ordine dei risultati segue regole fisse, uguali per tutti, che trovi qui. Accanto a ogni offerta scriviamo perché la vedi.",
+    "filtersTitle": "1. Prima si filtra",
+    "filters": "Vedi solo le offerte pubblicate, non scadute, di aziende verificate, che rispettano ciò che hai scelto: la mansione o le parole cercate, la distanza dal comune, il tipo di contratto, l'orario, lo stipendio minimo e la data di pubblicazione.",
+    "scoreTitle": "2. Poi si ordina con un punteggio",
+    "scoreIntro": "Ogni offerta prende dei punti per ciascun criterio. A parità di punti viene prima la più recente.",
+    "tableCriterion": "Criterio",
+    "tablePoints": "Punti al massimo",
+    "tableHow": "Come si calcola",
+    "criteria": {
+      "occupation": {
+        "name": "Mansione",
+        "how": "Tutti i punti se è la mansione cercata o se le parole sono nel titolo; metà se è una mansione simile o se le parole sono solo nella descrizione."
+      },
+      "distance": {
+        "name": "Vicinanza",
+        "how": "Tutti i punti nel comune cercato, poi sempre meno fino a zero al limite della distanza scelta."
+      },
+      "skills": {
+        "name": "Competenze in comune",
+        "how": "Solo quando cerchi dal tuo profilo (in arrivo): quante delle competenze richieste hai."
+      },
+      "freshness": {
+        "name": "Freschezza",
+        "how": "Tutti i punti il giorno della pubblicazione, poi sempre meno fino a zero dopo 30 giorni."
+      },
+      "preferences": {
+        "name": "Come preferisci",
+        "how": "Solo quando cerchi dal tuo profilo (in arrivo): contratto e orario come li hai indicati."
+      }
+    },
+    "salaryTitle": "Lo stipendio minimo",
+    "salary": "Confrontiamo la cifra più alta dell'offerta con quella che scrivi. Per le offerte all'anno dividiamo per 13 mensilità; per quelle a ore moltiplichiamo per le ore settimanali indicate (40 se mancano) e per 52 settimane, e dividiamo per 12 mesi. È una stima: la cifra vera è quella scritta nell'offerta.",
+    "neverTitle": "Cosa non usiamo mai",
+    "never": "Età, sesso, nazionalità, aspetto e altri dati personali di chi cerca: non li chiediamo e non entrano in nessun calcolo. Chi paga non sale nella classifica: eventuali offerte sponsorizzate saranno al massimo due, separate e con la scritta «Sponsorizzata».",
+    "backToSearch": "Torna alla ricerca"
+  },
+  "invite": {
+    "metaTitle": "Invito",
+    "title": "Invito a gestire le offerte",
+    "intro": "{company} ti invita a gestire le sue offerte di lavoro.",
+    "recruiterRole": "Potrai pubblicare e modificare le offerte dell'azienda.",
+    "signInFirst": "Per accettare entra (o registrati come azienda) con l'indirizzo email a cui è arrivato l'invito. Dopo l'accesso trovi l'invito nell'area azienda.",
+    "signIn": "Accedi o registrati per accettare",
+    "wrongRole": "Questo invito è per un account azienda. Esci, poi entra o registrati come azienda con l'email dell'invito.",
+    "accept": "Unisciti a {company}",
+    "backHome": "Torna alla pagina iniziale",
+    "state": {
+      "expired": "Questo invito è scaduto: chiedi all'azienda di mandartene uno nuovo.",
+      "used": "Questo invito non è più valido: è già stato usato o annullato.",
+      "not_found": "Invito non trovato: controlla di aver aperto il link completo dell'email."
+    },
+    "outcome": {
+      "wrong_account": "Questo invito è per un altro indirizzo email. Esci ed entra con l'email a cui è arrivato l'invito.",
+      "not_company_account": "Questo invito è per un account azienda.",
+      "expired": "L'invito è scaduto.",
+      "used": "L'invito non è più valido.",
+      "not_found": "Invito non trovato."
     }
   }
 }

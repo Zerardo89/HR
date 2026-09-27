@@ -11,12 +11,12 @@
 | 001 | ✅ Fatto (Claude) | shadcn/ui rimandato al WP-009 (serve solo con le prime pagine vere). Confini con `import/no-restricted-paths` al posto di `eslint-plugin-boundaries` (ADR-0001, aggiornamento). |
 | 002 | ✅ Fatto (Claude) | Validazione env all'avvio in `src/instrumentation.ts`; flag letti a runtime (layout dinamico). |
 | 003 | ✅ Fatto (Claude) | Da verificare al primo push su GitHub: gitleaks, Semgrep, PostGIS in CI, controllo "schema cambiato senza migrazione". |
-| 004 | ✅ Fatto (Claude) | 26 tabelle, 3 migrazioni, audit append-only, CHECK su stipendio/scadenza/agenzie. 8 test di integrazione. **Scoperto il limite dello stemmer italiano** (ADR-0003, aggiornamento). Tabelle di Better Auth: nel WP-008. |
+| 004 | ✅ Fatto (Claude) | 26 tabelle, 3 migrazioni, audit append-only, CHECK su stipendio/scadenza/agenzie. 8 test di integrazione. **Scoperto il limite dello stemmer italiano** (ADR-0003, aggiornamento). Tabelle dell'accesso: nel WP-008 (migrazione 0003). |
 | 005 | ✅ Fatto (Claude) | Dominio (`distanceKm`, zona gratuita, candidati con trasferimento), verifica SQL = dominio, `pnpm geo:build` (elenco ISTAT + coordinate) e `pnpm geo:import` idempotente. **Tocca a te in locale:** scaricare l'elenco ISTAT e calcolare le coordinate dai confini ufficiali (istruzioni in `data/README.md`). ⚠️ Il dataset comunitario ha coordinate sbagliate di km: non usarlo. |
-| 006 | 🟡 Metà (Claude) | ✅ `data/occupations.csv`: **263 mansioni** in 20 categorie, etichette al maschile e femminile, sinonimi colloquiali, codice ISCO-08 (26 da verificare su ESCO, segnati nella colonna `note`); sorgente modificabile in `scripts/data-src/occupations.py`; test di accettazione (niente sinonimi contesi, niente termini discriminatori). ⏳ Import nel DB + autocompletamento + componente di scelta. **Tocca a te:** controllare che non manchino i lavori tipici della tua zona. |
+| 006 | ✅ Fatto (Claude, 27/09) | ✅ `data/occupations.csv`: **263 mansioni** in 20 categorie, etichette al maschile e femminile, sinonimi colloquiali, codice ISCO-08 (26 da verificare su ESCO, colonna `note`). ✅ Nel DB con `pnpm taxonomy:import` (idempotente, per `slug`; migrazione 0004). ✅ Ricerca in memoria (`searchOccupations`): termine esatto → prefisso → parola → contenuto → errori di battitura (trigrammi + distanza di modifica con inversioni); < 1 ms per ricerca; gira anche nel browser. Nota: "aiuto cucina" porta ad *Aiuto cuoco/a*, stesso gruppo ISCO del lavapiatti (mansioni affini). ⏩ Il componente di scelta (combobox) si fa con il primo modulo che lo usa (WP-013 offerta, WP-017 profilo). **Tocca a te:** controllare che non manchino i lavori tipici della tua zona. |
 | 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
-| 008 | ⏳ Da fare | Better Auth con email cifrata: adattatore da scrivere (Claude). |
-| 009 | ⏳ Da fare | Home provvisoria già presente (italiano, accessibile, palette provvisoria). |
+| 008 | ✅ Fatto (Claude, 27/09) | **Cambio di libreria:** Better Auth salva l'email in chiaro → accesso scritto in casa ([ADR-0013](../adr/ADR-0013-auth-in-casa.md)). Codice a 6 cifre via email, sessioni nel DB, un solo percorso "Accedi o registrati", pagine `/accedi` e `/account`, bozze `/privacy` e `/condizioni`. Test: 13 unitari, 15 di integrazione (anche "nessuna email in chiaro in nessuna colonna"), e2e registrazione + accesso con Mailpit. Restano per altri WP: codice invito in anteprima (WP-010), pulizia giornaliera nel worker (WP-020), 2FA aziende (WP-011), cancellazione account (WP-023). |
+| 009 | ✅ Fatto (Claude, 27/09) | Intestazione e piè di pagina con i dati dell'ente (segnaposto "in costituzione" in `src/lib/organization.ts`, R-LAV-04, R-CONS-04), `/chi-siamo`; landing con **lista d'attesa a doppia conferma** (email cifrata + indice cieco, link che apre una pagina con pulsante, R-MAIL-02; consensi con versione; non confermati cancellati dopo 7 giorni); bozze di privacy, cookie, condizioni, contatti, segnalazioni. **Lighthouse mobile: 98 / 100 / 100 / 100.** Test: 4 unitari, 7 di integrazione, 3 e2e. Restano: testi legali di Gemini (G-03), grafica ComfyUI, shadcn/ui quando serve. |
 | 010 | ⏳ Da fare | Serve: account Play, VPS, dominio, nome del pacchetto (Q1-Q2). |
 
 ---
@@ -143,18 +143,33 @@ Specifica in [ADR-0004](../adr/ADR-0004-cifratura-applicativa.md). `src/lib/cryp
 
 ---
 
-## WP-008 — Autenticazione
-**Esecutore:** Claude (adattatore email cifrata, policy) + Ollama (UI) · **Revisione:** Claude · **Stima:** 6 h · **Giorno:** dom 04/10
+## WP-008 — Autenticazione ✅
+**Esecutore:** Claude · **Seconda lettura:** ChatGPT · **Decisione:** [ADR-0013](../adr/ADR-0013-auth-in-casa.md) (sostituisce la libreria di ADR-0008)
 
-**Da fare**
-- Better Auth con plugin OTP via email (6 cifre, 10 minuti, max 5 tentativi), sessioni su DB, ruoli (`worker`, `company_member`, `moderator`, `admin`).
-- Adattatore: l'email si salva come `email_bidx` + `email_enc`; la ricerca per login usa l'indice cieco.
-- Pagine: `/accedi` (email → codice), `/registrati/lavoratore`, `/registrati/azienda` (solo account; l'azienda si completa nel WP-011).
-- Checkbox obbligatoria "Ho almeno 18 anni" (R-LAV-09) e presa visione informativa (versione salvata in `consents`).
-- Invio email via Nodemailer → Mailpit in dev.
-- Rate limit su richiesta codice (per IP e per email).
+**Fatto**
+- Un solo percorso **"Accedi o registrati"** (`/accedi`): email → codice a 6 cifre (10 minuti, 5 tentativi, un solo codice attivo)
+  → se l'account non esiste: ruolo (`worker` / `company_member`), "Ho almeno 18 anni" (R-LAV-09), presa visione
+  dell'informativa + condizioni (versioni salvate in `consents`). Stessa risposta per email registrate e non.
+- Tabelle `auth_otp_challenges`, `auth_sessions`, `auth_signup_tickets` (migrazione 0003): solo indice cieco dell'email,
+  HMAC del codice (`KeyProvider.mac`, scopo `otp`), SHA-256 dei token.
+- Sessioni: cookie `HttpOnly`, `SameSite=Lax`, `Secure` + prefisso `__Host-` in HTTPS; 30 giorni con rinnovo
+  (lavoratori, aziende), 7 fissi (moderatori, admin); `src/proxy.ts` rinnova il cookie, la riga nel DB decide la validità.
+- Limiti: per email 3 codici/15 min e 10/giorno (DB); per IP 10 richieste e 30 verifiche/15 min (solo in memoria,
+  intestazione `CLIENT_IP_HEADER`: in produzione `cf-connecting-ip`).
+- Accessi di moderatori e admin in `audit_log` con IP pseudonimizzato (`mac(ip, "ip")`).
+- Email con Nodemailer (`src/lib/mail`), testo in `messages/it.json`; nei log mai destinatario né contenuto.
+- Autorizzazione lato server: `requireUser(ruoli?)` in ogni pagina/azione riservata; `getCurrentUser()`.
 
-**Criteri di accettazione:** e2e registrazione + login con codice letto da Mailpit; nessuna email in chiaro nel DB (test WP-004 ancora verde); 6° tentativo bloccato.
+**Test di accettazione (non modificabili)**
+- `src/modules/identity/domain/policy.test.ts`: regole di codice, limiti, sessioni, input.
+- `tests/integration/auth.test.ts`: nessuna email né codice in chiaro in **nessuna** colonna, 6° tentativo bloccato, scadenza,
+  limiti per email, biglietto monouso legato all'email, rinnovo e scadenza delle sessioni, account sospeso, audit admin, pulizia.
+- `tests/e2e/auth.spec.ts`: registrazione + uscita + nuovo accesso con il codice letto da Mailpit; cookie non leggibile da JS.
+
+**Da fare in altri WP**
+- WP-010: in anteprima, registrazione solo con **codice invito**; `CLIENT_IP_HEADER=cf-connecting-ip` in produzione.
+- WP-011: 2FA TOTP obbligatoria per aziende e admin. WP-020: `deleteExpiredAuthRows` nel job giornaliero.
+- WP-023: cancellazione account (liberare `email_bidx`, `deleteUserSessions`).
 
 ---
 

@@ -34,7 +34,8 @@ Una piattaforma **senza scopo di lucro** che fa incontrare chi cerca lavoro e ch
 
 ## Stack (sintesi)
 Next.js 16 · React 19 · TypeScript · Tailwind v4 + shadcn/ui · PostgreSQL 17 + PostGIS · Drizzle ORM · pg-boss ·
-Better Auth · Brevo (email) · Stripe (web) · PWA + Trusted Web Activity (Android) · Docker Compose + Caddy su VPS in Italia.
+accesso con codice via email scritto in casa (ADR-0013) · Brevo (email) · Stripe (web) · PWA + Trusted Web Activity (Android) ·
+Cloudflare Tunnel + Docker Compose (ADR-0012).
 
 ## Il team
 | Chi | Ruolo | Istruzioni |

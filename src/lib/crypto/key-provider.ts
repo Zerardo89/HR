@@ -1,6 +1,11 @@
 import { readFileSync, statSync } from "node:fs";
 import { CryptoError, decrypt, encrypt, CRYPTO_CONSTANTS } from "./aead";
-import { computeBlindIndex, type BlindIndexPurpose } from "./blind-index";
+import {
+  computeBlindIndex,
+  computeMac,
+  type BlindIndexPurpose,
+  type MacPurpose,
+} from "./blind-index";
 
 /**
  * Fornitore delle chiavi (ADR-0004). Il resto dell'app parla SOLO con questa interfaccia:
@@ -12,6 +17,8 @@ export interface KeyProvider {
   /** Decifra una DEK (qualsiasi versione di KEK ancora conosciuta). */
   unwrapKey(wrapped: string, context: string): Promise<Buffer>;
   blindIndex(value: string, purpose: BlindIndexPurpose): Promise<string>;
+  /** HMAC con chiave per codici di accesso e IP pseudonimizzati (non normalizza il valore). */
+  mac(message: string, purpose: MacPurpose): Promise<string>;
   readonly currentKeyVersion: number;
 }
 
@@ -77,6 +84,10 @@ export class FileKeyProvider implements KeyProvider {
 
   async blindIndex(value: string, purpose: BlindIndexPurpose): Promise<string> {
     return computeBlindIndex(this.indexKey, value, purpose);
+  }
+
+  async mac(message: string, purpose: MacPurpose): Promise<string> {
+    return computeMac(this.indexKey, message, purpose);
   }
 }
 

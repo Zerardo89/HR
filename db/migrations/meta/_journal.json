@@ -22,6 +22,41 @@
       "when": 1790432137746,
       "tag": "0002_audit_append_only",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790520817881,
+      "tag": "0003_auth",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790524003007,
+      "tag": "0004_occupations_slug",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790524884237,
+      "tag": "0005_company_verification",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790525496998,
+      "tag": "0006_mfa",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790530890986,
+      "tag": "0007_company_sites_invites",
+      "breakpoints": true
     }
   ]
 }

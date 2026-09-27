@@ -39,6 +39,11 @@ export default defineConfig({
           SMTP_HOST: "localhost",
           SMTP_PORT: "1025",
           MAIL_FROM: "HR test <noreply@localhost>",
+          // Negli e2e VIES non si chiama mai: porta chiusa → azienda "in verifica" (percorso di riserva).
+          VIES_API_URL: "http://127.0.0.1:9",
+          // Tutti i test arrivano da 127.0.0.1: il limite per IP (testato a parte) li bloccherebbe a vicenda.
+          // Un'intestazione che nessuno invia = nessun IP = limite per IP spento; restano i limiti per email.
+          CLIENT_IP_HEADER: "x-e2e-nessun-ip",
         },
       },
 });

@@ -4,10 +4,12 @@ import {
   char,
   check,
   index,
+  jsonb,
   pgTable,
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -28,6 +30,10 @@ export const companies = pgTable(
     agencyAuthorization: varchar("agency_authorization", { length: 64 }),
     status: companyStatus("status").notNull().default("pending"),
     verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    // Come è stata verificata (WP-011): { method: "vies" | "manual", checkedAt, viesStatus } — niente dati personali.
+    verification: jsonb("verification")
+      .notNull()
+      .default(sql`'{}'::jsonb`),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -56,9 +62,18 @@ export const companySites = pgTable(
     label: text("label").notNull(),
     isLegalSeat: boolean("is_legal_seat").notNull().default(false),
     approvedAt: timestamp("approved_at", { withTimezone: true }),
+    // Sede rifiutata dal moderatore (WP-011c): resta visibile all'azienda con il motivo (DSA art. 17).
+    rejectedAt: timestamp("rejected_at", { withTimezone: true }),
+    rejectionReason: varchar("rejection_reason", { length: 32 }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("company_sites_company_idx").on(t.companyId)],
+  (t) => [
+    index("company_sites_company_idx").on(t.companyId),
+    check(
+      "company_sites_review",
+      sql`not (${t.approvedAt} is not null and ${t.rejectedAt} is not null) and (${t.rejectedAt} is null) = (${t.rejectionReason} is null)`,
+    ),
+  ],
 );
 
 export const companyMembers = pgTable(
@@ -76,6 +91,37 @@ export const companyMembers = pgTable(
   (t) => [
     primaryKey({ columns: [t.companyId, t.userId] }),
     index("company_members_user_idx").on(t.userId),
+  ],
+);
+
+/**
+ * Inviti ai colleghi (WP-011c). L'email dell'invitato non si salva: solo il suo indice cieco (stessa chiave di
+ * `users.email_bidx`), per accettare l'invito solo con quell'account. Il token è salvato come hash SHA-256.
+ */
+export const companyInvites = pgTable(
+  "company_invites",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    companyId: uuid("company_id")
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    emailBidx: text("email_bidx").notNull(),
+    tokenHash: text("token_hash").notNull().unique(),
+    role: memberRole("role").notNull().default("recruiter"),
+    invitedBy: uuid("invited_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    acceptedBy: uuid("accepted_by").references(() => users.id, { onDelete: "set null" }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("company_invites_company_idx").on(t.companyId),
+    // Un solo invito aperto per email e azienda: un nuovo invito sostituisce il precedente.
+    uniqueIndex("company_invites_open_uq")
+      .on(t.companyId, t.emailBidx)
+      .where(sql`${t.acceptedAt} is null and ${t.revokedAt} is null`),
+    check("company_invites_period", sql`${t.expiresAt} > ${t.createdAt}`),
   ],
 );
 

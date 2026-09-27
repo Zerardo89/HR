@@ -1,6 +1,6 @@
 # ADR-0008 — Autenticazione senza password con Better Auth
 
-**Stato:** Accettata · **Data:** 26/09/2026
+**Stato:** Sostituita in parte da [ADR-0013](ADR-0013-auth-in-casa.md) (la libreria; il resto resta valido) · **Data:** 26/09/2026
 
 ## Contesto
 Utenti poco tecnologici, spesso solo da smartphone; password dimenticate = abbandono. Aziende = bersaglio per furti di account.

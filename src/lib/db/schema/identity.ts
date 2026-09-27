@@ -1,10 +1,13 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   bigserial,
   char,
+  check,
   index,
   integer,
   pgTable,
+  smallint,
   text,
   timestamp,
   uuid,
@@ -30,6 +33,11 @@ export const users = pgTable("users", {
   keyVersion: integer("key_version").notNull(),
   // R-LAV-09: solo la dichiarazione di maggiore età, MAI la data di nascita.
   adultDeclaredAt: timestamp("adult_declared_at", { withTimezone: true }).notNull(),
+  // 2FA (WP-011b, ADR-0013): segreto TOTP cifrato con la KEK come una chiave (`KeyProvider.wrapKey`);
+  // attivo solo dopo la conferma; `totp_last_step` impedisce di riusare lo stesso codice.
+  totpSecretEnc: text("totp_secret_enc"),
+  totpEnabledAt: timestamp("totp_enabled_at", { withTimezone: true }),
+  totpLastStep: bigint("totp_last_step", { mode: "number" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastActiveAt: timestamp("last_active_at", { withTimezone: true }).notNull().defaultNow(),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
@@ -101,3 +109,73 @@ export const waitlist = pgTable("waitlist", {
     .notNull()
     .default(sql`now()`),
 });
+
+// ─── Accesso (ADR-0013) ────────────────────────────────────────────────────────────────────────────
+// Nessun dato in chiaro: l'email è solo come indice cieco, codici e token solo come HMAC/SHA-256.
+// Le righe scadute si eliminano con il job di pulizia (`deleteExpiredAuthRows`).
+
+/** Codici a 6 cifre inviati per email: 10 minuti, 5 tentativi, un solo codice attivo per email. */
+export const authOtpChallenges = pgTable(
+  "auth_otp_challenges",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    emailBidx: text("email_bidx").notNull(),
+    codeMac: text("code_mac").notNull(), // HMAC(chiave indice, "<id>:<codice>"), mai il codice
+    attempts: integer("attempts").notNull().default(0),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("auth_otp_challenges_email_idx").on(t.emailBidx, t.createdAt),
+    index("auth_otp_challenges_expires_idx").on(t.expiresAt),
+    check("auth_otp_challenges_attempts_range", sql`${t.attempts} between 0 and 5`),
+  ],
+);
+
+/** Sessioni: nel cookie un token casuale di 256 bit, qui solo il suo SHA-256. Niente IP né user agent. */
+export const authSessions = pgTable(
+  "auth_sessions",
+  {
+    id: text("id").primaryKey(), // SHA-256 (base64url) del token
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    // 2FA: la sessione vale per le pagine riservate solo dopo il secondo passaggio (se l'utente ha la 2FA).
+    mfaVerifiedAt: timestamp("mfa_verified_at", { withTimezone: true }),
+    mfaAttempts: smallint("mfa_attempts").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("auth_sessions_user_idx").on(t.userId),
+    index("auth_sessions_expires_idx").on(t.expiresAt),
+  ],
+);
+
+/** Dopo il codice giusto per un'email senza account: 30 minuti per completare la registrazione. */
+export const authSignupTickets = pgTable(
+  "auth_signup_tickets",
+  {
+    id: text("id").primaryKey(), // SHA-256 (base64url) del token
+    emailBidx: text("email_bidx").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("auth_signup_tickets_expires_idx").on(t.expiresAt)],
+);
+
+/** Codici di recupero della 2FA (10, monouso): nel DB solo il MAC, mai il codice. */
+export const authRecoveryCodes = pgTable(
+  "auth_recovery_codes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    codeMac: text("code_mac").notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("auth_recovery_codes_user_idx").on(t.userId)],
+);

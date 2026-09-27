@@ -24,6 +24,17 @@ export function normalizeForIndex(value: string, purpose: BlindIndexPurpose): st
   return purpose === "email" ? normalizeEmail(value) : normalizePhone(value);
 }
 
+/**
+ * MAC con chiave (HMAC-SHA256) per valori che non si cercano ma si confrontano o si pseudonimizzano:
+ * codici di accesso (`otp`) e indirizzi IP nel log di audit (`ip`). Stessa chiave dell'indice cieco,
+ * ma con il prefisso `mac:` gli input non possono mai coincidere con quelli dell'indice (`email:`/`phone:`).
+ */
+export type MacPurpose = "otp" | "ip" | "recovery";
+
+export function computeMac(key: Uint8Array, message: string, purpose: MacPurpose): string {
+  return createHmac("sha256", key).update(`mac:${purpose}:${message}`, "utf8").digest("base64url");
+}
+
 export function computeBlindIndex(
   key: Uint8Array,
   value: string,
