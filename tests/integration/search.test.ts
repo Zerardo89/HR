@@ -2,7 +2,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import type { PoolClient } from "pg";
 import { afterAll, describe, expect, it } from "vitest";
 import { parseSearchParams, type RankedOffer } from "@/modules/matching/domain";
-import { resolvePlace, searchOffers } from "@/modules/matching/server/search";
+import { findMunicipality as resolvePlace } from "@/modules/geo/server/lookup";
+import { searchOffers } from "@/modules/matching/server/search";
 import { prepareCatalog } from "@/modules/taxonomy/domain";
 import { closePool, DATABASE_URL, inRollback, seedReference } from "./db";
 

@@ -1,10 +1,10 @@
 import { and, desc, eq, gt, gte, inArray, sql, type SQL } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { companies, jobOffers, municipalities, occupations, provinces } from "@/lib/db/schema";
-import { normalizeTerm, searchOccupations, type PreparedCatalog } from "@/modules/taxonomy/domain";
+import { findMunicipality, type MunicipalityLookup, type MunicipalityRef } from "@/modules/geo";
+import { searchOccupations, type PreparedCatalog } from "@/modules/taxonomy/domain";
 import {
   MAX_CANDIDATES,
-  parsePlaceText,
   rankOffers,
   type SearchCandidate,
   type SearchContext,
@@ -20,67 +20,11 @@ import {
 
 export type SearchDeps = { db: NodePgDatabase; occupations: PreparedCatalog; now: () => Date };
 
-export type SearchPlace = {
-  code: string;
-  name: string;
-  provinceAbbr: string;
-  lat: number;
-  lon: number;
-};
-
-export type PlaceResolution =
-  | { status: "found"; place: SearchPlace }
-  | { status: "ambiguous"; options: SearchPlace[] }
-  | { status: "not_found"; suggestions: SearchPlace[] };
+export type SearchPlace = MunicipalityRef;
+export type PlaceResolution = MunicipalityLookup;
 
 /** Soglia per riconoscere una mansione nel testo: corrispondenza piena, iniziale o refuso lieve (WP-006). */
 const OCCUPATION_MIN_SCORE = 0.5;
-/** Soglia di somiglianza per i "forse cercavi" sui comuni. */
-const PLACE_SUGGESTION_SIMILARITY = 0.3;
-
-const normalizedName = sql`trim(regexp_replace(lower(unaccent(${municipalities.name})), '[^a-z0-9]+', ' ', 'g'))`;
-
-const placeColumns = {
-  code: municipalities.istatCode,
-  name: municipalities.name,
-  provinceAbbr: provinces.abbreviation,
-  lat: municipalities.lat,
-  lon: municipalities.lon,
-};
-
-/** Dal testo scritto da chi cerca al comune: "Milano", "milano", "Castro (LE)", "Reggio nell Emilia". */
-export async function resolvePlace(db: NodePgDatabase, text: string): Promise<PlaceResolution> {
-  const { name, provinceAbbr } = parsePlaceText(text);
-  const norm = normalizeTerm(name);
-  const rows = norm
-    ? await db
-        .select(placeColumns)
-        .from(municipalities)
-        .innerJoin(provinces, eq(provinces.code, municipalities.provinceCode))
-        .where(
-          and(
-            sql`${normalizedName} = ${norm}`,
-            provinceAbbr ? eq(provinces.abbreviation, provinceAbbr) : undefined,
-          ),
-        )
-        .orderBy(sql`${municipalities.population} desc nulls last`, municipalities.istatCode)
-        .limit(10)
-    : [];
-  if (rows.length === 1) return { status: "found", place: rows[0]! };
-  if (rows.length > 1) return { status: "ambiguous", options: rows };
-
-  const similarity = sql`similarity(${normalizedName}, ${norm}::text)`;
-  const suggestions = norm
-    ? await db
-        .select(placeColumns)
-        .from(municipalities)
-        .innerJoin(provinces, eq(provinces.code, municipalities.provinceCode))
-        .where(sql`${similarity} >= ${PLACE_SUGGESTION_SIMILARITY}`)
-        .orderBy(desc(similarity), sql`${municipalities.population} desc nulls last`)
-        .limit(5)
-    : [];
-  return { status: "not_found", suggestions };
-}
 
 export type OccupationMatch = { id: number; groupCode: string | null; label: string };
 
@@ -212,7 +156,7 @@ export async function searchOffers(deps: SearchDeps, query: SearchQuery): Promis
   const now = deps.now();
   let place: SearchPlace | null = null;
   if (query.dove) {
-    const resolution = await resolvePlace(deps.db, query.dove);
+    const resolution = await findMunicipality(deps.db, query.dove);
     if (resolution.status !== "found") return { status: "place", resolution };
     place = resolution.place;
   }

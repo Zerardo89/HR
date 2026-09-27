@@ -7,7 +7,7 @@
 
 | WP | Stato | Note |
 |----|-------|------|
-| 011 | 🟡 Parti a e b fatte (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ✅ **11b** 2FA TOTP obbligatoria per aziende, moderatori e admin (facoltativa per i lavoratori). ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
+| 011 | ✅ Fatto (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ✅ **11b** 2FA TOTP obbligatoria per aziende, moderatori e admin (facoltativa per i lavoratori). ✅ **11c** sedi operative (con approvazione del moderatore) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
 | 013 | ✅ Fatto (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ✅ **13b** pannello del moderatore `/moderazione` (approva / rifiuta con motivo visibile all'azienda, verifica manuale delle aziende), log di audit. |
 | 014 | 🟡 Pagina offerta fatta (Claude, 27/09) | ✅ `/offerte/[id]` SSR con dati strutturati **JobPosting** (Google for Jobs), sitemap e robots. ⏳ Pagine SEO "Lavoro [mansione] a [provincia]" (testi da Gemini). |
@@ -163,3 +163,25 @@ pagine `/offerte` e `/come-funziona`
   ordine e motivi, refusi, filtri, comuni), 3 e2e × 2 dispositivi.
 - Da fare: autocompletamento del comune (ora si scrive e si corregge), "cerca vicino a me" dal profilo (WP-017),
   slot sponsorizzati separati (max 2, R-ADS-04) quando ci saranno i pagamenti.
+
+## WP-011c — Sedi operative e inviti ai colleghi ✅
+**Esecutore:** Claude · **Codice:** `src/modules/companies/server/{sites,invites,team-actions,invite-cookie}.ts`,
+`src/modules/geo/server/lookup.ts`, pagine `/azienda/sedi`, `/azienda/colleghi`, `/invito/[token]`, sezione "Sedi da
+approvare" in `/moderazione`, migrazione `0007`
+
+- **Sedi**: le aggiunge solo il titolare (nome + comune, con "forse cercavi" e scelta tra omonimi); restano **in attesa**
+  finché un moderatore non le approva (ADR-0009: niente sedi di comodo per allargare la zona gratuita). Il moderatore
+  vede la distanza dalla sede legale, se la regione è diversa e quante sedi aspetta la stessa azienda. Rifiuto con
+  motivo visibile all'azienda (DSA art. 17). Il titolare può togliere una sede operativa, mai la legale. Max 20 sedi.
+- **Inviti**: solo il titolare di un'azienda **verificata**; l'email serve solo a spedire il link e **non si salva**
+  (nel DB l'indice cieco, come `users.email_bidx`, e l'hash SHA-256 del token). Vale 7 giorni; un nuovo invito alla
+  stessa persona sostituisce il vecchio; revoca; max 10 aperti e 20 spediti al giorno per azienda.
+- **Accettazione**: solo un account azienda attivo con **la stessa email** dell'invito (un link inoltrato non basta),
+  con la 2FA. Il collega entra come `recruiter` (offerte sì, sedi e inviti no). Chi apre il link senza essere entrato
+  lo ritrova nell'area azienda dopo l'accesso (cookie tecnico `invito`, 1 giorno, solo il token). Log di audit
+  `company.member_join`; decisioni sulle sedi `company.site`.
+- La ricerca del comune (`findMunicipality`) passa al modulo `geo`: la usano la ricerca delle offerte e le sedi.
+- Test: 5 di integrazione (autorizzazioni, stati delle sedi, pannello, invito con indice cieco, account sbagliato,
+  scadenza, sostituzione, revoca, limiti, invio fallito), 2 e2e × 2 dispositivi (sede con comune sbagliato + invito
+  accettato da un nuovo account con 2FA; approvazione della sede dal pannello).
+- Da fare: togliere un collega dall'azienda, passaggio di titolarità, email all'azienda con l'esito della sede (WP-020).

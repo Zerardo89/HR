@@ -11,3 +11,4 @@ export {
   type MunicipalityRow,
   type ParseResult,
 } from "./municipalities-data";
+export { normalizePlaceName, parsePlaceText } from "./place-text";

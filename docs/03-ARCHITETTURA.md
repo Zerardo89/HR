@@ -159,8 +159,9 @@ erDiagram
 | `profile_occupations` | `user_id`, `occupation_id`, `years` | C1 |
 | `profile_skills`, `profile_languages` | id + livello | C1 |
 | `companies` | `id`, `vat_number` (P.IVA), `legal_name`, `display_name`, `kind` (`employer`/`agency`), `agency_authorization`, `verified_at`, `status`, `plan` | C0 |
-| `company_sites` | `id`, `company_id`, `municipality_code`, `label`, `is_legal_seat`, `approved_at` | C0 |
+| `company_sites` | `id`, `company_id`, `municipality_code`, `label`, `is_legal_seat`, `approved_at`, `rejected_at`, `rejection_reason` | C0 |
 | `company_members` | `company_id`, `user_id`, `role` (`owner`/`recruiter`) | — |
+| `company_invites` | `company_id`, `email_bidx` (indice cieco, l'email non si salva), `token_hash`, `role`, `expires_at` (7 giorni), `accepted_at`, `revoked_at` | C1 (solo indice cieco) |
 | `job_offers` | `id`, `company_id`, `site_id`, `title`, `occupation_id`, `description_md`, `municipality_code`, `contract_type`, `schedule`, `hours_per_week`, `salary_min`, `salary_max`, `salary_period`, `salary_basis`, `ccnl`, `remote`, `requirements` (jsonb: patenti, lingue, competenze), `is_l68`, `status`, `published_at`, `valid_through`, `scope` (`local`/`national`), `featured_until`, `search_tsv` (tsvector), `moderation` (jsonb) | C0 |
 | `applications` | `id`, `offer_id`, `worker_user_id`, `status`, `message_enc`, `viewed_at`, `closed_at`, `company_visible_until` | C2 |
 | `contact_requests` (Fase B) | `company_id`, `worker_user_id`, `offer_id?`, `status`, `expires_at` | C1 |

@@ -129,6 +129,15 @@
       "validity": "Il link vale {days} giorni. Nella pagina premi il pulsante «Conferma»: aprire il link da solo non basta.",
       "ignore": "Se non ti sei iscritto tu, ignora questa email: senza conferma il tuo indirizzo viene cancellato.",
       "signature": "{siteName} — {appUrl}"
+    },
+    "companyInvite": {
+      "subject": "{company} ti invita su {siteName}",
+      "intro": "Ciao,",
+      "invite": "{company} ti invita a pubblicare e gestire le sue offerte di lavoro su {siteName}.",
+      "link": "Per accettare apri questo link: {link}",
+      "account": "Serve un account azienda con questo indirizzo email: se non ce l'hai, lo crei dalla stessa pagina. Il link vale {days} giorni.",
+      "ignore": "Se non conosci questa azienda, ignora questa email: senza di te l'invito non ha effetto.",
+      "signature": "{siteName} — {appUrl}"
     }
   },
   "waitlist": {
@@ -221,7 +230,84 @@
     "vat": "Partita IVA",
     "legalSeat": "Sede legale",
     "legalSeatUnknown": "da confermare",
-    "nextSteps": "Da qui pubblichi le offerte. Presto potrai aggiungere altre sedi e invitare i colleghi."
+    "nextSteps": "Da qui pubblichi le offerte, aggiungi le sedi e inviti i colleghi.",
+    "manage": "Gestione dell'azienda",
+    "sitesLink": "Sedi",
+    "teamLink": "Colleghi",
+    "joined": "Fatto: ora fai parte dell'azienda e puoi gestire le sue offerte.",
+    "pendingInvite": "Hai un invito di {company} in sospeso.",
+    "openInvite": "Apri l'invito",
+    "sites": {
+      "metaTitle": "Sedi dell'azienda",
+      "title": "Sedi di {company}",
+      "intro": "Le offerte si pubblicano nelle sedi approvate. Ogni nuova sede la controlla un moderatore, di solito entro un giorno lavorativo: serve a impedire sedi di comodo per uscire dalla zona gratuita.",
+      "legalSeat": "Sede legale (dalla verifica della Partita IVA)",
+      "state": {
+        "approved": "✓ Approvata",
+        "pending": "In attesa di approvazione",
+        "rejected": "Non approvata"
+      },
+      "reasons": {
+        "not_found": "l'attività non risulta in quel comune",
+        "duplicate": "sede già presente",
+        "unclear": "indicazioni insufficienti: scrivici per chiarire",
+        "other": "non rispetta le regole delle sedi"
+      },
+      "remove": "Togli questa sede",
+      "addTitle": "Aggiungi una sede",
+      "addIntro": "Per esempio un punto vendita, un magazzino, un cantiere stabile.",
+      "labelLabel": "Nome della sede",
+      "labelHelp": "Come la chiamate voi, per esempio «Negozio di corso Roma».",
+      "placeLabel": "Comune",
+      "add": "Aggiungi la sede",
+      "pending": "Attendi…",
+      "limit": "Hai raggiunto il massimo di {max} sedi. Scrivici se ne servono altre.",
+      "ownerOnly": "Solo il titolare dell'azienda può aggiungere o togliere sedi.",
+      "back": "Torna all'area azienda",
+      "outcome": {
+        "added": "Sede aggiunta: la controlla un moderatore.",
+        "removed": "Sede tolta.",
+        "not_found": "La sede non c'è più.",
+        "not_allowed": "Non puoi modificare questa sede."
+      },
+      "errors": {
+        "invalid": "Scrivi il nome della sede e il comune.",
+        "place_ambiguous": "Ci sono più comuni con questo nome: scegli quello giusto.",
+        "place_not_found": "Non troviamo questo comune.",
+        "duplicate": "Questa sede c'è già.",
+        "too_many": "Hai raggiunto il numero massimo di sedi."
+      }
+    },
+    "team": {
+      "metaTitle": "Colleghi",
+      "title": "Colleghi di {company}",
+      "intro": "Invita chi ti aiuta con le offerte: riceve un'email con un link che vale {days} giorni. Per accettare serve un account azienda con quello stesso indirizzo. I colleghi gestiscono le offerte, non le sedi né gli inviti.",
+      "inviteTitle": "Invita un collega",
+      "emailLabel": "Email del collega",
+      "emailHelp": "La usiamo solo per spedire l'invito: non la conserviamo.",
+      "send": "Invia l'invito",
+      "pending": "Invio…",
+      "openTitle": "Inviti in attesa ({count} su {max})",
+      "openEmpty": "Nessun invito in attesa.",
+      "inviteOpen": "Inviato il {sent}, vale fino al {expires}",
+      "inviteExpired": "Inviato il {sent}, scaduto il {expires}",
+      "revoke": "Annulla",
+      "ownerOnly": "Solo il titolare dell'azienda può invitare i colleghi.",
+      "back": "Torna all'area azienda",
+      "outcome": {
+        "sent": "Invito spedito.",
+        "revoked": "Invito annullato: il link non vale più.",
+        "not_found": "L'invito non è più in attesa.",
+        "not_allowed": "Non puoi modificare questo invito."
+      },
+      "errors": {
+        "invalid_email": "Controlla l'indirizzo email.",
+        "company_not_verified": "Potrai invitare i colleghi appena l'azienda è verificata.",
+        "already_member": "Questa persona fa già parte dell'azienda.",
+        "too_many": "Troppi inviti: annullane qualcuno, aspetta che vengano accettati o riprova domani.",
+        "send_failed": "Non siamo riusciti a spedire l'email. Riprova tra qualche minuto."
+      }
+    }
   },
   "mfa": {
     "accountLabel": "Il mio account",
@@ -276,7 +362,7 @@
     "empty": "Nessuna offerta per ora.",
     "newTitle": "Nuova offerta",
     "editTitle": "Offerta",
-    "noSites": "Per pubblicare un'offerta serve almeno una sede verificata. La sede legale arriva dalla verifica della Partita IVA; le altre sedi si potranno aggiungere a breve.",
+    "noSites": "Per pubblicare un'offerta serve almeno una sede approvata. La sede legale arriva dalla verifica della Partita IVA; le altre sedi le aggiungi dalla pagina «Sedi» dell'area azienda.",
     "backToCompany": "Torna all'area azienda",
     "statusLabel": "Stato",
     "notEditable": "Un'offerta pubblicata non si modifica: presto potrai chiuderla o rinnovarla da qui.",
@@ -439,7 +525,27 @@
       "invalid": "Richiesta non valida.",
       "company_verified": "Azienda verificata.",
       "company_not_found": "L'azienda non è più in verifica.",
-      "company_not_allowed": "Non hai i permessi per verificare le aziende."
+      "company_not_allowed": "Non hai i permessi per verificare le aziende.",
+      "site_approved": "Sede approvata.",
+      "site_rejected": "Sede non approvata: l'azienda vede il motivo.",
+      "site_not_found": "La sede non è più in attesa.",
+      "site_not_allowed": "Non hai i permessi per approvare le sedi."
+    },
+    "sitesTitle": "Sedi da approvare ({count})",
+    "sitesEmpty": "Nessuna sede in attesa.",
+    "siteDistance": "A {km} km dalla sede legale ({seat}), {region}.",
+    "siteSameRegion": "stessa regione",
+    "siteOtherRegion": "altra regione",
+    "siteNoLegalSeat": "Sede legale non ancora nota: verifica prima l'azienda.",
+    "siteManyPending": "Questa azienda ha {count} sedi in attesa: controlla che non siano di comodo.",
+    "siteCheck": "Prima di approvare: cerca l'attività in quel comune (sito, mappe, registro imprese). Una sede serve a pubblicare gratis nella sua regione e nei 50 km.",
+    "siteApprove": "Approva la sede",
+    "siteReject": "Non approvare",
+    "siteReasons": {
+      "not_found": "L'attività non risulta in quel comune.",
+      "duplicate": "Sede già presente.",
+      "unclear": "Indicazioni insufficienti.",
+      "other": "Non rispetta le regole delle sedi."
     }
   },
   "publicOffer": {
@@ -557,5 +663,28 @@
     "neverTitle": "Cosa non usiamo mai",
     "never": "Età, sesso, nazionalità, aspetto e altri dati personali di chi cerca: non li chiediamo e non entrano in nessun calcolo. Chi paga non sale nella classifica: eventuali offerte sponsorizzate saranno al massimo due, separate e con la scritta «Sponsorizzata».",
     "backToSearch": "Torna alla ricerca"
+  },
+  "invite": {
+    "metaTitle": "Invito",
+    "title": "Invito a gestire le offerte",
+    "intro": "{company} ti invita a gestire le sue offerte di lavoro.",
+    "recruiterRole": "Potrai pubblicare e modificare le offerte dell'azienda.",
+    "signInFirst": "Per accettare entra (o registrati come azienda) con l'indirizzo email a cui è arrivato l'invito. Dopo l'accesso trovi l'invito nell'area azienda.",
+    "signIn": "Accedi o registrati per accettare",
+    "wrongRole": "Questo invito è per un account azienda. Esci, poi entra o registrati come azienda con l'email dell'invito.",
+    "accept": "Unisciti a {company}",
+    "backHome": "Torna alla pagina iniziale",
+    "state": {
+      "expired": "Questo invito è scaduto: chiedi all'azienda di mandartene uno nuovo.",
+      "used": "Questo invito non è più valido: è già stato usato o annullato.",
+      "not_found": "Invito non trovato: controlla di aver aperto il link completo dell'email."
+    },
+    "outcome": {
+      "wrong_account": "Questo invito è per un altro indirizzo email. Esci ed entra con l'email a cui è arrivato l'invito.",
+      "not_company_account": "Questo invito è per un account azienda.",
+      "expired": "L'invito è scaduto.",
+      "used": "L'invito non è più valido.",
+      "not_found": "Invito non trovato."
+    }
   }
 }

@@ -38,5 +38,6 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0004_occupations_slug.sql` — generata: `slug` e `category` delle mansioni (import idempotente) — WP-006.
 - `0005_company_verification.sql` — generata: `companies.verification` (esito VIES, nessun dato personale) — WP-011.
 - `0006_mfa.sql` — generata: 2FA (segreto TOTP cifrato con la KEK, ultimo periodo usato, sessioni verificate, codici di recupero come MAC) — WP-011b.
+- `0007_company_sites_invites.sql` — generata: inviti ai colleghi (indice cieco dell'email, hash del token, scadenza) e rifiuto motivato delle sedi — WP-011c.
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
 - Le migrazioni che toccano colonne cifrate o `audit_log` le scrive/valida l'architetto (CLAUDE.md).

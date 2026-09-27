@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { CompanyRegistrationForm, getCompaniesForUser } from "@/modules/companies";
+import {
+  CompanyRegistrationForm,
+  getCompaniesForUser,
+  getPendingInvite,
+} from "@/modules/companies";
 import { requireUser } from "@/modules/identity";
 import { listCompanyOffers } from "@/modules/offers";
 
@@ -11,14 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /** Area azienda (WP-011): registrazione, stato della verifica. Solo utenti `company_member`. */
-export default async function CompanyPage() {
+export default async function CompanyPage({ searchParams }: PageProps<"/azienda">) {
   const user = await requireUser(["company_member"]);
-  const companies = await getCompaniesForUser(user.id);
+  const [companies, pendingInvite, { esito }] = await Promise.all([
+    getCompaniesForUser(user.id),
+    getPendingInvite(),
+    searchParams,
+  ]);
   const t = await getTranslations("company");
 
   return (
     <main id="contenuto" className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
       <h1 className="text-3xl font-bold leading-tight text-primary">{t("title")}</h1>
+      {esito === "joined" && (
+        <p role="status" className="rounded-lg border border-primary bg-surface px-4 py-3">
+          {t("joined")}
+        </p>
+      )}
+      {pendingInvite && (
+        <p className="rounded-lg border border-accent bg-surface px-4 py-3">
+          {t("pendingInvite", { company: pendingInvite.companyName })}{" "}
+          <Link
+            href={`/invito/${pendingInvite.token}`}
+            className="font-semibold text-primary underline underline-offset-4"
+          >
+            {t("openInvite")}
+          </Link>
+        </p>
+      )}
 
       {companies.length === 0 ? (
         <section className="flex flex-col gap-4" aria-labelledby="registra-azienda">
@@ -48,6 +72,22 @@ export default async function CompanyPage() {
               <dt className="text-muted">{t("legalSeat")}</dt>
               <dd>{c.legalSeat ?? t("legalSeatUnknown")}</dd>
             </dl>
+            <nav aria-label={t("manage")} className="flex flex-wrap gap-4">
+              <Link
+                href={`/azienda/sedi?azienda=${c.id}`}
+                className="font-medium text-primary underline underline-offset-4"
+              >
+                {t("sitesLink")}
+              </Link>
+              {c.role === "owner" && (
+                <Link
+                  href={`/azienda/colleghi?azienda=${c.id}`}
+                  className="font-medium text-primary underline underline-offset-4"
+                >
+                  {t("teamLink")}
+                </Link>
+              )}
+            </nav>
             <CompanyOffers userId={user.id} companyId={c.id} />
           </section>
         ))

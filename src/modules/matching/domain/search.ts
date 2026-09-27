@@ -257,11 +257,3 @@ export function rankOffers(
     pageCount,
   };
 }
-
-/** "Castro (LE)" → nome e sigla della provincia; "Milano" → solo il nome. */
-export function parsePlaceText(value: string): { name: string; provinceAbbr?: string } {
-  const m = /^(.*?)\s*\(\s*([A-Za-z]{2})\s*\)\s*$/.exec(value);
-  return m && m[1]
-    ? { name: m[1].trim(), provinceAbbr: m[2]!.toUpperCase() }
-    : { name: value.trim() };
-}

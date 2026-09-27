@@ -20,7 +20,6 @@ export {
   monthlyEquivalent,
   MONTHS_PER_YEAR_SALARY,
   PAGE_SIZE,
-  parsePlaceText,
   parseSearchParams,
   PUBLISHED_WITHIN_DAYS,
   rankOffers,
@@ -35,3 +34,5 @@ export {
   type SearchPage,
   type SearchQuery,
 } from "./search";
+// Il testo dei comuni si interpreta nel modulo geo; qui resta per chi usa la ricerca.
+export { parsePlaceText } from "@/modules/geo/domain";
