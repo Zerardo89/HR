@@ -78,7 +78,7 @@ Android: "Aggiungi a schermata Home"), e si comunica "App Play Store in arrivo".
 | **Gio 01/10** | **WP-005** comuni ISTAT + geo + `FreeZone` (test scritti da Claude). **WP-007** crypto (**Claude**) | — | — | Primi 10 contatti telefonici/di persona alle aziende (solo sondaggio: "pubblichereste qui?") | Gemini: bozza informativa privacy, T&C, cookie policy (marcate BOZZA) |
 | **Ven 02/10** | **WP-009** landing + lista d'attesa (double opt-in) + pagine legali in bozza. **WP-010** PWA + `assetlinks.json` + TWA Bubblewrap | Seconda chiamata legale se serve | **Upload TWA su Play → test interno → test chiuso; invito ai tester** — **G1** | Apertura lista d'attesa: messaggio a contatti e gruppi locali | Gemini: scheda Play Store (titolo, descrizioni), risposte Data safety in bozza |
 | **Sab 03/10** | **WP-006** tassonomia mansioni + autocompletamento | Riunione co-fondatori: statuto, cariche, quota associativa | Verifica: ≥12 tester **iscritti e con app installata** | — | Gemini: 300 mansioni con sinonimi colloquiali (dati per WP-006) |
-| **Dom 04/10** | **WP-008** autenticazione Better Auth (Claude + Ollama) | — | Buffer | — | ComfyUI: illustrazioni onboarding (3) e stati vuoti (4) |
+| **Dom 04/10** | **WP-008** autenticazione con codice via email (Claude, ADR-0013) | — | Buffer | — | ComfyUI: illustrazioni onboarding (3) e stati vuoti (4) |
 
 **G1 — ven 02/10 (al più tardi sab 03/10):** ≥12 tester iscritti al test chiuso.
 *Piano B:* se l'account Play non è verificato in tempo, si recupera spostando i 14 giorni: ogni giorno perso qui è un giorno perso sul Play Store (il web non cambia).
@@ -147,7 +147,7 @@ Android: "Aggiungi a schermata Home"), e si comunica "App Play Store in arrivo".
 | 005 | Import comuni ISTAT + centroidi + modulo geo + `FreeZone` (dominio) | Ollama (test di Claude) | Claude | 1 |
 | 006 | Tassonomia mansioni ESCO + sinonimi + autocompletamento | Ollama + Gemini (dati) | Claude | 1 |
 | 007 | Modulo crypto (KeyProvider, envelope, indice cieco, audit) | **Claude** | ChatGPT (seconda lettura) | 1 |
-| 008 | Autenticazione Better Auth (OTP, sessioni, ruoli, adattatore email cifrata) | Claude + Ollama | Claude | 1 |
+| 008 | Autenticazione (codice via email, sessioni, ruoli, email cifrata) — ADR-0013 | Claude | ChatGPT (seconda lettura) | 1 |
 | 009 | Layout, design di base, landing, lista d'attesa double opt-in, pagine legali | Ollama + Gemini + ComfyUI | Claude | 1 |
 | 010 | PWA + assetlinks + TWA Bubblewrap + deploy staging | Tu + Claude | Claude | 1 |
 | 011 | Onboarding azienda + VIES + sedi + membri + 2FA | Ollama | ChatGPT → Claude | 2 |

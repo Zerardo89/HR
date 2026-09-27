@@ -24,7 +24,7 @@
 | ORM | **Drizzle ORM** + drizzle-kit (migrazioni SQL versionate) | SQL trasparente, tipi TS, supporto PostGIS | 0003 |
 | Ricerca | Postgres **full-text** (`italian` + `unaccent`) + **pg_trgm** (errori di battitura) | Niente Elasticsearch/Meilisearch finché non serve | 0003 |
 | Code/cron | **pg-boss** (code su Postgres) | Niente Redis; job di email, avvisi, conservazione | 0003 |
-| Auth | **Better Auth** (OTP email / magic link, passkey, 2FA) | Auth.js è passato sotto la gestione del team Better Auth (set. 2025), che lo raccomanda per i nuovi progetti | 0008 |
+| Auth | **Modulo `identity` scritto in casa**: codice a 6 cifre via email, sessioni nel DB (poi 2FA TOTP, passkey) | Better Auth salva l'email in chiaro: un adattatore sarebbe fragile proprio sul requisito più delicato | 0008, 0013 |
 | Email | **Nodemailer** via SMTP verso **Brevo** (UE) + template **React Email** | Fornitore sostituibile; dev con **Mailpit** | — |
 | Pagamenti | **Stripe** (Checkout + Customer Portal + webhook) — solo web | Abbonamenti, fatture, SEPA; niente acquisti in-app all'MVP | 0010 |
 | Mobile | **PWA** + **TWA** con **Bubblewrap** | Un solo codice, aggiornamenti senza revisione Play | 0002 |
@@ -95,7 +95,7 @@ aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `in
 │  │  ├─ api/                      # webhook Stripe, health, endpoint email one-click
 │  │  └─ manifest.ts, sitemap.ts, robots.ts
 │  ├─ modules/
-│  │  ├─ identity/                 # utenti, ruoli, sessioni (Better Auth)
+│  │  ├─ identity/                 # utenti, ruoli, codice via email, sessioni (ADR-0013)
 │  │  ├─ profiles/                 # profilo lavoratore, stati, liste mansione
 │  │  ├─ companies/                # aziende, sedi, membri, verifica VIES
 │  │  ├─ offers/                   # offerte, validatore a norma, moderazione
@@ -153,7 +153,7 @@ erDiagram
 | Tabella | Campi chiave | Classe dati |
 |---------|-------------|-------------|
 | `users` | `id uuid`, `role`, `email_bidx` (HMAC), `email_enc`, `status`, `created_at`, `last_active_at`, `adult_declared_at` | C1/C2 |
-| auth (Better Auth) | `session`, `account`, `verification`, `passkey`, `two_factor` | — |
+| auth (ADR-0013) | `auth_otp_challenges` (indice cieco email, HMAC del codice, tentativi, scadenza), `auth_sessions` (SHA-256 del token, scadenza), `auth_signup_tickets` | C1 (nessun dato in chiaro) |
 | `worker_profiles` | `user_id`, `state` (`seeking`/`open`/`hidden`), `municipality_code`, `radius_km`, `relocation_regions[]`, `experience_band`, `available_from`, `contract_prefs[]`, `schedule_prefs[]`, `driving_licenses[]`, `pii_enc` (nome, cognome, telefono, bio, esperienze, formazione), `dek_wrapped`, `key_version`, `monthly_check_opt_in`, `next_check_at`, `unanswered_checks`, `last_interaction_at` | C1 + C2 |
 | `profile_occupations` | `user_id`, `occupation_id`, `years` | C1 |
 | `profile_skills`, `profile_languages` | id + livello | C1 |

@@ -102,7 +102,7 @@ critico. L'interfaccia `KeyProvider` rende la migrazione un lavoro di 1-2 giorni
 
 | Area | Misura |
 |------|--------|
-| Autenticazione | Better Auth; login senza password (codice OTP via email / magic link) + **passkey**; 2FA obbligatoria per aziende e admin; limitazione tentativi |
+| Autenticazione | Modulo in casa (ADR-0013): login senza password con codice a 6 cifre via email (10 minuti, 5 tentativi, limiti per email e IP) + **passkey** (dopo il lancio); 2FA obbligatoria per aziende e admin (WP-011) |
 | Sessioni | Cookie `HttpOnly`, `Secure`, `SameSite=Lax`; rotazione; scadenza 30 giorni (lavoratori), 7 giorni (admin) |
 | Autorizzazione | Controlli **server-side** in ogni azione; policy centralizzate per ruolo (`worker`, `company_member`, `company_owner`, `moderator`, `admin`) e per risorsa (una azienda vede solo le **proprie** candidature) |
 | Input | Validazione Zod su ogni input; output escaping di React; niente HTML libero negli annunci (Markdown ristretto) |
