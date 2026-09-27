@@ -60,6 +60,8 @@ export const occupations = pgTable(
   "occupations",
   {
     id: serial("id").primaryKey(),
+    slug: varchar("slug", { length: 64 }).notNull().unique(), // chiave stabile da data/occupations.csv (WP-006)
+    category: varchar("category", { length: 32 }).notNull(), // macro-categoria (OCCUPATION_CATEGORIES)
     escoUri: text("esco_uri").unique(),
     iscoCode: varchar("isco_code", { length: 4 }),
     cp2021Code: varchar("cp2021_code", { length: 16 }),

@@ -29,6 +29,13 @@
       "when": 1790520817881,
       "tag": "0003_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790524003007,
+      "tag": "0004_occupations_slug",
+      "breakpoints": true
     }
   ]
 }

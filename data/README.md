@@ -41,3 +41,7 @@ DATABASE_URL=postgres://… pnpm geo:import ./data/municipalities.csv
 `scripts/data-src/occupations.py` e si rigenera con `python3 scripts/data-src/occupations.py`.
 Il test `src/modules/taxonomy/domain/occupations-data.test.ts` controlla che nessun sinonimo sia conteso tra due mansioni
 e che non ci siano termini discriminatori. I codici ISCO con `note` = "verificare codice ISCO" vanno confrontati con ESCO.
+
+Caricamento nel DB (idempotente, si può rilanciare dopo ogni modifica del file):
+`DATABASE_URL=postgres://… pnpm taxonomy:import`. Le mansioni tolte dal file non vengono cancellate dal DB
+(offerte e profili le usano): lo script le elenca, si decide a mano.

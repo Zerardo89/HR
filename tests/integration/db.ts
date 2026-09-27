@@ -57,6 +57,6 @@ export async function seedReference(c: PoolClient): Promise<void> {
       ('033032','Piacenza','033','08',45.0526,9.6934)
      on conflict do nothing`,
   );
-  await c.query(`insert into occupations (id, label_it, synonyms, isco_code, group_code) values
-      (9001,'Cameriere di sala','{cameriera,"cameriere/a"}','5131','513')`);
+  await c.query(`insert into occupations (id, slug, category, label_it, synonyms, isco_code, group_code) values
+      (9001,'test-cameriere','ristorazione','Cameriere di sala','{cameriera,"cameriere/a"}','5131','513')`);
 }
