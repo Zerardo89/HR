@@ -35,5 +35,6 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0002_audit_append_only.sql` — **scritta a mano**: trigger che rendono `audit_log` immodificabile.
 - `0003_auth.sql` — generata: tabelle dell'accesso (codici, sessioni, biglietti di registrazione) — WP-008.
 - `0004_occupations_slug.sql` — generata: `slug` e `category` delle mansioni (import idempotente) — WP-006.
+- `0005_company_verification.sql` — generata: `companies.verification` (esito VIES, nessun dato personale) — WP-011.
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
 - Le migrazioni che toccano colonne cifrate o `audit_log` le scrive/valida l'architetto (CLAUDE.md).

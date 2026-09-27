@@ -1,0 +1,1 @@
+ALTER TABLE "companies" ADD COLUMN "verification" jsonb DEFAULT '{}'::jsonb NOT NULL;

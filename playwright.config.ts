@@ -39,6 +39,8 @@ export default defineConfig({
           SMTP_HOST: "localhost",
           SMTP_PORT: "1025",
           MAIL_FROM: "HR test <noreply@localhost>",
+          // Negli e2e VIES non si chiama mai: porta chiusa → azienda "in verifica" (percorso di riserva).
+          VIES_API_URL: "http://127.0.0.1:9",
         },
       },
 });

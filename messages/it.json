@@ -74,7 +74,8 @@
       "admin": "amministratore"
     },
     "comingSoon": "Qui troverai il tuo profilo e le tue candidature. Stiamo preparando queste pagine.",
-    "signOut": "Esci"
+    "signOut": "Esci",
+    "companyArea": "Vai all'area azienda"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -180,5 +181,44 @@
     },
     "pending": "in costituzione",
     "nonProfit": "Servizio senza scopo di lucro. Gratis per chi cerca lavoro, sempre."
+  },
+  "company": {
+    "metaTitle": "Area azienda",
+    "title": "La tua azienda",
+    "register": {
+      "title": "Registra la tua azienda",
+      "intro": "Ci serve la Partita IVA: la controlliamo sul registro europeo VIES e da lì prendiamo la ragione sociale e la sede legale. Le offerte mostrano sempre il nome dell'azienda: niente annunci anonimi.",
+      "vatLabel": "Partita IVA",
+      "vatHelp": "11 cifre, anche con «IT» davanti.",
+      "displayNameLabel": "Nome che vedranno i candidati",
+      "displayNameHelp": "Per esempio l'insegna del locale o il marchio. La ragione sociale resta visibile nella pagina dell'azienda.",
+      "kindLegend": "Tipo di azienda",
+      "kinds": {
+        "employer": "Assumo per la mia azienda",
+        "agency": "Agenzia per il lavoro autorizzata"
+      },
+      "agencyAuthorizationLabel": "Estremi dell'autorizzazione ministeriale",
+      "agencyAuthorizationHelp": "La controlliamo sull'Albo informatico delle agenzie per il lavoro prima di pubblicare le offerte.",
+      "submit": "Registra l'azienda",
+      "pending": "Verifica in corso…",
+      "errors": {
+        "invalid": "Controlla i campi: servono la Partita IVA, il nome e il tipo di azienda.",
+        "vat": "La Partita IVA non è corretta: controlla le 11 cifre.",
+        "agency_authorization": "Per un'agenzia per il lavoro servono gli estremi dell'autorizzazione.",
+        "already_registered": "Questa azienda è già registrata. Chiedi a chi l'ha registrata di invitarti.",
+        "vat_invalid": "Il registro europeo VIES dice che questa Partita IVA non è attiva. Controllala e riprova."
+      }
+    },
+    "status": {
+      "verified": "✓ Azienda verificata: potrai pubblicare le offerte.",
+      "pending": "In verifica: il registro VIES non ha risposto. Completiamo noi la verifica, di solito entro un giorno lavorativo.",
+      "pendingAgency": "In verifica: controlliamo l'autorizzazione sull'Albo delle agenzie per il lavoro.",
+      "suspended": "Azienda sospesa. Scrivici se pensi che sia un errore."
+    },
+    "legalName": "Ragione sociale",
+    "vat": "Partita IVA",
+    "legalSeat": "Sede legale",
+    "legalSeatUnknown": "da confermare",
+    "nextSteps": "Presto da qui potrai pubblicare le offerte, aggiungere altre sedi e invitare i colleghi."
   }
 }

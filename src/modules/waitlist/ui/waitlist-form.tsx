@@ -27,6 +27,7 @@ export function WaitlistForm({ provinces }: { provinces: ProvinceOption[] }) {
   }
 
   const error = state.status === "error" ? t(`errors.${state.error}`) : null;
+  const values = state.status === "error" ? state.values : undefined;
 
   return (
     <form
@@ -39,6 +40,7 @@ export function WaitlistForm({ provinces }: { provinces: ProvinceOption[] }) {
         <input
           type="email"
           name="email"
+          defaultValue={values?.email}
           required
           autoComplete="email"
           inputMode="email"
@@ -51,7 +53,14 @@ export function WaitlistForm({ provinces }: { provinces: ProvinceOption[] }) {
         <legend className="mb-2 text-base font-medium">{t("kindLegend")}</legend>
         {(["worker", "company"] as const).map((kind) => (
           <label key={kind} className={choice}>
-            <input type="radio" name="kind" value={kind} required className="size-5 shrink-0" />
+            <input
+              type="radio"
+              name="kind"
+              value={kind}
+              required
+              defaultChecked={values?.kind === kind}
+              className="size-5 shrink-0"
+            />
             {t(`kinds.${kind}`)}
           </label>
         ))}
@@ -60,7 +69,7 @@ export function WaitlistForm({ provinces }: { provinces: ProvinceOption[] }) {
       {provinces.length > 0 && (
         <label className="flex flex-col gap-2 text-base font-medium">
           {t("provinceLabel")}
-          <select name="province" defaultValue="" className={field}>
+          <select name="province" defaultValue={values?.province ?? ""} className={field}>
             <option value="">{t("provinceNone")}</option>
             {provinces.map((p) => (
               <option key={p.code} value={p.code}>

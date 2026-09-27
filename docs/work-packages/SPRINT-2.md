@@ -7,7 +7,7 @@
 
 | WP | Stato | Note |
 |----|-------|------|
-| 011 | ⏳ Da fare | Onboarding azienda + VIES + sedi + membri + 2FA TOTP (ADR-0013 §8). |
+| 011 | 🟡 Parte a fatta (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ⏳ **11b** 2FA TOTP obbligatoria per aziende e admin. ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
 | 013 | ⏳ Da fare | Form offerta + anteprima con il validatore + moderazione + pannello moderatore; usa il selettore delle mansioni (WP-006). |
 | 014 | ⏳ Da fare | Pagina offerta SSR + JSON-LD JobPosting + sitemap. |
@@ -42,3 +42,21 @@ positivi da evitare ("esperienza di almeno 5 anni", "max 40 ore", "RAL 28.000 �
 
 **Rimandato:** lavoro domestico con stipendio facoltativo (R-ANN-01) quando arrivano le famiglie datrici (2027);
 tabella dei minimi regionali dei tirocini da compilare con le fonti (`regional_internship_minimums`).
+
+---
+
+## WP-011a — Registrazione dell'azienda ✅
+**Esecutore:** Claude · **Codice:** `src/modules/companies/`
+
+- `domain/`: P.IVA italiana (cifra di controllo, prefisso IT, spazi e punti), risposta di VIES
+  (valida / non valida / non disponibile), indirizzo VIES → CAP, comune, sigla.
+- `server/register.ts`: solo utenti `company_member`; VIES valido → `verified` + ragione sociale da VIES (§3.2) + sede
+  legale approvata (ADR-0009); VIES giù → `pending`; agenzia → `pending` (Albo); P.IVA già registrata → rifiuto
+  (ci si fa invitare, WP-011c) senza chiamare VIES. Colonna `companies.verification` (migrazione 0005).
+- Client VIES iniettabile; `VIES_API_URL` configurabile (negli e2e punta a una porta chiusa).
+- ⚠️ Rischio noto: VIES dice che la P.IVA esiste, non che chi la registra lavora lì. Mitigazioni: ragione sociale da
+  VIES (non modificabile), prime 3 offerte in moderazione (WP-012), segnalazioni (WP-024). Da valutare dopo il lancio:
+  verifica via PEC o dominio email aziendale.
+- Test: 8 unitari, 7 di integrazione (VIES finto), 2 e2e (registrazione con VIES irraggiungibile, area riservata).
+- Corretto anche un difetto dei form con React 19 (i campi si svuotavano dopo un errore): ora i valori restano, anche
+  nella lista d'attesa.

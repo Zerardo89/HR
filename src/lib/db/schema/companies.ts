@@ -4,6 +4,7 @@ import {
   char,
   check,
   index,
+  jsonb,
   pgTable,
   primaryKey,
   text,
@@ -28,6 +29,10 @@ export const companies = pgTable(
     agencyAuthorization: varchar("agency_authorization", { length: 64 }),
     status: companyStatus("status").notNull().default("pending"),
     verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    // Come è stata verificata (WP-011): { method: "vies" | "manual", checkedAt, viesStatus } — niente dati personali.
+    verification: jsonb("verification")
+      .notNull()
+      .default(sql`'{}'::jsonb`),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

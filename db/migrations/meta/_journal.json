@@ -36,6 +36,13 @@
       "when": 1790524003007,
       "tag": "0004_occupations_slug",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790524884237,
+      "tag": "0005_company_verification",
+      "breakpoints": true
     }
   ]
 }
