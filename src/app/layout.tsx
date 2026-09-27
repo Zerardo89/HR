@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { SiteFooter } from "@/app/_components/site-footer";
+import { SiteHeader } from "@/app/_components/site-header";
 import { flags } from "@/lib/flags";
 import "./globals.css";
 
@@ -47,7 +49,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             {t("previewBanner")}
           </div>
         )}
+        <SiteHeader />
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <SiteFooter />
       </body>
     </html>
   );

@@ -22,12 +22,7 @@ export function secureCookies(): boolean {
   return getServerEnv().APP_URL.startsWith("https://");
 }
 
-/** IP del visitatore dall'intestazione configurata; `null` se manca (allora valgono solo i limiti per email). */
-export function clientIp(headers: Headers): string | null {
-  const raw = headers.get(getServerEnv().CLIENT_IP_HEADER);
-  const first = raw?.split(",")[0]?.trim();
-  return first ? first.slice(0, 64) : null;
-}
+export { clientIp } from "@/lib/client-ip";
 
 type IpLimiters = { codeRequests: MemoryLimiter; codeChecks: MemoryLimiter };
 const store = globalThis as typeof globalThis & { __hrIpLimiters?: IpLimiters };

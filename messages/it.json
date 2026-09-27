@@ -7,7 +7,8 @@
   "common": {
     "previewBanner": "Anteprima con dati di prova: le offerte non sono reali.",
     "skipToContent": "Vai al contenuto",
-    "signIn": "Accedi o registrati"
+    "signIn": "Accedi o registrati",
+    "mainNav": "Menu principale"
   },
   "home": {
     "title": "Il lavoro vicino a casa",
@@ -19,7 +20,8 @@
       "freeCompanies": "Gratis per le aziende nella loro regione o entro 50 km.",
       "salary": "Ogni offerta dice quanto si guadagna.",
       "privacy": "I tuoi dati personali sono cifrati e decidi tu a chi mostrarli."
-    }
+    },
+    "waitlistCta": "Avvisami quando apre"
   },
   "auth": {
     "metaTitle": "Accedi o registrati",
@@ -76,10 +78,37 @@
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
-    "privacyTitle": "Informativa sulla privacy",
-    "privacyDraft": "Qui ci sarà l'informativa completa. In breve: i tuoi dati personali sono cifrati nel database. Nemmeno chi gestisce la piattaforma li vede durante il lavoro quotidiano: l'app li decifra solo quando servono a te o all'azienda a cui hai scelto di candidarti, e ogni accesso viene registrato.",
-    "termsTitle": "Condizioni d'uso",
-    "termsDraft": "Qui ci saranno le condizioni d'uso complete. Il servizio è gratuito per chi cerca lavoro, sempre."
+    "privacy": {
+      "title": "Informativa sulla privacy",
+      "p1": "I tuoi dati personali sono cifrati nel database. Nemmeno chi gestisce la piattaforma li vede durante il lavoro quotidiano: l'app li decifra solo quando servono a te o all'azienda a cui hai scelto di candidarti, e ogni accesso viene registrato.",
+      "p2": "L'informativa completa (chi tratta i dati, per quali scopi, per quanto tempo e quali sono i tuoi diritti) sarà pubblicata qui prima del lancio del 1° novembre 2026."
+    },
+    "terms": {
+      "title": "Condizioni d'uso",
+      "p1": "Il servizio è gratuito per chi cerca lavoro, sempre. Per le aziende è gratuito nella loro regione o entro 50 km dalle loro sedi.",
+      "p2": "Le condizioni d'uso complete saranno pubblicate qui prima del lancio."
+    },
+    "cookies": {
+      "title": "Cookie",
+      "p1": "Usiamo solo cookie tecnici, necessari al funzionamento: «sessione» ti tiene dentro al tuo account (fino a 30 giorni, o finché esci); «registrazione» serve mentre crei l'account (al massimo 30 minuti). Non richiedono il consenso e non ti seguono su altri siti.",
+      "p2": "Nessun cookie di profilazione o di pubblicità. Se in futuro ne aggiungeremo, te lo chiederemo prima, con «Accetta» e «Rifiuta» ugualmente visibili."
+    },
+    "contacts": {
+      "title": "Contatti",
+      "p1": "L'associazione che gestirà il servizio è in costituzione: indirizzo email e PEC saranno pubblicati qui.",
+      "p2": "Per le richieste sui tuoi dati personali potrai usare anche le funzioni del tuo account (scarica i dati, cancella l'account)."
+    },
+    "reports": {
+      "title": "Segnalazioni",
+      "p1": "Hai visto un annuncio sospetto, una richiesta di denaro o un'offerta discriminatoria? Qui potrai segnalarlo: ogni segnalazione riceverà una risposta motivata.",
+      "p2": "La funzione di segnalazione arriva insieme alle prime offerte."
+    },
+    "about": {
+      "title": "Chi siamo",
+      "p1": "Un servizio senza scopo di lucro per trovare lavoro vicino a casa, con offerte a norma di legge e lo stipendio sempre indicato.",
+      "p2": "Lo gestirà un'associazione del Terzo settore, oggi in costituzione. I suoi dati sono qui sotto e nel piè di pagina di ogni pagina.",
+      "organizationTitle": "Dati dell'ente"
+    }
   },
   "emails": {
     "otp": {
@@ -89,6 +118,67 @@
       "validity": "Il codice vale {minutes} minuti e si può usare una volta sola.",
       "ignore": "Se non l'hai chiesto tu, ignora questa email: senza il codice nessuno può entrare nel tuo account.",
       "signature": "{siteName} — {appUrl}"
+    },
+    "waitlistConfirm": {
+      "subject": "Conferma la tua iscrizione a {siteName}",
+      "intro": "Ciao,",
+      "link": "per ricevere un'email quando {siteName} apre, conferma la tua iscrizione da questa pagina: {link}",
+      "validity": "Il link vale {days} giorni. Nella pagina premi il pulsante «Conferma»: aprire il link da solo non basta.",
+      "ignore": "Se non ti sei iscritto tu, ignora questa email: senza conferma il tuo indirizzo viene cancellato.",
+      "signature": "{siteName} — {appUrl}"
     }
+  },
+  "waitlist": {
+    "title": "Avvisami quando apre",
+    "intro": "Lasciaci la tua email: ti scriviamo quando il servizio apre. Niente pubblicità.",
+    "emailLabel": "La tua email",
+    "kindLegend": "Sei…",
+    "kinds": {
+      "worker": "Una persona che cerca lavoro",
+      "company": "Un'azienda che cerca personale"
+    },
+    "provinceLabel": "Provincia (facoltativa)",
+    "provinceNone": "Preferisco non dirlo",
+    "consentLabel": "Voglio ricevere un'email al lancio del servizio. Ho letto l'informativa sulla privacy.",
+    "privacyLink": "Informativa sulla privacy",
+    "submit": "Avvisami",
+    "pending": "Attendi…",
+    "sent": "Fatto! Controlla la tua email: se non eri già iscritto, ti abbiamo mandato un link. Aprilo e premi «Conferma» per completare l'iscrizione. Guarda anche nella posta indesiderata (spam).",
+    "errors": {
+      "invalid": "Controlla i campi: serve un'email valida, scegli chi sei e spunta la casella del consenso.",
+      "rate_limited": "Troppi tentativi. Riprova tra qualche minuto.",
+      "send_failed": "Non siamo riusciti a inviare l'email. Riprova tra poco."
+    },
+    "confirm": {
+      "title": "Conferma l'iscrizione",
+      "intro": "Premi il pulsante per confermare che vuoi ricevere un'email quando il servizio apre.",
+      "button": "Conferma",
+      "pending": "Attendi…",
+      "confirmed": "Iscrizione confermata. Ti scriveremo quando il servizio apre. Grazie!",
+      "already_confirmed": "L'iscrizione era già confermata: sei a posto.",
+      "invalid": "Il link non è valido o è scaduto. Puoi iscriverti di nuovo dalla pagina principale."
+    }
+  },
+  "footer": {
+    "linksLabel": "Informazioni legali",
+    "links": {
+      "about": "Chi siamo",
+      "privacy": "Privacy",
+      "cookies": "Cookie",
+      "terms": "Condizioni d'uso",
+      "contacts": "Contatti",
+      "reports": "Segnalazioni"
+    },
+    "organization": {
+      "name": "Ente",
+      "seat": "Sede",
+      "taxCode": "Codice fiscale",
+      "vatNumber": "Partita IVA",
+      "pec": "PEC",
+      "legalRepresentative": "Legale rappresentante",
+      "contactEmail": "Email"
+    },
+    "pending": "in costituzione",
+    "nonProfit": "Servizio senza scopo di lucro. Gratis per chi cerca lavoro, sempre."
   }
 }

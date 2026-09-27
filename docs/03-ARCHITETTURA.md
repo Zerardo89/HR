@@ -106,6 +106,7 @@ aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `in
 │  │  ├─ ads/                      # slot pubblicitari, sponsorizzazioni
 │  │  ├─ privacy/                  # consensi, export, cancellazione, retention
 │  │  ├─ trust/                    # segnalazioni DSA, antifrode
+│  │  ├─ waitlist/                 # lista d'attesa pre-lancio con doppia conferma (WP-009)
 │  │  ├─ geo/                      # comuni ISTAT, distanze
 │  │  └─ taxonomy/                 # mansioni (ESCO/CP2021), competenze
 │  │     # ogni modulo: domain/ (puro, testabile) · server/ (DB, servizi) · ui/ (componenti) · index.ts
