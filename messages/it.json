@@ -220,7 +220,7 @@
     "vat": "Partita IVA",
     "legalSeat": "Sede legale",
     "legalSeatUnknown": "da confermare",
-    "nextSteps": "Presto da qui potrai pubblicare le offerte, aggiungere altre sedi e invitare i colleghi."
+    "nextSteps": "Da qui pubblichi le offerte. Presto potrai aggiungere altre sedi e invitare i colleghi."
   },
   "mfa": {
     "accountLabel": "Il mio account",
@@ -262,6 +262,132 @@
         "locked": "Troppi tentativi: per sicurezza devi ricominciare dall'email."
       },
       "restart": "Torna all'accesso"
+    }
+  },
+  "occupationPicker": {
+    "label": "Mansione",
+    "help": "Scrivi il lavoro con parole tue (es. «barman», «lavapiatti», «OSS») e scegli dall'elenco.",
+    "selected": "Scelta: {label}",
+    "synonym": "trovato come «{term}»"
+  },
+  "offers": {
+    "listTitle": "Le tue offerte",
+    "empty": "Nessuna offerta per ora.",
+    "newTitle": "Nuova offerta",
+    "editTitle": "Offerta",
+    "noSites": "Per pubblicare un'offerta serve almeno una sede verificata. La sede legale arriva dalla verifica della Partita IVA; le altre sedi si potranno aggiungere a breve.",
+    "backToCompany": "Torna all'area azienda",
+    "statusLabel": "Stato",
+    "notEditable": "Un'offerta pubblicata non si modifica: presto potrai chiuderla o rinnovarla da qui.",
+    "status": {
+      "draft": "Bozza",
+      "pending_review": "In moderazione",
+      "published": "Pubblicata",
+      "expired": "Scaduta",
+      "closed": "Chiusa",
+      "removed": "Rimossa"
+    },
+    "outcome": {
+      "draft": "Bozza salvata. Puoi completarla quando vuoi.",
+      "pending_review": "Offerta inviata: la controlla un moderatore, di solito entro un giorno lavorativo. Poi sarà visibile a tutti.",
+      "published": "Offerta pubblicata: è visibile a tutti."
+    },
+    "form": {
+      "title": "Titolo dell'offerta",
+      "titleHelp": "Per esempio «Cameriere/a di sala». Rivolgiti a entrambi i sessi.",
+      "site": "Luogo di lavoro",
+      "description": "Descrizione",
+      "descriptionHelp": "Cosa si fa, orari, cosa serve davvero per il lavoro. Niente età, aspetto, nazionalità o foto.",
+      "contractType": "Tipo di contratto",
+      "contracts": {
+        "permanent": "Tempo indeterminato",
+        "fixed_term": "Tempo determinato",
+        "apprenticeship": "Apprendistato",
+        "agency": "Somministrazione",
+        "internship": "Tirocinio",
+        "seasonal": "Stagionale",
+        "collaboration": "Collaborazione",
+        "self_employed": "Lavoro autonomo / P.IVA",
+        "occasional": "Lavoro occasionale"
+      },
+      "schedule": "Orario",
+      "schedules": {
+        "full_time": "Tempo pieno",
+        "part_time": "Part-time",
+        "shifts": "Turni",
+        "weekends": "Fine settimana",
+        "flexible": "Flessibile"
+      },
+      "salaryLegend": "Stipendio",
+      "salaryHelp": "Obbligatorio per il lavoro dipendente (D.Lgs. 96/2026): indica almeno la cifra minima.",
+      "salaryMin": "Da (€)",
+      "salaryMax": "A (€, facoltativo)",
+      "salaryPeriod": "Ogni",
+      "salaryPeriodNone": "—",
+      "periods": {
+        "hour": "ora",
+        "month": "mese",
+        "year": "anno"
+      },
+      "salaryBasis": "Importo",
+      "bases": {
+        "gross": "lordo",
+        "net": "netto"
+      },
+      "hoursPerWeek": "Ore a settimana (facoltativo)",
+      "validDays": "Resta online per (giorni, massimo 60)",
+      "ccnl": "Contratto collettivo applicato (consigliato)",
+      "internshipDeclaration": "Dichiaro che il tirocinio non sostituisce un lavoro dipendente e rispetta le regole della regione.",
+      "checkTitle": "Controllo dell'annuncio",
+      "checkOk": "Nessun problema: l'annuncio è a norma.",
+      "checkErrors": "Da correggere prima di pubblicare:",
+      "checkReviews": "Lo controllerà un moderatore:",
+      "hints": {
+        "title_gender": "Consiglio: nel titolo rivolgiti a entrambi i sessi, per esempio «Cameriere/a» o «(m/f)».",
+        "ccnl_missing": "Consiglio: indica il contratto collettivo applicato."
+      },
+      "blocked": "L'offerta è stata salvata come bozza: correggi i punti indicati e riprova a pubblicarla.",
+      "errors": {
+        "invalid": "Controlla i campi: mancano dati obbligatori o qualche numero non è valido.",
+        "not_allowed": "Non puoi modificare offerte di questa azienda.",
+        "invalid_site": "Scegli uno dei luoghi di lavoro dell'elenco.",
+        "invalid_occupation": "Scegli la mansione dall'elenco dei suggerimenti.",
+        "not_editable": "Questa offerta non si può più modificare."
+      },
+      "publish": "Pubblica",
+      "saveDraft": "Salva bozza",
+      "pending": "Attendi…"
+    },
+    "issues": {
+      "company_not_verified": "L'azienda non è ancora verificata: potrai pubblicare appena completiamo la verifica.",
+      "agency_authorization_missing": "Manca l'autorizzazione ministeriale dell'agenzia per il lavoro.",
+      "title_length": "Il titolo deve avere tra 3 e 120 caratteri.",
+      "description_too_short": "La descrizione è troppo corta: spiega meglio il lavoro (almeno qualche riga).",
+      "age_limit": "Non si possono chiedere limiti di età",
+      "age_mention": "Riferimenti all'età o ai «giovani»: ammessi solo se motivati",
+      "nationality": "Non si possono chiedere nazionalità o cittadinanza",
+      "native_speaker": "Non chiedere «madrelingua»: scrivi «ottima conoscenza» della lingua (es. livello C2)",
+      "appearance": "Requisiti sull'aspetto fisico: ammessi solo se essenziali per il lavoro",
+      "own_car": "«Automunito/a»: indicalo solo se l'auto serve davvero per il lavoro",
+      "gender": "L'annuncio è rivolto a un solo sesso: ammesso solo per un requisito essenziale motivato",
+      "irrelevant_personal_data": "Non si possono chiedere foto, stato civile, figli o gravidanza",
+      "salary_history": "Non si può chiedere lo stipendio attuale o precedente",
+      "payment_request": "Sembra che si chiedano soldi ai candidati: non è ammesso",
+      "off_platform_contact": "Numeri di telefono, WhatsApp o Telegram: i candidati rispondono dalla piattaforma",
+      "sensitive_request": "Non chiedere IBAN, documenti o dati bancari in fase di candidatura",
+      "external_link": "Link esterni nell'annuncio: li controlla un moderatore",
+      "salary_missing": "Manca lo stipendio: per il lavoro dipendente è obbligatorio.",
+      "salary_invalid": "Lo stipendio deve essere un numero maggiore di zero.",
+      "salary_range": "La cifra massima deve essere uguale o più alta della minima.",
+      "salary_period_missing": "Indica se lo stipendio è all'ora, al mese o all'anno.",
+      "salary_implausible": "Lo stipendio sembra strano per il periodo scelto (ora/mese/anno): controllalo.",
+      "internship_minimum_unknown": "Il minimo regionale del tirocinio non è ancora in elenco: lo verifica un moderatore.",
+      "internship_below_minimum": "L'indennità del tirocinio è sotto il minimo della regione (va indicata al mese).",
+      "internship_declaration_missing": "Per un tirocinio serve la dichiarazione qui sotto.",
+      "valid_through_missing": "Indica per quanti giorni resta online l'offerta.",
+      "valid_through_past": "La scadenza deve essere nel futuro.",
+      "valid_through_too_far": "Un'offerta resta online al massimo 60 giorni (si può rinnovare).",
+      "first_offers": "Le prime 3 offerte di ogni azienda passano da un moderatore: è una protezione contro le truffe."
     }
   }
 }

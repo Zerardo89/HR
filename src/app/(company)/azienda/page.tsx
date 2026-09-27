@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { CompanyRegistrationForm, getCompaniesForUser } from "@/modules/companies";
 import { requireUser } from "@/modules/identity";
+import { listCompanyOffers } from "@/modules/offers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("company");
@@ -46,10 +48,43 @@ export default async function CompanyPage() {
               <dt className="text-muted">{t("legalSeat")}</dt>
               <dd>{c.legalSeat ?? t("legalSeatUnknown")}</dd>
             </dl>
-            <p className="text-muted">{t("nextSteps")}</p>
+            <CompanyOffers userId={user.id} companyId={c.id} />
           </section>
         ))
       )}
     </main>
+  );
+}
+
+async function CompanyOffers({ userId, companyId }: { userId: string; companyId: string }) {
+  const offers = await listCompanyOffers(userId, companyId);
+  const t = await getTranslations("offers");
+  return (
+    <div className="mt-2 flex flex-col gap-3 border-t border-border pt-4">
+      <h3 className="text-lg font-semibold">{t("listTitle")}</h3>
+      {offers.length === 0 ? (
+        <p className="text-muted">{t("empty")}</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {offers.map((o) => (
+            <li key={o.id} className="flex flex-wrap items-center justify-between gap-2">
+              <Link
+                href={`/azienda/offerte/${o.id}`}
+                className="text-primary underline underline-offset-4"
+              >
+                {o.title}
+              </Link>
+              <span className="text-sm text-muted">{t(`status.${o.status}`)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Link
+        href={`/azienda/offerte/nuova?azienda=${companyId}`}
+        className="self-start rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground"
+      >
+        {t("newTitle")}
+      </Link>
+    </div>
   );
 }

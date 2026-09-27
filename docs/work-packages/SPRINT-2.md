@@ -9,7 +9,7 @@
 |----|-------|------|
 | 011 | 🟡 Parti a e b fatte (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ✅ **11b** 2FA TOTP obbligatoria per aziende, moderatori e admin (facoltativa per i lavoratori). ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
-| 013 | ⏳ Da fare | Form offerta + anteprima con il validatore + moderazione + pannello moderatore; usa il selettore delle mansioni (WP-006). |
+| 013 | 🟡 Parte a fatta (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ⏳ **13b** pannello del moderatore (offerte in moderazione, aziende "in verifica"), decisioni motivate. |
 | 014 | ⏳ Da fare | Pagina offerta SSR + JSON-LD JobPosting + sitemap. |
 | 015 | ⏳ Da fare | Ricerca (full-text + trigrammi, ADR-0003) + "perché la vedi". |
 | 016 | ⏳ Da fare | Zona gratuita (già nel dominio, WP-005) + entitlement + periodo fondatori. |
@@ -79,3 +79,22 @@ tabella dei minimi regionali dei tirocini da compilare con le fonti (`regional_i
   dall'attivazione della 2FA.
 - Negli e2e il limite per IP è spento (tutti i test arrivano da 127.0.0.1); resta testato a parte.
 - Da fare più avanti: disattivazione/rigenerazione dei codici per i lavoratori, passkey (dopo il lancio).
+
+---
+
+## WP-013a — Form dell'offerta ✅
+**Esecutore:** Claude · **Codice:** `src/modules/offers/{server,ui}/`, `src/modules/taxonomy/ui/occupation-picker.tsx`
+
+- Autorizzazione lato server: solo i membri dell'azienda, solo le sue sedi approvate, solo mansioni esistenti;
+  si modificano solo bozze e offerte in moderazione (le pubblicate si chiudono/rinnovano con WP-022).
+- "Pubblica": validatore WP-012 → errori = resta bozza con l'elenco dei problemi; da moderare = "in moderazione"
+  (i giorni di validità chiesti restano in `moderation`, la scadenza parte dall'approvazione); tutto a posto =
+  pubblicata subito con scadenza ≤ 60 giorni.
+- Nel browser lo stesso validatore mostra problemi e consigli mentre l'azienda scrive (testi in `messages/it.json`,
+  `offers.issues`).
+- Selettore delle mansioni secondo il modello "combobox" WAI-ARIA (tastiera, lettore di schermo), con sinonimi,
+  femminili ed errori di battitura; inserito nel form come "slot" dalla pagina server.
+- Test: 3 unitari (dati del form), 5 di integrazione (moderazione delle prime offerte, pubblicazione con scadenza,
+  blocco per discriminazione, bozza incompleta e modifica, autorizzazioni), 1 e2e (dal form alla moderazione).
+  In CI il job e2e importa le mansioni (`pnpm taxonomy:import`).
+- Miglioria da fare: nel riquadro dei problemi mostrare la frase originale (ora è quella normalizzata, senza accenti).

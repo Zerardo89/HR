@@ -16,3 +16,11 @@ export {
   type SalaryPeriod,
   type ValidationResult,
 } from "./validator";
+export {
+  DEFAULT_VALIDITY_DAYS,
+  offerInput,
+  SALARY_BASES,
+  SALARY_PERIODS,
+  SCHEDULE_TYPES,
+  type OfferInput,
+} from "./inputs";
