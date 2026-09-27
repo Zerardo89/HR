@@ -1,0 +1,15 @@
+# Aggiornamenti automatici proposti come PR (docs/04-PRIVACY-SICUREZZA.md §6).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      patch-e-minor:
+        update-types: [minor, patch]
