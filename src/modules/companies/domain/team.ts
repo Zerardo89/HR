@@ -6,7 +6,8 @@ import { emailInput } from "@/modules/identity/domain";
  * l'approvazione di un moderatore: per questo chi le aggiunge non può approvarle da sé.
  */
 
-export const MAX_SITES_PER_COMPANY = 20;
+/** docs/01-PRODOTTO.md §5.4: al massimo 5 sedi (anti-abuso della zona gratuita). */
+export const MAX_SITES_PER_COMPANY = 5;
 export const INVITE_TTL_DAYS = 7;
 export const MAX_OPEN_INVITES = 10;
 /** Inviti spediti per azienda in 24 ore (anche se poi revocati): le email partono a nome nostro. */
