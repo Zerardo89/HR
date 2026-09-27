@@ -40,7 +40,21 @@ Controlli prima di ogni PR: `pnpm check`, poi `DATABASE_URL=… pnpm test:integr
 Per i WP di Ollama: prompt in [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md); i test di
 accettazione vanno scritti **prima** (da Claude) e non si modificano per farli passare.
 
-## 4. Da ricordare
+## 4. In locale Claude lavora con Gemini e ChatGPT (docs/07-TEAM-AI.md)
+Sul tuo computer Claude Code può chiamare gli altri membri del team dal terminale, senza che tu faccia da postino:
+
+| Membro | Per cosa | Come lo chiama Claude (modalità non interattiva) | Dove finisce il risultato |
+|--------|----------|--------------------------------------------------|---------------------------|
+| **Gemini** (Gemini CLI) | testi UI, bozze legali (G-03), termini vietati per il validatore, contenuti SEO, controllo di coerenza dei `docs/` | `gemini -p "<prompt da docs/prompts/gemini-scrittura.md>"` | `messages/it.json`, `docs/`, `content/` — Claude rilegge prima del commit |
+| **ChatGPT** (Codex CLI con l'account ChatGPT) | revisione e semplificazione del diff di ogni WP | `codex exec "<prompt da docs/prompts/chatgpt-revisione.md>"` | `reviews/WP-xxx-chatgpt.md`; Claude decide cosa applicare |
+| **Ollama** (Codex CLI `--oss`) | implementazione dei WP con i test già scritti | `codex exec --oss "<prompt da docs/prompts/ollama-work-package.md>"` | branch del WP; Claude valida con la checklist di CLAUDE.md |
+
+- Le opzioni dei comandi cambiano spesso: alla prima esecuzione Claude controlla `gemini --help` e `codex exec --help`.
+- La prima volta Claude Code ti chiede il permesso di eseguire `gemini` e `codex`: puoi approvarli una volta per tutte.
+- Regola R-AI-04: a Gemini, ChatGPT e Ollama vanno **solo** codice, documenti e dati sintetici. Mai dati personali
+  reali, mai il contenuto di `./secrets` o di `.env.local`.
+
+## 5. Da ricordare
 - Il merge su `main` lo fai tu (clic su "Merge pull request"): Claude non può unire le PR da solo.
 - Imposta `main` come branch predefinito del repository (Settings → General).
 - Mai dati personali reali nel repository o nei prompt; mai file di `./secrets` fuori dal tuo computer.
