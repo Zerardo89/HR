@@ -25,6 +25,12 @@ export default async function AccountPage() {
           {t("companyArea")}
         </Link>
       )}
+      <Link
+        href="/account/sicurezza"
+        className="self-start font-medium text-primary underline underline-offset-4"
+      >
+        {t("security")}
+      </Link>
       <SignOutButton />
     </main>
   );

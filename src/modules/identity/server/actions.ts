@@ -11,6 +11,8 @@ import {
   setSessionCookie,
   setSignupTicket,
 } from "./cookies";
+import { requireUser } from "./current-user";
+import { confirmTotpEnrollment, verifySecondFactor } from "./mfa";
 import { clientIp, ipLimiters, runtimeDeps } from "./runtime";
 import { deleteSession } from "./sessions";
 import { completeSignup, requestLoginCode, verifyLoginCode } from "./sign-in";
@@ -149,4 +151,48 @@ async function signUp(form: FormData): Promise<SignInState> {
   await clearSignupTicket();
   await setSessionCookie(result.session.token);
   redirect(AFTER_SIGN_IN);
+}
+
+// ─── Verifica in due passaggi (WP-011b) ────────────────────────────────────────────────────────────
+
+export type MfaVerifyState =
+  { status: "idle" } | { status: "wrong_code"; attemptsLeft: number } | { status: "locked" };
+
+export async function verifySecondFactorAction(
+  _prev: MfaVerifyState,
+  form: FormData,
+): Promise<MfaVerifyState> {
+  const token = await readSessionToken();
+  if (!token) redirect("/accedi");
+  const input = String(form.get("code") ?? "").slice(0, 32);
+  const result = await verifySecondFactor(runtimeDeps(), token, input);
+  switch (result.status) {
+    case "verified":
+    case "not_enabled":
+      redirect(AFTER_SIGN_IN);
+    case "no_session":
+      redirect("/accedi");
+    case "locked":
+      await clearSessionCookie();
+      return { status: "locked" };
+    case "wrong_code":
+      return { status: "wrong_code", attemptsLeft: result.attemptsLeft };
+  }
+}
+
+export type MfaSetupState =
+  | { status: "idle" }
+  | { status: "enabled"; recoveryCodes: string[] }
+  | { status: "error"; error: "wrong_code" | "not_started" | "already_enabled" };
+
+export async function confirmTotpAction(
+  _prev: MfaSetupState,
+  form: FormData,
+): Promise<MfaSetupState> {
+  const user = await requireUser(undefined, "setup");
+  const token = await readSessionToken();
+  if (!token) redirect("/accedi");
+  const input = String(form.get("code") ?? "").slice(0, 32);
+  const result = await confirmTotpEnrollment(runtimeDeps(), user.id, token, input);
+  return result.status === "enabled" ? result : { status: "error", error: result.status };
 }

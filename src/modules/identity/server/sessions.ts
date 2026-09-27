@@ -1,11 +1,19 @@
 import { and, eq, lt } from "drizzle-orm";
 import { authOtpChallenges, authSessions, authSignupTickets, users } from "@/lib/db/schema";
-import { renewedSessionExpiry, sessionExpiresAt, type UserRole } from "../domain";
+import { renewedSessionExpiry, requiresMfa, sessionExpiresAt, type UserRole } from "../domain";
 import type { IdentityDeps } from "./deps";
 import { hashToken, newToken } from "./tokens";
 
 export type NewSession = { token: string; expiresAt: Date };
-export type SessionUser = { id: string; role: UserRole };
+/**
+ * `mfa.required`: il ruolo deve avere la 2FA (aziende, moderatori, admin); `enabled`: l'utente l'ha attivata;
+ * `verified`: questa sessione ha superato il secondo passaggio.
+ */
+export type SessionUser = {
+  id: string;
+  role: UserRole;
+  mfa: { required: boolean; enabled: boolean; verified: boolean };
+};
 
 type Deps = Pick<IdentityDeps, "db" | "now">;
 
@@ -39,6 +47,8 @@ export async function validateSessionToken(
       userId: users.id,
       role: users.role,
       status: users.status,
+      totpEnabledAt: users.totpEnabledAt,
+      mfaVerifiedAt: authSessions.mfaVerifiedAt,
     })
     .from(authSessions)
     .innerJoin(users, eq(users.id, authSessions.userId))
@@ -58,7 +68,16 @@ export async function validateSessionToken(
     // Attività per le regole di conservazione (R-PRIV-03): basta la granularità del rinnovo.
     await deps.db.update(users).set({ lastActiveAt: now }).where(eq(users.id, row.userId));
   }
-  return { user: { id: row.userId, role: row.role }, expiresAt: renewed ?? row.expiresAt };
+  const user: SessionUser = {
+    id: row.userId,
+    role: row.role,
+    mfa: {
+      required: requiresMfa(row.role),
+      enabled: row.totpEnabledAt !== null,
+      verified: row.mfaVerifiedAt !== null,
+    },
+  };
+  return { user, expiresAt: renewed ?? row.expiresAt };
 }
 
 export async function deleteSession(deps: Pick<IdentityDeps, "db">, token: string): Promise<void> {

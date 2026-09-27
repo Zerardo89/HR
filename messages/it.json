@@ -75,7 +75,8 @@
     },
     "comingSoon": "Qui troverai il tuo profilo e le tue candidature. Stiamo preparando queste pagine.",
     "signOut": "Esci",
-    "companyArea": "Vai all'area azienda"
+    "companyArea": "Vai all'area azienda",
+    "security": "Sicurezza dell'account"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -220,5 +221,47 @@
     "legalSeat": "Sede legale",
     "legalSeatUnknown": "da confermare",
     "nextSteps": "Presto da qui potrai pubblicare le offerte, aggiungere altre sedi e invitare i colleghi."
+  },
+  "mfa": {
+    "accountLabel": "Il mio account",
+    "setup": {
+      "metaTitle": "Sicurezza dell'account",
+      "title": "Verifica in due passaggi",
+      "required": "Per le aziende la verifica in due passaggi è obbligatoria: protegge l'account anche se qualcuno legge la tua email.",
+      "optional": "Facoltativa: aggiunge un secondo controllo dopo il codice via email.",
+      "step1": "1. Installa sul telefono un'app di autenticazione, per esempio Google Authenticator, Microsoft Authenticator o Aegis.",
+      "step2": "2. Inquadra il QR code con l'app, oppure, se sei sul telefono, tocca il pulsante qui sotto.",
+      "openApp": "Apri l'app di autenticazione",
+      "qrAlt": "QR code per aggiungere l'account all'app di autenticazione",
+      "manualKey": "Non riesci a inquadrarlo? Inserisci a mano questa chiave nell'app:",
+      "step3": "3. Scrivi il codice di 6 cifre che vedi nell'app.",
+      "codeLabel": "Codice dell'app (6 cifre)",
+      "confirm": "Attiva la verifica",
+      "pending": "Attendi…",
+      "enabledTitle": "Verifica in due passaggi attiva",
+      "enabled": "Ogni volta che entri, dopo il codice via email ti chiederemo anche il codice dell'app.",
+      "recoveryTitle": "Salva questi codici di recupero",
+      "recoveryIntro": "Servono se perdi il telefono: ognuno vale una sola volta. Scrivili su carta o salvali in un posto sicuro. Non te li mostreremo più.",
+      "continue": "Ho salvato i codici, continua",
+      "errors": {
+        "wrong_code": "Il codice non è giusto o è scaduto. Aspetta il prossimo codice nell'app e riprova.",
+        "not_started": "Ricarica la pagina e riprova.",
+        "already_enabled": "La verifica in due passaggi è già attiva."
+      }
+    },
+    "verify": {
+      "metaTitle": "Verifica in due passaggi",
+      "title": "Ancora un passaggio",
+      "intro": "Apri l'app di autenticazione e scrivi il codice di 6 cifre. Se hai perso il telefono, usa uno dei codici di recupero.",
+      "codeLabel": "Codice dell'app o codice di recupero",
+      "submit": "Verifica",
+      "pending": "Attendi…",
+      "recoveryUsed": "Hai usato un codice di recupero: vale una volta sola.",
+      "errors": {
+        "wrong_code": "Codice non valido. Tentativi rimasti: {attemptsLeft}.",
+        "locked": "Troppi tentativi: per sicurezza devi ricominciare dall'email."
+      },
+      "restart": "Torna all'accesso"
+    }
   }
 }

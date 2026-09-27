@@ -7,30 +7,39 @@
 ## 1. Stato
 - `main` contiene lo Sprint 1 fino a WP-007 (PR #1).
 - **PR #3** (branch `claude/optimistic-franklin-w8ou54`) è verde e aspetta il merge: WP-006 resto, WP-008 accesso,
-  WP-009 landing e lista d'attesa, WP-011a registrazione aziende, WP-012 validatore annunci. **Uniscila prima di
+  WP-009 landing e lista d'attesa, WP-011a registrazione aziende, WP-011b verifica in due passaggi (2FA),
+  WP-012 validatore annunci. **Uniscila prima di
   iniziare altro lavoro**, poi riparti da `main`.
 - Dettagli: [SPRINT-1.md](SPRINT-1.md), [SPRINT-2.md](SPRINT-2.md). Decisioni nuove: [ADR-0013](../adr/ADR-0013-auth-in-casa.md).
 
-## 2. Mettere in piedi il progetto sul tuo computer
-```bash
-git clone https://github.com/Zerardo89/HR.git && cd HR     # oppure: git pull
-git checkout main && git pull                               # dopo il merge della PR #3
+## 2. Mettere in piedi il progetto sul tuo computer (Windows)
+Cartella del progetto: **`C:\Users\Utente\Desktop\PROGETTO HR`**.
+
+Serve una volta sola: **Git**, **Node.js 24 LTS** e **Docker Desktop** installati. Poi, in **PowerShell**:
+```powershell
+cd "$env:USERPROFILE\Desktop"
+git clone https://github.com/Zerardo89/HR.git "PROGETTO HR"   # se il repository è privato, Git chiede di accedere a GitHub
+cd "PROGETTO HR"
+git checkout main                     # dopo il merge della PR #3; prima: git checkout claude/optimistic-franklin-w8ou54
+corepack enable                       # attiva pnpm (la versione giusta è in package.json)
 pnpm install
-docker compose -f docker-compose.dev.yml up -d              # Postgres/PostGIS + Mailpit (posta di prova: http://localhost:8025)
-cp .env.example .env.local
-pnpm keys:generate                                          # chiavi in ./secrets (mai nel repository)
+docker compose -f docker-compose.dev.yml up -d   # Postgres/PostGIS + Mailpit (posta di prova: http://localhost:8025)
+Copy-Item .env.example .env.local
+pnpm keys:generate                    # chiavi in .\secrets (mai nel repository, mai in altre cartelle condivise)
 pnpm db:migrate
-pnpm taxonomy:import                                        # 263 mansioni
-pnpm geo:build && pnpm geo:import                           # comuni ISTAT: istruzioni in data/README.md
-pnpm dev                                                    # http://localhost:3000
+pnpm taxonomy:import                  # 263 mansioni
+pnpm dev                              # http://localhost:3000
 ```
-Controlli prima di ogni PR: `pnpm check`, poi `DATABASE_URL=… pnpm test:integration`, poi `pnpm build && pnpm test:e2e`.
+Comuni ISTAT: `pnpm geo:build` e `pnpm geo:import` (istruzioni in `data/README.md`).
+Per lavorare con Claude in quella cartella: app **Claude Desktop**, oppure `claude` (o `claude remote-control`) nel
+terminale aperto in `PROGETTO HR`.
+Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATABASE_URL` del DB di sviluppo), poi
+`pnpm build` e `pnpm test:e2e`.
 
 ## 3. Prossimi work package (in ordine)
 
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
-| 011b | **2FA TOTP** obbligatoria per aziende, moderatori e admin (segreto cifrato con la DEK dell'utente, codici di recupero, passo in più dopo il codice email) | **Claude** | Tocca `src/modules/identity/server/**` (ADR-0013, CLAUDE.md) |
 | 011c | Sedi operative (comune + approvazione del moderatore) e inviti ai colleghi (email con token, ruolo `recruiter`) | Ollama, test di Claude | Moduli `companies`, niente crittografia |
 | 013 | Form offerta con anteprima del validatore (WP-012) e selettore delle mansioni (WP-006); stati bozza → in moderazione → pubblicata; pannello moderatore (anche verifica manuale aziende "in verifica") | Ollama (UI) + Claude (autorizzazioni, test) | Il validatore e la ricerca mansioni sono già pronti e testati |
 | 014 | Pagina offerta SSR + JSON-LD JobPosting + sitemap | Ollama | |

@@ -7,7 +7,7 @@
 
 | WP | Stato | Note |
 |----|-------|------|
-| 011 | 🟡 Parte a fatta (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ⏳ **11b** 2FA TOTP obbligatoria per aziende e admin. ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
+| 011 | 🟡 Parti a e b fatte (Claude, 27/09) | ✅ **11a** registrazione dell'azienda (`/azienda`): P.IVA con cifra di controllo, verifica su **VIES** (valida → verificata, ragione sociale e sede legale da VIES; non raggiungibile → "in verifica"; agenzie sempre in verifica, R-LAV-03), titolare, una P.IVA non si registra due volte. ✅ **11b** 2FA TOTP obbligatoria per aziende, moderatori e admin (facoltativa per i lavoratori). ⏳ **11c** sedi operative (con approvazione) e inviti ai colleghi. ⏳ Verifica manuale delle aziende "in verifica" nel pannello del moderatore (WP-013). |
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
 | 013 | ⏳ Da fare | Form offerta + anteprima con il validatore + moderazione + pannello moderatore; usa il selettore delle mansioni (WP-006). |
 | 014 | ⏳ Da fare | Pagina offerta SSR + JSON-LD JobPosting + sitemap. |
@@ -60,3 +60,22 @@ tabella dei minimi regionali dei tirocini da compilare con le fonti (`regional_i
 - Test: 8 unitari, 7 di integrazione (VIES finto), 2 e2e (registrazione con VIES irraggiungibile, area riservata).
 - Corretto anche un difetto dei form con React 19 (i campi si svuotavano dopo un errore): ora i valori restano, anche
   nella lista d'attesa.
+
+---
+
+## WP-011b — Verifica in due passaggi (2FA TOTP) ✅
+**Esecutore:** Claude · **Codice:** `src/modules/identity/server/{totp,mfa,enrollment}.ts`, pagine `/account/sicurezza`, `/accedi/verifica`
+
+- TOTP RFC 6238 (SHA-1, 30 s, 6 cifre) scritto in casa e verificato con i vettori ufficiali dell'RFC; funziona con
+  Google Authenticator, Microsoft Authenticator, Aegis, 2FAS.
+- Segreto cifrato con la KEK come una chiave (`wrapKey`, legato all'id dell'utente); attivo solo dopo la conferma con
+  un codice; lo stesso codice non vale due volte (`totp_last_step`); finestra ±1 periodo.
+- 10 codici di recupero monouso, mostrati una volta sola, salvati come MAC (`KeyProvider.mac`, scopo `recovery`).
+- La sessione nasce "da verificare" (`mfa_verified_at`); 5 tentativi sbagliati → sessione chiusa, si riparte dall'email.
+- `requireUser` impone la 2FA: attiva ma non fatta → `/accedi/verifica`; obbligatoria ma non attiva → `/account/sicurezza`.
+- QR code generato sul server (`qrcode` 1.5.4) + pulsante che apre l'app sul telefono + chiave da scrivere a mano.
+- Test: 6 unitari (vettori RFC, base32, codici di recupero), 6 di integrazione, 2 e2e (azienda: attivazione obbligatoria,
+  uscita, nuovo accesso con codice sbagliato e poi giusto; lavoratore: facoltativa). L'e2e dell'area azienda ora passa
+  dall'attivazione della 2FA.
+- Negli e2e il limite per IP è spento (tutti i test arrivano da 127.0.0.1); resta testato a parte.
+- Da fare più avanti: disattivazione/rigenerazione dei codici per i lavoratori, passkey (dopo il lancio).

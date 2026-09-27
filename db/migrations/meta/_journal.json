@@ -43,6 +43,13 @@
       "when": 1790524884237,
       "tag": "0005_company_verification",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790525496998,
+      "tag": "0006_mfa",
+      "breakpoints": true
     }
   ]
 }

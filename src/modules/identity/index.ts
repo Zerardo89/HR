@@ -5,5 +5,8 @@ import "server-only";
 export { getCurrentUser, requireUser } from "./server/current-user";
 export { deleteExpiredAuthRows, deleteUserSessions, type SessionUser } from "./server/sessions";
 export { runtimeDeps as identityRuntimeDeps } from "./server/runtime";
+export { getTotpEnrollment, type TotpEnrollmentView } from "./server/enrollment";
+export { MfaSetupForm } from "./ui/mfa-setup-form";
+export { MfaVerifyForm } from "./ui/mfa-verify-form";
 export { SignInFlow } from "./ui/sign-in-flow";
 export { SignOutButton } from "./ui/sign-out-button";

@@ -23,6 +23,7 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | drizzle-orm / drizzle-kit | 0.45.3 / 0.31.11 | schema in `src/lib/db/schema/`; migrazioni in `db/migrations/` (vedi sotto) |
 | pg | 8.23.0 | |
 | pino | 10.3.1 | usa sempre `src/lib/logger.ts` (redazione dei dati personali) |
+| qrcode | 1.5.4 | QR code della 2FA (`src/modules/identity/server/enrollment.ts`), generato sul server |
 | nodemailer | 10.0.10 | solo tramite `src/lib/mail` (`getMailer()`); tipi inclusi nel pacchetto |
 | eslint | 9.39.5 | configurazione flat `eslint.config.mjs`; confini tra moduli con `import/no-restricted-paths` |
 | vitest | 5.0.2 (+ vite 8.3.1) | unitari: `pnpm test`; integrazione: `pnpm test:integration` |
@@ -36,5 +37,6 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0003_auth.sql` — generata: tabelle dell'accesso (codici, sessioni, biglietti di registrazione) — WP-008.
 - `0004_occupations_slug.sql` — generata: `slug` e `category` delle mansioni (import idempotente) — WP-006.
 - `0005_company_verification.sql` — generata: `companies.verification` (esito VIES, nessun dato personale) — WP-011.
+- `0006_mfa.sql` — generata: 2FA (segreto TOTP cifrato con la KEK, ultimo periodo usato, sessioni verificate, codici di recupero come MAC) — WP-011b.
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
 - Le migrazioni che toccano colonne cifrate o `audit_log` le scrive/valida l'architetto (CLAUDE.md).

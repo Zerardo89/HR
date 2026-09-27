@@ -1,11 +1,13 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   bigserial,
   char,
   check,
   index,
   integer,
   pgTable,
+  smallint,
   text,
   timestamp,
   uuid,
@@ -31,6 +33,11 @@ export const users = pgTable("users", {
   keyVersion: integer("key_version").notNull(),
   // R-LAV-09: solo la dichiarazione di maggiore età, MAI la data di nascita.
   adultDeclaredAt: timestamp("adult_declared_at", { withTimezone: true }).notNull(),
+  // 2FA (WP-011b, ADR-0013): segreto TOTP cifrato con la KEK come una chiave (`KeyProvider.wrapKey`);
+  // attivo solo dopo la conferma; `totp_last_step` impedisce di riusare lo stesso codice.
+  totpSecretEnc: text("totp_secret_enc"),
+  totpEnabledAt: timestamp("totp_enabled_at", { withTimezone: true }),
+  totpLastStep: bigint("totp_last_step", { mode: "number" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastActiveAt: timestamp("last_active_at", { withTimezone: true }).notNull().defaultNow(),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
@@ -135,6 +142,9 @@ export const authSessions = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    // 2FA: la sessione vale per le pagine riservate solo dopo il secondo passaggio (se l'utente ha la 2FA).
+    mfaVerifiedAt: timestamp("mfa_verified_at", { withTimezone: true }),
+    mfaAttempts: smallint("mfa_attempts").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -153,4 +163,19 @@ export const authSignupTickets = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("auth_signup_tickets_expires_idx").on(t.expiresAt)],
+);
+
+/** Codici di recupero della 2FA (10, monouso): nel DB solo il MAC, mai il codice. */
+export const authRecoveryCodes = pgTable(
+  "auth_recovery_codes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    codeMac: text("code_mac").notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("auth_recovery_codes_user_idx").on(t.userId)],
 );

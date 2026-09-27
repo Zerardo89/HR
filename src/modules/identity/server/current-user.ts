@@ -16,11 +16,19 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
 
 /**
  * Autorizzazione lato server (CLAUDE.md): ogni pagina o azione riservata la chiama.
- * Senza accesso → pagina di accesso; ruolo non ammesso → home.
+ * - senza accesso → pagina di accesso;
+ * - 2FA attiva ma secondo passaggio non fatto → /accedi/verifica;
+ * - 2FA obbligatoria per il ruolo ma non ancora attivata → /account/sicurezza (tranne la pagina stessa: `setup`);
+ * - ruolo non ammesso → home.
  */
-export async function requireUser(roles?: readonly UserRole[]): Promise<SessionUser> {
+export async function requireUser(
+  roles?: readonly UserRole[],
+  mode: "enforce" | "setup" = "enforce",
+): Promise<SessionUser> {
   const user = await getCurrentUser();
   if (!user) redirect("/accedi");
+  if (user.mfa.enabled && !user.mfa.verified) redirect("/accedi/verifica");
+  if (mode === "enforce" && user.mfa.required && !user.mfa.enabled) redirect("/account/sicurezza");
   if (roles && !roles.includes(user.role)) redirect("/");
   return user;
 }

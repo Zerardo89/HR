@@ -1,5 +1,6 @@
 import { randomInt, randomUUID } from "node:crypto";
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
+import { enableTwoFactor } from "./helpers";
 
 // Test di accettazione WP-011: un'azienda si registra e vede lo stato della verifica.
 // VIES negli e2e non è raggiungibile (playwright.config.ts): l'azienda resta "in verifica".
@@ -50,7 +51,8 @@ async function signUpAsCompany(page: Page, request: APIRequestContext) {
     .getByLabel("Ho letto l'informativa sulla privacy e accetto le condizioni d'uso")
     .check();
   await page.getByRole("button", { name: "Crea l'account" }).click();
-  await expect(page).toHaveURL(/\/account$/);
+  // Dal WP-011b un'azienda deve prima attivare la verifica in due passaggi (obbligatoria).
+  await expect(page).toHaveURL(/\/account\/sicurezza$/);
 }
 
 test("un'azienda si registra con la P.IVA e vede la verifica in corso", async ({
@@ -67,7 +69,8 @@ test("un'azienda si registra con la P.IVA e vede la verifica in corso", async ({
   );
 
   await signUpAsCompany(page, request);
-  await page.getByRole("link", { name: "Vai all'area azienda" }).click();
+  await enableTwoFactor(page);
+  await page.getByRole("link", { name: "Ho salvato i codici, continua" }).click();
   await expect(page).toHaveURL(/\/azienda$/);
 
   // P.IVA sbagliata: errore chiaro, nessuna chiamata a VIES.

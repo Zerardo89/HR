@@ -106,3 +106,33 @@ export const LEGAL_VERSIONS = {
   privacyNotice: "bozza-2026-09-27",
   terms: "bozza-2026-09-27",
 } as const;
+
+// ─── Verifica in due passaggi (2FA TOTP, WP-011b) ───────────────────────────────────────────────────
+
+/** ADR-0008/0013: obbligatoria per aziende, moderatori e admin; facoltativa per chi cerca lavoro. */
+export const MFA_REQUIRED_ROLES: readonly UserRole[] = ["company_member", "moderator", "admin"];
+
+export function requiresMfa(role: UserRole): boolean {
+  return MFA_REQUIRED_ROLES.includes(role);
+}
+
+export const TOTP_PERIOD_S = 30;
+export const TOTP_DIGITS = 6;
+/** Si accettano il codice del periodo corrente e quelli dei periodi vicini (orologi del telefono un po' sfasati). */
+export const TOTP_WINDOW = 1;
+/** Tentativi sul secondo passaggio per sessione: poi la sessione si chiude e si riparte dall'email. */
+export const MFA_MAX_ATTEMPTS = 5;
+export const RECOVERY_CODE_COUNT = 10;
+
+/** Codice di recupero: 10 caratteri senza lettere ambigue, mostrati come XXXXX-XXXXX. */
+export const RECOVERY_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+export function formatRecoveryCode(raw: string): string {
+  return `${raw.slice(0, 5)}-${raw.slice(5, 10)}`;
+}
+
+/** Accetta minuscole, spazi e trattini; `null` se non è un codice di recupero. */
+export function normalizeRecoveryInput(input: string): string | null {
+  const compact = input.toUpperCase().replace(/[\s-]/g, "");
+  return new RegExp(`^[${RECOVERY_ALPHABET}]{10}$`).test(compact) ? compact : null;
+}

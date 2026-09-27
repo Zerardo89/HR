@@ -29,7 +29,7 @@ export function normalizeForIndex(value: string, purpose: BlindIndexPurpose): st
  * codici di accesso (`otp`) e indirizzi IP nel log di audit (`ip`). Stessa chiave dell'indice cieco,
  * ma con il prefisso `mac:` gli input non possono mai coincidere con quelli dell'indice (`email:`/`phone:`).
  */
-export type MacPurpose = "otp" | "ip";
+export type MacPurpose = "otp" | "ip" | "recovery";
 
 export function computeMac(key: Uint8Array, message: string, purpose: MacPurpose): string {
   return createHmac("sha256", key).update(`mac:${purpose}:${message}`, "utf8").digest("base64url");
