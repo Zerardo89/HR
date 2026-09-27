@@ -186,7 +186,12 @@ describe.skipIf(!DATABASE_URL)("ricerca delle offerte (WP-015)", () => {
       const typo = await searchOffers(deps(c), parseSearchParams({ q: "cameirere" }));
       if (typo.status !== "results") throw new Error(typo.status);
       expect(typo.occupation?.id).toBe(9101);
-      expect(mine(typo.page.results, ids)[0]!.key).toBe("A");
+      // Senza comune, A (Milano) ed E (Piacenza) sono a pari punteggio: stessa mansione, stessa data.
+      const top = mine(typo.page.results, ids).slice(0, 2);
+      expect(top.map((g) => g.key).sort()).toEqual(["A", "E"]);
+      for (const g of top) {
+        expect(g.r.reasons[0]).toEqual({ kind: "same_occupation", label: "Cameriere di sala" });
+      }
 
       const all = await searchOffers(deps(c), parseSearchParams({}));
       if (all.status !== "results") throw new Error(all.status);
