@@ -5,13 +5,13 @@
 > progetto) o con i modelli locali (Ollama via Codex CLI, `AGENTS.md`).
 
 ## 1. Stato
-- `main` contiene lo Sprint 1 fino a WP-007 (PR #1).
-- **PR #3** (branch `claude/optimistic-franklin-w8ou54`) è verde e aspetta il merge: WP-006 resto, WP-008 accesso,
-  WP-009 landing e lista d'attesa, WP-011a registrazione aziende, WP-011b verifica in due passaggi (2FA),
-  WP-012 validatore annunci, WP-013 form delle offerte e moderazione, WP-014 pagina pubblica dell'offerta, WP-015 ricerca, WP-011c sedi e inviti, WP-016 zona gratuita e periodo fondatori.
-  **Uniscila prima di
-  iniziare altro lavoro**, poi riparti da `main`.
-- Dettagli: [SPRINT-1.md](SPRINT-1.md), [SPRINT-2.md](SPRINT-2.md). Decisioni nuove: [ADR-0013](../adr/ADR-0013-auth-in-casa.md).
+- `main` contiene gli **Sprint 1 e 2 completi** (PR #1 e #3): accesso con codice e 2FA, lista d'attesa, aziende con
+  sedi e colleghi, validatore e form delle offerte, moderazione, pagina pubblica, ricerca, zona gratuita e periodo
+  fondatori.
+- Sprint 3 in corso: **WP-017 profilo del lavoratore** sul branch `claude/optimistic-franklin-w8ou54` (PR aperta da
+  unire). Poi si riparte da `main`.
+- Dettagli: [SPRINT-1.md](SPRINT-1.md), [SPRINT-2.md](SPRINT-2.md), [SPRINT-3.md](SPRINT-3.md). Decisioni nuove:
+  [ADR-0013](../adr/ADR-0013-auth-in-casa.md).
 
 ## 2. Mettere in piedi il progetto sul tuo computer (Windows)
 Cartella del progetto: **`C:\Users\Utente\Desktop\PROGETTO HR`**.
@@ -21,7 +21,7 @@ Serve una volta sola: **Git**, **Node.js 24 LTS** e **Docker Desktop** installat
 cd "$env:USERPROFILE\Desktop"
 git clone https://github.com/Zerardo89/HR.git "PROGETTO HR"   # se il repository è privato, Git chiede di accedere a GitHub
 cd "PROGETTO HR"
-git checkout main                     # dopo il merge della PR #3; prima: git checkout claude/optimistic-franklin-w8ou54
+git checkout main
 corepack enable                       # attiva pnpm (la versione giusta è in package.json)
 pnpm install
 docker compose -f docker-compose.dev.yml up -d   # Postgres/PostGIS + Mailpit (posta di prova: http://localhost:8025)
@@ -44,7 +44,6 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
-| 017 | Profilo del lavoratore (dati cifrati, stati, disponibilità a trasferirsi) | Claude (parte PII) + Ollama | Primo modulo con dati personali cifrati: ADR-0004 |
 | 019 | Candidature (lavoratore → azienda) e notifiche | Ollama, test di Claude | Il pulsante "Candidati" della pagina offerta |
 | 020 | Avvisi e job pianificati (pg-boss), email di esito moderazione | Ollama, test di Claude | Chiude i "da fare" di WP-011c/013b/016 |
 | 022 | Scadenza e chiusura delle offerte | Ollama | Lo stato "scaduta" oggi si calcola solo in lettura |

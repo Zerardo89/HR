@@ -11,7 +11,16 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/account", "/azienda", "/moderazione", "/accedi", "/lista-attesa", "/api/"],
+      disallow: [
+        "/account",
+        "/profilo",
+        "/azienda",
+        "/moderazione",
+        "/accedi",
+        "/invito",
+        "/lista-attesa",
+        "/api/",
+      ],
     },
     sitemap: `${getServerEnv().APP_URL}/sitemap.xml`,
   };

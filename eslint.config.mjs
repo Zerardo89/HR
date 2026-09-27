@@ -48,6 +48,27 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    // 03-ARCHITETTURA §4: solo `modules/privacy` (e `lib/crypto`) decifrano dati personali; gli altri
+    // moduli ricevono dati già autorizzati. Vale anche per il codice scritto dai modelli locali.
+    files: ["src/**/*.{ts,tsx}", "scripts/**/*.ts"],
+    ignores: ["src/modules/privacy/**", "src/lib/crypto/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/lib/crypto",
+              importNames: ["decryptPii"],
+              message:
+                "Solo `modules/privacy` decifra dati personali (03-ARCHITETTURA §4, ADR-0004): usa la sua API.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ["src/modules/*/domain/**/*.ts"],
     ignores: ["**/*.test.ts"], // i test possono leggere file di fixture
     rules: {

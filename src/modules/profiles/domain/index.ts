@@ -1,0 +1,22 @@
+// API pura del modulo profiles: dati del profilo del lavoratore (C1 in chiaro, C2 cifrati).
+export {
+  DEFAULT_PROFILE_RADIUS_KM,
+  DRIVING_LICENSES,
+  EXPERIENCE_BANDS,
+  fieldNames,
+  FORBIDDEN_FIELD_PATTERN,
+  LANGUAGE_CODES,
+  LANGUAGE_LEVELS,
+  MAX_EDUCATION,
+  MAX_EXPERIENCES,
+  MAX_LANGUAGES,
+  MAX_PROFILE_OCCUPATIONS,
+  PROFILE_RADII_KM,
+  REGION_CODES,
+  WORKER_STATES,
+  workerPiiSchema,
+  workerProfileInput,
+  type WorkerPii,
+  type WorkerProfileInput,
+  type WorkerState,
+} from "./profile";
