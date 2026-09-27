@@ -1,10 +1,18 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useActionState, useMemo, useState, type ReactNode } from "react";
+import {
+  startTransition,
+  useActionState,
+  useMemo,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import {
   CONTRACT_TYPES,
   MAX_VALIDITY_DAYS,
+  OTHER_PLACE,
   SALARY_BASES,
   SALARY_PERIODS,
   SCHEDULE_TYPES,
@@ -25,6 +33,7 @@ export type OfferFormSite = {
 
 type Values = Record<
   | "siteId"
+  | "place"
   | "title"
   | "description"
   | "contractType"
@@ -41,6 +50,7 @@ type Values = Record<
 
 const EMPTY: Values = {
   siteId: "",
+  place: "",
   title: "",
   description: "",
   contractType: "permanent",
@@ -128,11 +138,26 @@ export function OfferForm({
   const errors = shown.filter((i) => i.severity === "error");
   const reviews = shown.filter((i) => i.severity === "review");
   const issueText = (i: Issue) => `${ti(i.code)}${i.match ? ` («${i.match}»)` : ""}`;
+  // Invio senza l'azzeramento automatico di React 19: i menu a tendina tornerebbero alla prima voce mentre lo
+  // stato mostra ancora le scelte fatte, e al secondo invio partirebbero valori diversi da quelli visibili.
+  // Senza JavaScript resta l'invio normale del form (`action`).
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
+    startTransition(() => action(data));
+  };
+  // Dopo un blocco la bozza esiste già: il prossimo invio la aggiorna (niente offerte doppie).
+  const savedId = offerId ?? (state.status === "blocked" ? state.offerId : undefined);
+  // Problemi che solo il server conosce (es. zona gratuita, WP-016): il controllo dal vivo non li vede.
+  const serverOnly =
+    state.status === "blocked"
+      ? state.issues.filter((i) => !live.issues.some((l) => l.code === i.code))
+      : [];
 
   return (
-    <form action={action} className="flex flex-col gap-5">
+    <form action={action} onSubmit={submit} className="flex flex-col gap-5">
       <input type="hidden" name="companyId" value={companyId} />
-      {offerId && <input type="hidden" name="offerId" value={offerId} />}
+      {savedId && <input type="hidden" name="offerId" value={savedId} />}
 
       <label className={labelCls}>
         {t("title")}
@@ -163,8 +188,53 @@ export function OfferForm({
               {s.label} — {s.municipalityName}
             </option>
           ))}
+          <option value={OTHER_PLACE}>{t("otherPlace")}</option>
         </select>
       </label>
+
+      {values.siteId === OTHER_PLACE && (
+        <div className="flex flex-col gap-3 rounded-lg border border-border px-4 py-3">
+          <label className={labelCls}>
+            {t("placeLabel")}
+            <input
+              name="place"
+              required
+              maxLength={80}
+              value={values.place}
+              onChange={set("place")}
+              autoComplete="address-level2"
+              aria-describedby="luogo-aiuto"
+              className={field}
+            />
+          </label>
+          <p id="luogo-aiuto" className="text-sm text-muted">
+            {t("placeHelp")}
+          </p>
+          {state.status === "invalid_place" && (
+            <div
+              role="alert"
+              className="flex flex-col gap-2 rounded-lg border border-accent px-3 py-2"
+            >
+              <p>{t(state.options.length > 0 ? "placeChoose" : "placeNotFound")}</p>
+              {state.options.length > 0 && (
+                <ul className="flex flex-wrap gap-2">
+                  {state.options.map((option) => (
+                    <li key={option}>
+                      <button
+                        type="button"
+                        onClick={() => setValues((v) => ({ ...v, place: option }))}
+                        className="rounded-lg border border-primary px-3 py-2 font-medium text-primary"
+                      >
+                        {option}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <label className={labelCls}>
         {t("description")}
@@ -359,9 +429,16 @@ export function OfferForm({
       </section>
 
       {state.status === "blocked" && (
-        <p role="alert" className="rounded-lg border border-accent px-3 py-2">
-          {t("blocked")}
-        </p>
+        <div role="alert" className="flex flex-col gap-2 rounded-lg border border-accent px-3 py-2">
+          <p>{t("blocked")}</p>
+          {serverOnly.length > 0 && (
+            <ul className="list-disc pl-5">
+              {serverOnly.map((i, n) => (
+                <li key={`${i.code}-${n}`}>{issueText(i)}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
       {state.status === "error" && (
         <p role="alert" className="rounded-lg border border-accent px-3 py-2">

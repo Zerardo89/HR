@@ -12,7 +12,7 @@
 | 013 | ✅ Fatto (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ✅ **13b** pannello del moderatore `/moderazione` (approva / rifiuta con motivo visibile all'azienda, verifica manuale delle aziende), log di audit. |
 | 014 | 🟡 Pagina offerta fatta (Claude, 27/09) | ✅ `/offerte/[id]` SSR con dati strutturati **JobPosting** (Google for Jobs), sitemap e robots. ⏳ Pagine SEO "Lavoro [mansione] a [provincia]" (testi da Gemini). |
 | 015 | ✅ Fatto (Claude, 27/09) | Ricerca `/offerte` "Cosa + Dove" (mansione dalla tassonomia, full-text + trigrammi, raggio PostGIS), filtri, punteggio a pesi pubblici con "perché la vedi", pagina `/come-funziona`. |
-| 016 | ⏳ Da fare | Zona gratuita (già nel dominio, WP-005) + entitlement + periodo fondatori. |
+| 016 | ✅ Fatto (Claude, 27/09) | Offerte in "altro comune" con regola di zona (regione ∪ 50 km), Piano Nazionale per il fuori zona, periodo fondatori calcolato dalla data di registrazione, stato del piano nell'area azienda. Pagamenti ancora spenti (`BILLING_ENABLED`). |
 
 ---
 
@@ -185,3 +185,29 @@ approvare" in `/moderazione`, migrazione `0007`
   scadenza, sostituzione, revoca, limiti, invio fallito), 2 e2e × 2 dispositivi (sede con comune sbagliato + invito
   accettato da un nuovo account con 2FA; approvazione della sede dal pannello).
 - Da fare: togliere un collega dall'azienda, passaggio di titolarità, email all'azienda con l'esito della sede (WP-020).
+
+## WP-016 — Zona gratuita, Piano Nazionale e periodo fondatori ✅
+**Esecutore:** Claude · **Codice:** `src/modules/billing/{domain,server}/entitlements.ts`,
+`src/modules/offers/server/save-offer.ts` (luogo di lavoro), form dell'offerta, area azienda
+
+- **Luogo di lavoro**: una sede approvata (sempre in zona) oppure **"Altro comune…"** (con "forse cercavi" e scelta
+  tra omonimi). La regola di zona è quella del dominio (`isInFreeZone`, ADR-0009): stessa regione di una sede
+  approvata **oppure** entro 50 km in linea d'aria. In zona → offerta `local`, gratis.
+- **Fuori zona** → offerta `national`: si pubblica solo con il **Piano Nazionale** attivo; senza, resta bozza con il
+  motivo ("fuori dalla zona gratuita", regola ADR-0009) mostrato nel form. Le bozze si salvano sempre.
+- **Periodo fondatori** (docs/05 §4): le aziende registrate entro il **31/12/2026** hanno il Nazionale gratis fino a
+  `FOUNDERS_PERIOD_UNTIL` (31/01/2027). **Calcolato** dalla data di registrazione: nessuna riga da creare né da
+  togliere a fine periodo. Le righe `entitlements` servono per gli acquisti (Stripe, promo, crowdfunding).
+- Area azienda: "Piano: Gratis nella tua zona…" oppure "Azienda fondatrice: Piano Nazionale gratis fino al …".
+- Nessun diritto tocca i lavoratori o l'ordine dei risultati (R-LAV-01): la ricerca non legge gli entitlement.
+- **Difetti corretti nel form dell'offerta** (c'erano da WP-013a), trovati dall'e2e: (1) dopo un invio React 19
+  riportava i menu a tendina alla prima voce mentre lo schermo mostrava le scelte fatte → al secondo invio partivano
+  valori diversi (es. la sede invece di "altro comune"); ora l'invio non azzera il form. (2) Dopo un blocco la bozza
+  salvata non era collegata al form → ripubblicando se ne creava una seconda; ora si aggiorna la stessa. (3) I problemi
+  che conosce solo il server (la zona) ora si vedono nel messaggio di blocco.
+- Test: 5 unitari (periodo fondatori, validità dei diritti), 4 di integrazione (in zona per regione o per distanza,
+  fuori zona fondatrice / non fondatrice / con promo, fine del periodo, comune sbagliato, bozza), 1 e2e × 2
+  dispositivi (in zona e fuori zona, nessuna offerta doppia, comune salvato). Date fisse nei test: nessuna "bomba a
+  orologeria" dopo il 2026.
+- Da fare con la P.IVA dell'associazione (ADR-0010): acquisto del Nazionale e di "In evidenza" con Stripe
+  (`BILLING_ENABLED`), avvisi ai lavoratori disposti a trasferirsi (WP-020).

@@ -1,6 +1,7 @@
 import { and, desc, eq, inArray } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { companyMembers, jobOffers } from "@/lib/db/schema";
+import { companyMembers, jobOffers, municipalities, provinces } from "@/lib/db/schema";
+import { OTHER_PLACE } from "../domain";
 
 export type CompanyOfferRow = {
   id: string;
@@ -49,12 +50,14 @@ export async function getOfferForMember(
   offerId: string,
 ): Promise<EditableOffer | null> {
   const [o] = await db
-    .select({ offer: jobOffers })
+    .select({ offer: jobOffers, place: municipalities.name, province: provinces.abbreviation })
     .from(jobOffers)
     .innerJoin(
       companyMembers,
       and(eq(companyMembers.companyId, jobOffers.companyId), eq(companyMembers.userId, userId)),
     )
+    .innerJoin(municipalities, eq(municipalities.istatCode, jobOffers.municipalityCode))
+    .innerJoin(provinces, eq(provinces.code, municipalities.provinceCode))
     .where(and(eq(jobOffers.id, offerId), inArray(companyMembers.role, ["owner", "recruiter"])))
     .limit(1);
   if (!o) return null;
@@ -69,7 +72,9 @@ export async function getOfferForMember(
     companyId: offer.companyId,
     status: offer.status,
     values: {
-      siteId: offer.siteId ?? "",
+      // Senza sede = luogo di lavoro scritto a mano ("altro comune", WP-016).
+      siteId: offer.siteId ?? OTHER_PLACE,
+      place: offer.siteId ? "" : `${o.place} (${o.province})`,
       occupationId: String(offer.occupationId),
       title: offer.title,
       description: offer.descriptionMd,

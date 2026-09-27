@@ -307,6 +307,13 @@
         "too_many": "Troppi inviti: annullane qualcuno, aspetta che vengano accettati o riprova domani.",
         "send_failed": "Non siamo riusciti a spedire l'email. Riprova tra qualche minuto."
       }
+    },
+    "plan": {
+      "title": "Piano",
+      "free": "Gratis nella tua zona: pubblichi senza costi nelle regioni delle sedi approvate e entro 50 km da ciascuna.",
+      "founders": "Azienda fondatrice: Piano Nazionale gratis fino al {until}. Puoi pubblicare offerte in tutta Italia.",
+      "national": "Piano Nazionale attivo fino al {until}: puoi pubblicare offerte in tutta Italia.",
+      "nationalOpen": "Piano Nazionale attivo: puoi pubblicare offerte in tutta Italia."
     }
   },
   "mfa": {
@@ -383,6 +390,11 @@
       "title": "Titolo dell'offerta",
       "titleHelp": "Per esempio «Cameriere/a di sala». Rivolgiti a entrambi i sessi.",
       "site": "Luogo di lavoro",
+      "otherPlace": "Altro comune…",
+      "placeLabel": "Comune del luogo di lavoro",
+      "placeHelp": "Nella tua regione o entro 50 km da una sede approvata è gratis. Più lontano serve il Piano Nazionale: le aziende fondatrici lo hanno gratis fino al 31 gennaio 2027.",
+      "placeChoose": "Scegli il comune giusto:",
+      "placeNotFound": "Non troviamo questo comune: controlla come è scritto.",
       "description": "Descrizione",
       "descriptionHelp": "Cosa si fa, orari, cosa serve davvero per il lavoro. Niente età, aspetto, nazionalità o foto.",
       "contractType": "Tipo di contratto",
@@ -474,7 +486,8 @@
       "valid_through_missing": "Indica per quanti giorni resta online l'offerta.",
       "valid_through_past": "La scadenza deve essere nel futuro.",
       "valid_through_too_far": "Un'offerta resta online al massimo 60 giorni (si può rinnovare).",
-      "first_offers": "Le prime 3 offerte di ogni azienda passano da un moderatore: è una protezione contro le truffe."
+      "first_offers": "Le prime 3 offerte di ogni azienda passano da un moderatore: è una protezione contro le truffe.",
+      "outside_free_zone": "Il luogo di lavoro è fuori dalla zona gratuita (la tua regione o 50 km dalle sedi approvate): serve il Piano Nazionale."
     },
     "rejected": "Il moderatore ha rimandato indietro l'offerta. Correggila e ripubblicala.",
     "rejectionReasons": {

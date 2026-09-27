@@ -6,6 +6,7 @@ import {
   getCompaniesForUser,
   getPendingInvite,
 } from "@/modules/companies";
+import { getCompanyNationalPlan } from "@/modules/billing";
 import { requireUser } from "@/modules/identity";
 import { listCompanyOffers } from "@/modules/offers";
 
@@ -88,6 +89,7 @@ export default async function CompanyPage({ searchParams }: PageProps<"/azienda"
                 </Link>
               )}
             </nav>
+            <CompanyPlan companyId={c.id} />
             <CompanyOffers userId={user.id} companyId={c.id} />
           </section>
         ))
@@ -126,5 +128,27 @@ async function CompanyOffers({ userId, companyId }: { userId: string; companyId:
         {t("newTitle")}
       </Link>
     </div>
+  );
+}
+
+const day = new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "Europe/Rome" });
+
+/** Cosa può pubblicare l'azienda (WP-016): zona gratuita, o Piano Nazionale (anche dei fondatori). */
+async function CompanyPlan({ companyId }: { companyId: string }) {
+  const [plan, t] = await Promise.all([
+    getCompanyNationalPlan(companyId),
+    getTranslations("company.plan"),
+  ]);
+  const text = !plan
+    ? t("free")
+    : !plan.validTo
+      ? t("nationalOpen")
+      : t(plan.source === "founders" ? "founders" : "national", {
+          until: day.format(plan.validTo),
+        });
+  return (
+    <p className="text-sm">
+      <span className="font-semibold">{t("title")}:</span> {text}
+    </p>
   );
 }

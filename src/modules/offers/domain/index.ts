@@ -19,6 +19,7 @@ export {
 export {
   DEFAULT_VALIDITY_DAYS,
   offerInput,
+  OTHER_PLACE,
   SALARY_BASES,
   SALARY_PERIODS,
   SCHEDULE_TYPES,

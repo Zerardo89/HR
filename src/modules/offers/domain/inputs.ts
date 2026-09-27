@@ -5,6 +5,8 @@ export const SCHEDULE_TYPES = ["full_time", "part_time", "shifts", "weekends", "
 export const SALARY_PERIODS = ["hour", "month", "year"] as const;
 export const SALARY_BASES = ["gross", "net"] as const;
 export const DEFAULT_VALIDITY_DAYS = 30;
+/** Luogo di lavoro diverso dalle sedi: un comune qualsiasi (fuori zona serve il Piano Nazionale, WP-016). */
+export const OTHER_PLACE = "altro";
 
 /** Campo numerico facoltativo di un form: "" → undefined, "1.400,50" → 1400.5. */
 const optionalAmount = z
@@ -31,28 +33,34 @@ const optionalText = (max: number) =>
  * Dati del form dell'offerta (WP-013). Qui si controllano forma e limiti; le regole di legge (R-ANN-*)
  * le applica `validateOffer` al momento della pubblicazione (e dal vivo nel browser).
  */
-export const offerInput = z.object({
-  companyId: z.uuid(),
-  siteId: z.uuid(),
-  occupationId: z.coerce.number().int().positive(),
-  title: z.string().trim().min(1).max(120),
-  description: z.string().trim().min(1).max(8000),
-  contractType: z.enum(CONTRACT_TYPES),
-  schedule: z.enum(SCHEDULE_TYPES),
-  hoursPerWeek: optionalInt(1, 60),
-  salaryMin: optionalAmount,
-  salaryMax: optionalAmount,
-  salaryPeriod: z
-    .enum([...SALARY_PERIODS, ""])
-    .transform((v) => (v === "" ? undefined : v))
-    .optional(),
-  salaryBasis: z.enum(SALARY_BASES).default("gross"),
-  ccnl: optionalText(120),
-  validDays: z.coerce.number().int().min(1).max(MAX_VALIDITY_DAYS).default(DEFAULT_VALIDITY_DAYS),
-  internshipDeclaration: z
-    .literal("on")
-    .optional()
-    .transform((v) => v === "on"),
-});
+export const offerInput = z
+  .object({
+    companyId: z.uuid(),
+    siteId: z.union([z.uuid(), z.literal(OTHER_PLACE)]),
+    place: optionalText(80).optional(),
+    occupationId: z.coerce.number().int().positive(),
+    title: z.string().trim().min(1).max(120),
+    description: z.string().trim().min(1).max(8000),
+    contractType: z.enum(CONTRACT_TYPES),
+    schedule: z.enum(SCHEDULE_TYPES),
+    hoursPerWeek: optionalInt(1, 60),
+    salaryMin: optionalAmount,
+    salaryMax: optionalAmount,
+    salaryPeriod: z
+      .enum([...SALARY_PERIODS, ""])
+      .transform((v) => (v === "" ? undefined : v))
+      .optional(),
+    salaryBasis: z.enum(SALARY_BASES).default("gross"),
+    ccnl: optionalText(120),
+    validDays: z.coerce.number().int().min(1).max(MAX_VALIDITY_DAYS).default(DEFAULT_VALIDITY_DAYS),
+    internshipDeclaration: z
+      .literal("on")
+      .optional()
+      .transform((v) => v === "on"),
+  })
+  .refine((o) => o.siteId !== OTHER_PLACE || Boolean(o.place), {
+    message: "place",
+    path: ["place"],
+  });
 
 export type OfferInput = z.infer<typeof offerInput>;

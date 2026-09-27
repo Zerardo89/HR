@@ -8,7 +8,7 @@
 - `main` contiene lo Sprint 1 fino a WP-007 (PR #1).
 - **PR #3** (branch `claude/optimistic-franklin-w8ou54`) è verde e aspetta il merge: WP-006 resto, WP-008 accesso,
   WP-009 landing e lista d'attesa, WP-011a registrazione aziende, WP-011b verifica in due passaggi (2FA),
-  WP-012 validatore annunci, WP-013 form delle offerte e moderazione, WP-014 pagina pubblica dell'offerta, WP-015 ricerca, WP-011c sedi e inviti.
+  WP-012 validatore annunci, WP-013 form delle offerte e moderazione, WP-014 pagina pubblica dell'offerta, WP-015 ricerca, WP-011c sedi e inviti, WP-016 zona gratuita e periodo fondatori.
   **Uniscila prima di
   iniziare altro lavoro**, poi riparti da `main`.
 - Dettagli: [SPRINT-1.md](SPRINT-1.md), [SPRINT-2.md](SPRINT-2.md). Decisioni nuove: [ADR-0013](../adr/ADR-0013-auth-in-casa.md).
@@ -43,8 +43,11 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
-| 016 | Periodo fondatori + entitlement "Nazionale"/"In evidenza" (costruiti, spenti finché non c'è la P.IVA) | Ollama, test di Claude | Zona gratuita già nel dominio (WP-005) |
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
+| 017 | Profilo del lavoratore (dati cifrati, stati, disponibilità a trasferirsi) | Claude (parte PII) + Ollama | Primo modulo con dati personali cifrati: ADR-0004 |
+| 019 | Candidature (lavoratore → azienda) e notifiche | Ollama, test di Claude | Il pulsante "Candidati" della pagina offerta |
+| 020 | Avvisi e job pianificati (pg-boss), email di esito moderazione | Ollama, test di Claude | Chiude i "da fare" di WP-011c/013b/016 |
+| 022 | Scadenza e chiusura delle offerte | Ollama | Lo stato "scaduta" oggi si calcola solo in lettura |
 
 Per i WP di Ollama: prompt in [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md); i test di
 accettazione vanno scritti **prima** (da Claude) e non si modificano per farli passare.

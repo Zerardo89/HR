@@ -9,15 +9,19 @@ import { saveOffer } from "./save-offer";
 
 export type SaveOfferState =
   | { status: "idle" }
-  | { status: "blocked"; issues: Issue[] }
+  /** Salvata come bozza con dei problemi: `offerId` serve al form per aggiornarla invece di crearne un'altra. */
+  | { status: "blocked"; issues: Issue[]; offerId: string }
   | {
       status: "error";
       error: "invalid" | "not_allowed" | "invalid_site" | "invalid_occupation" | "not_editable";
-    };
+    }
+  /** Comune del luogo di lavoro non trovato o ambiguo: comuni tra cui scegliere ("Castro (LE)"). */
+  | { status: "invalid_place"; options: string[] };
 
 const FIELDS = [
   "companyId",
   "siteId",
+  "place",
   "occupationId",
   "title",
   "description",
@@ -43,7 +47,12 @@ export async function saveOfferAction(
     FIELDS.map((f) => [f, form.get(f) === null ? undefined : String(form.get(f))]),
   );
   const parsed = offerInput.safeParse(raw);
-  if (!parsed.success) return { status: "error", error: "invalid" };
+  if (!parsed.success) {
+    const placeMissing = parsed.error.issues.some((i) => i.path[0] === "place");
+    return placeMissing
+      ? { status: "invalid_place", options: [] }
+      : { status: "error", error: "invalid" };
+  }
   const offerId = z.uuid().safeParse(form.get("offerId"));
   const mode = form.get("intent") === "publish" ? "publish" : "draft";
 
@@ -56,6 +65,8 @@ export async function saveOfferAction(
   );
   if (result.status === "saved")
     redirect(`/azienda/offerte/${result.offerId}?esito=${result.offerStatus}`);
-  if (result.status === "blocked") return { status: "blocked", issues: result.issues };
+  if (result.status === "blocked")
+    return { status: "blocked", issues: result.issues, offerId: result.offerId };
+  if (result.status === "invalid_place") return result;
   return { status: "error", error: result.status };
 }

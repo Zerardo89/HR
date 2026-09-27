@@ -16,6 +16,8 @@ export type OfferSite = {
   municipalityCode: string;
   municipalityName: string;
   regionCode: string;
+  lat: number;
+  lon: number;
   /** R-LAV-10: indennità minima mensile dei tirocini nella regione (null = tabella non ancora compilata). */
   internshipMonthlyMinimum: number | null;
 };
@@ -25,7 +27,7 @@ export type CompanyOfferContext = {
   displayName: string;
   role: "owner" | "recruiter";
   validatorCompany: OfferContext["company"];
-  /** Solo le sedi approvate: il luogo di lavoro dell'offerta è sempre una sede verificata (ADR-0009). */
+  /** Solo le sedi approvate: definiscono la zona gratuita dell'azienda (ADR-0009). */
   sites: OfferSite[];
 };
 
@@ -71,6 +73,8 @@ export async function getCompanyOfferContext(
       municipalityCode: companySites.municipalityCode,
       municipalityName: municipalities.name,
       regionCode: municipalities.regionCode,
+      lat: municipalities.lat,
+      lon: municipalities.lon,
       approvedAt: companySites.approvedAt,
     })
     .from(companySites)
@@ -81,24 +85,15 @@ export async function getCompanyOfferContext(
   const sites: OfferSite[] = [];
   for (const s of siteRows) {
     if (!s.approvedAt) continue;
-    const [minimum] = await db
-      .select({ eur: regionalInternshipMinimums.monthlyMinEur })
-      .from(regionalInternshipMinimums)
-      .where(
-        and(
-          eq(regionalInternshipMinimums.regionCode, s.regionCode),
-          lte(regionalInternshipMinimums.validFrom, now.toISOString().slice(0, 10)),
-        ),
-      )
-      .orderBy(desc(regionalInternshipMinimums.validFrom))
-      .limit(1);
     sites.push({
       id: s.id,
       label: s.label,
       municipalityCode: s.municipalityCode,
       municipalityName: s.municipalityName,
       regionCode: s.regionCode,
-      internshipMonthlyMinimum: minimum ? Number(minimum.eur) : null,
+      lat: s.lat,
+      lon: s.lon,
+      internshipMonthlyMinimum: await internshipMinimum(db, s.regionCode, now),
     });
   }
 
@@ -115,4 +110,24 @@ export async function getCompanyOfferContext(
     },
     sites,
   };
+}
+
+/** R-LAV-10: indennità minima mensile dei tirocini in vigore nella regione (null = tabella non compilata). */
+export async function internshipMinimum(
+  db: NodePgDatabase,
+  regionCode: string,
+  now: Date,
+): Promise<number | null> {
+  const [minimum] = await db
+    .select({ eur: regionalInternshipMinimums.monthlyMinEur })
+    .from(regionalInternshipMinimums)
+    .where(
+      and(
+        eq(regionalInternshipMinimums.regionCode, regionCode),
+        lte(regionalInternshipMinimums.validFrom, now.toISOString().slice(0, 10)),
+      ),
+    )
+    .orderBy(desc(regionalInternshipMinimums.validFrom))
+    .limit(1);
+  return minimum ? Number(minimum.eur) : null;
 }

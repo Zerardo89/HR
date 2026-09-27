@@ -194,7 +194,7 @@ erDiagram
 ### 6.2 Regola di zona (pubblicazione)
 `canPublishFree(company, offerMunicipality)` = esiste una sede approvata `s` tale che
 `region(offer) == region(s)` **oppure** `ST_DWithin(centroid(offer), centroid(s), 50000)`.
-Se falso → richiede entitlement `national` (in "periodo fondatori" l'entitlement è concesso gratis).
+Se falso → richiede entitlement `national` (in "periodo fondatori" l'entitlement è concesso gratis: si **calcola** dalla data di registrazione dell'azienda, `billing/domain`, senza righe nel DB). Implementato in WP-016: l'offerta fuori zona è `scope = national`.
 Funzione in `modules/matching/domain` + query in `server`; test con casi di confine (49,9 km / 50,1 km, comuni di confine regionale).
 
 ### 6.3 Mail ogni 30 giorni
