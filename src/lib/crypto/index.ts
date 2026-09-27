@@ -7,7 +7,12 @@ import { FileKeyProvider, type KeyProvider } from "./key-provider";
  * Oggi le chiavi vengono da file (Docker secrets); nella Fase 2 da OpenBao Transit (docs/04 §4).
  */
 export { CryptoError, generateDek } from "./aead";
-export { normalizeEmail, normalizePhone, type BlindIndexPurpose } from "./blind-index";
+export {
+  normalizeEmail,
+  normalizePhone,
+  type BlindIndexPurpose,
+  type MacPurpose,
+} from "./blind-index";
 export { FileKeyProvider, type KeyProvider } from "./key-provider";
 export {
   aadFor,

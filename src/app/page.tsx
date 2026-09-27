@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 const POINTS = ["freeWorkers", "freeCompanies", "salary", "privacy"] as const;
 
 export default async function HomePage() {
   const t = await getTranslations("home");
+  const tc = await getTranslations("common");
 
   return (
     <main id="contenuto" className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-12">
@@ -11,6 +13,12 @@ export default async function HomePage() {
         <h1 className="text-3xl font-bold leading-tight text-primary sm:text-4xl">{t("title")}</h1>
         <p className="text-lg text-foreground">{t("subtitle")}</p>
         <p className="text-base text-muted">{t("launch")}</p>
+        <Link
+          href="/accedi"
+          className="self-start rounded-lg bg-primary px-4 py-3 text-lg font-semibold text-primary-foreground"
+        >
+          {tc("signIn")}
+        </Link>
       </header>
 
       <section aria-labelledby="perche" className="rounded-xl border border-border bg-surface p-6">

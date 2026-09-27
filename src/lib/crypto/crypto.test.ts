@@ -5,7 +5,7 @@ import { randomBytes } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { CryptoError, decrypt, encrypt, generateDek } from "./aead";
-import { computeBlindIndex, normalizeEmail, normalizePhone } from "./blind-index";
+import { computeBlindIndex, computeMac, normalizeEmail, normalizePhone } from "./blind-index";
 import { FileKeyProvider, parseKeyFile } from "./key-provider";
 import {
   decryptPii,
@@ -131,6 +131,27 @@ describe("indice cieco", () => {
     expect(normalizePhone("333 000 0000")).toBe("+393330000000");
     expect(normalizePhone("+39 333-000-0000")).toBe("+393330000000");
     expect(normalizePhone("0041 79 000 00 00")).toBe("+41790000000");
+  });
+});
+
+describe("MAC con chiave (codici di accesso, IP) — WP-008", () => {
+  const key = randomBytes(32);
+
+  it("è deterministico, dipende dallo scopo e dalla chiave", () => {
+    expect(computeMac(key, "123456", "otp")).toBe(computeMac(key, "123456", "otp"));
+    expect(computeMac(key, "123456", "otp")).not.toBe(computeMac(key, "123456", "ip"));
+    expect(computeMac(randomBytes(32), "123456", "otp")).not.toBe(computeMac(key, "123456", "otp"));
+  });
+
+  it("non coincide mai con l'indice cieco dello stesso valore", () => {
+    expect(computeMac(key, "email:a@b.it", "otp")).not.toBe(
+      computeBlindIndex(key, "a@b.it", "email"),
+    );
+  });
+
+  it("il KeyProvider lo espone senza rivelare la chiave", async () => {
+    const p = provider();
+    expect(await p.mac("1.2.3.4", "ip")).toMatch(/^[A-Za-z0-9_-]{43}$/);
   });
 });
 

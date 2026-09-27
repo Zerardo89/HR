@@ -1,4 +1,4 @@
-# Versioni bloccate (aggiornato il 26/09/2026 — WP-001)
+# Versioni bloccate (aggiornato il 27/09/2026 — WP-008)
 
 Le versioni sono fissate in `package.json` + `pnpm-lock.yaml`. **Non aggiornarle dentro un WP qualsiasi**:
 gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazione ed e2e verdi.
@@ -23,6 +23,7 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | drizzle-orm / drizzle-kit | 0.45.3 / 0.31.11 | schema in `src/lib/db/schema/`; migrazioni in `db/migrations/` (vedi sotto) |
 | pg | 8.23.0 | |
 | pino | 10.3.1 | usa sempre `src/lib/logger.ts` (redazione dei dati personali) |
+| nodemailer | 10.0.10 | solo tramite `src/lib/mail` (`getMailer()`); tipi inclusi nel pacchetto |
 | eslint | 9.39.5 | configurazione flat `eslint.config.mjs`; confini tra moduli con `import/no-restricted-paths` |
 | vitest | 5.0.2 (+ vite 8.3.1) | unitari: `pnpm test`; integrazione: `pnpm test:integration` |
 | @playwright/test | 1.63.0 | progetti `mobile` (Pixel 5) e `desktop` |
@@ -32,5 +33,6 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0000_extensions.sql` — **scritta a mano**: PostGIS, pg_trgm, unaccent, configurazione di ricerca `italian_unaccent`.
 - `0001_schema_v1.sql` — generata da drizzle-kit dallo schema.
 - `0002_audit_append_only.sql` — **scritta a mano**: trigger che rendono `audit_log` immodificabile.
+- `0003_auth.sql` — generata: tabelle dell'accesso (codici, sessioni, biglietti di registrazione) — WP-008.
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
 - Le migrazioni che toccano colonne cifrate o `audit_log` le scrive/valida l'architetto (CLAUDE.md).

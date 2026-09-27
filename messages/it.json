@@ -6,7 +6,8 @@
   },
   "common": {
     "previewBanner": "Anteprima con dati di prova: le offerte non sono reali.",
-    "skipToContent": "Vai al contenuto"
+    "skipToContent": "Vai al contenuto",
+    "signIn": "Accedi o registrati"
   },
   "home": {
     "title": "Il lavoro vicino a casa",
@@ -18,6 +19,76 @@
       "freeCompanies": "Gratis per le aziende nella loro regione o entro 50 km.",
       "salary": "Ogni offerta dice quanto si guadagna.",
       "privacy": "I tuoi dati personali sono cifrati e decidi tu a chi mostrarli."
+    }
+  },
+  "auth": {
+    "metaTitle": "Accedi o registrati",
+    "title": "Accedi o registrati",
+    "intro": "Niente password: ti mandiamo un codice di 6 cifre via email. Se è la prima volta, dopo il codice crei il tuo account.",
+    "emailLabel": "La tua email",
+    "sendCode": "Ricevi il codice",
+    "codeTitle": "Controlla la tua email",
+    "codeSentTo": "Abbiamo inviato un codice di 6 cifre a {email}. Se non lo trovi, guarda anche nella posta indesiderata (spam).",
+    "codeResent": "Ti abbiamo inviato un nuovo codice. Vale solo l'ultimo arrivato.",
+    "codeLabel": "Codice di 6 cifre",
+    "verify": "Entra",
+    "resend": "Mandami un nuovo codice",
+    "changeEmail": "Cambia email",
+    "signupTitle": "Crea il tuo account",
+    "signupIntro": "Non c'è ancora un account con {email}. Ti servono pochi secondi.",
+    "roleLegend": "Sei qui per…",
+    "roles": {
+      "worker": "Cercare lavoro",
+      "company_member": "Cercare personale per un'azienda"
+    },
+    "adultLabel": "Ho almeno 18 anni",
+    "legalLabel": "Ho letto l'informativa sulla privacy e accetto le condizioni d'uso",
+    "privacyLink": "Informativa sulla privacy",
+    "termsLink": "Condizioni d'uso",
+    "createAccount": "Crea l'account",
+    "pending": "Attendi…",
+    "unavailableTitle": "Account non disponibile",
+    "unavailable": "Questo account è sospeso. Scrivici se pensi che sia un errore.",
+    "errors": {
+      "invalid_email": "Controlla l'email: sembra scritta in modo sbagliato.",
+      "invalid_code": "Il codice è fatto di 6 cifre.",
+      "wrong_code": "Codice sbagliato. Tentativi rimasti: {attemptsLeft}.",
+      "no_attempts": "Codice sbagliato troppe volte. Chiedi un nuovo codice.",
+      "expired": "Il codice non è più valido. Chiedine uno nuovo.",
+      "rate_limited": "Troppi tentativi. Riprova tra qualche minuto.",
+      "send_failed": "Non siamo riusciti a inviare l'email. Riprova tra poco.",
+      "signup_expired": "È passato troppo tempo. Ricomincia dall'email: ti mandiamo un nuovo codice.",
+      "signup_incomplete": "Scegli perché sei qui e spunta le due caselle per continuare."
+    }
+  },
+  "account": {
+    "metaTitle": "Il mio account",
+    "title": "Il mio account",
+    "signedInAs": "Sei entrato come: {role}",
+    "roles": {
+      "worker": "persona in cerca di lavoro",
+      "company_member": "azienda",
+      "moderator": "moderatore",
+      "admin": "amministratore"
+    },
+    "comingSoon": "Qui troverai il tuo profilo e le tue candidature. Stiamo preparando queste pagine.",
+    "signOut": "Esci"
+  },
+  "legal": {
+    "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
+    "privacyTitle": "Informativa sulla privacy",
+    "privacyDraft": "Qui ci sarà l'informativa completa. In breve: i tuoi dati personali sono cifrati nel database. Nemmeno chi gestisce la piattaforma li vede durante il lavoro quotidiano: l'app li decifra solo quando servono a te o all'azienda a cui hai scelto di candidarti, e ogni accesso viene registrato.",
+    "termsTitle": "Condizioni d'uso",
+    "termsDraft": "Qui ci saranno le condizioni d'uso complete. Il servizio è gratuito per chi cerca lavoro, sempre."
+  },
+  "emails": {
+    "otp": {
+      "subject": "{code} è il tuo codice per {siteName}",
+      "intro": "Ciao,",
+      "code": "per entrare in {siteName} usa questo codice: {code}",
+      "validity": "Il codice vale {minutes} minuti e si può usare una volta sola.",
+      "ignore": "Se non l'hai chiesto tu, ignora questa email: senza il codice nessuno può entrare nel tuo account.",
+      "signature": "{siteName} — {appUrl}"
     }
   }
 }

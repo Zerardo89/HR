@@ -22,7 +22,7 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 
 ## Cosa scrivi tu (non delegare ai modelli locali)
 - `src/lib/crypto/**` (ADR-0004) e ogni chiamata a `decryptPii()`
-- adattatore di autenticazione con email cifrata e policy di autorizzazione (ADR-0008)
+- modulo di accesso `src/modules/identity/server/**` e `src/proxy.ts` (ADR-0013) e le policy di autorizzazione
 - test di accettazione dei WP sul dominio (zona gratuita, validatore annunci, matching, mail 30 giorni, conservazione)
 - migrazioni che toccano colonne cifrate o `audit_log`
 - revisione di sicurezza prima di ogni rilascio
@@ -61,6 +61,7 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 26/09/2026: progettazione completata.
 - 26/09/2026 (in anticipo sul calendario): WP-001, WP-002, WP-003, WP-004, WP-005, WP-007 completati
   da Claude nella sessione di avvio. Stato dettagliato in `docs/work-packages/SPRINT-1.md`.
-- Prossimi: WP-006 mansioni (serve G-05), WP-008 auth, WP-009 landing + lista d'attesa, WP-010 PWA/TWA (servono Q1-Q2).
+- 27/09/2026: PR #1 unita su `main`. WP-008 accesso completato, con cambio di libreria (ADR-0013: niente Better Auth).
+- Prossimi: WP-006 resto (import DB + autocompletamento), WP-009 landing + lista d'attesa, WP-010 PWA/TWA (servono nome e server).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

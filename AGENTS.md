@@ -19,7 +19,8 @@ Sei lo **sviluppatore** del progetto. L'architetto (Claude) ha già deciso stack
 7. **Mai** dati personali nei log (usa `src/lib/logger.ts`), negli URL o nei messaggi di errore.
 8. **Mai** colonne in chiaro per nome, cognome, email, telefono: si usano i campi `*_enc` tramite il modulo crypto.
 9. Non creare campi per: data di nascita, età, sesso, stato civile, nazionalità, foto, religione, salute, retribuzione precedente.
-10. Autorizzazione verificata lato server in ogni Server Action e route.
+10. Autorizzazione verificata lato server in ogni Server Action e route: `requireUser(ruoli)` da `@/modules/identity`.
+    Non modificare `src/modules/identity/server/**`, `src/proxy.ts` e `src/lib/crypto/**` (li scrive l'architetto).
 11. File sotto le 300 righe; nomi in inglese.
 12. Prima di dichiarare finito: `pnpm check` deve essere verde. Poi scrivi un riepilogo: fatto / non fatto / dubbi.
 
