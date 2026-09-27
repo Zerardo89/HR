@@ -16,6 +16,16 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    ignore:
+      # Versioni bloccate di proposito (VERSIONS.md): typescript-eslint non supporta TypeScript >= 6.1.
+      - dependency-name: typescript
+        versions: [">=6.0.0"]
+      # Puntiamo a Node 24 LTS: i tipi di Node seguono la versione del runtime, non l'ultima uscita.
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
     groups:
+      # react e react-dom vanno aggiornati sempre insieme (dipendenza reciproca di versione).
+      react:
+        patterns: [react, react-dom, "@types/react", "@types/react-dom"]
       patch-e-minor:
         update-types: [minor, patch]
