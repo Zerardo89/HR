@@ -8,7 +8,8 @@
     "previewBanner": "Anteprima con dati di prova: le offerte non sono reali.",
     "skipToContent": "Vai al contenuto",
     "signIn": "Accedi o registrati",
-    "mainNav": "Menu principale"
+    "mainNav": "Menu principale",
+    "searchJobs": "Cerca lavoro"
   },
   "home": {
     "title": "Il lavoro vicino a casa",
@@ -470,5 +471,91 @@
     "applySoon": "Le candidature dalla piattaforma arrivano a breve: con l'apertura del 1° novembre potrai candidarti da qui con un clic.",
     "safety": "Per candidarti non devi mai pagare nulla né dare IBAN o documenti. Se qualcuno te lo chiede, segnalalo.",
     "report": "Segnala questa offerta"
+  },
+  "search": {
+    "metaTitle": "Cerca lavoro",
+    "metaDescription": "Offerte di lavoro vicino a casa, con lo stipendio sempre indicato. Cerca per mansione e comune.",
+    "title": "Cerca lavoro",
+    "whatLabel": "Cosa",
+    "whatHelp": "La mansione o qualche parola, per esempio «cameriere» o «magazzino».",
+    "whereLabel": "Dove",
+    "whereHelp": "Il comune da cui parti. Se ci sono più comuni con lo stesso nome, aggiungi la provincia: «Castro (LE)».",
+    "radiusLabel": "Distanza massima",
+    "radiusOption": "{km} km",
+    "radiusHelp": "In linea d'aria dal comune indicato.",
+    "moreFilters": "Altri filtri",
+    "contractLegend": "Tipo di contratto",
+    "scheduleLegend": "Orario",
+    "salaryLabel": "Stipendio minimo al mese (€)",
+    "salaryHelp": "Confronto sulla cifra più alta dell'offerta. Per le offerte a ore o all'anno facciamo una stima: vedi «Come ordiniamo le offerte».",
+    "publishedLabel": "Pubblicate",
+    "publishedAny": "In qualsiasi momento",
+    "publishedWithin": "{days, plural, =1 {Nelle ultime 24 ore} other {Negli ultimi # giorni}}",
+    "submit": "Cerca",
+    "resultsTitle": "{total, plural, =0 {Nessuna offerta} =1 {1 offerta} other {# offerte}}",
+    "understoodOccupation": "Mansione riconosciuta: {label}.",
+    "understoodPlace": "Entro {km} km da {place}.",
+    "empty": "Nessuna offerta con questi criteri. Prova ad aumentare la distanza o a togliere qualche filtro.",
+    "truncated": "Ci sono molte offerte: mostriamo le 1000 più recenti. Aggiungi un comune o una mansione per restringere.",
+    "ambiguousPlace": "Ci sono più comuni che si chiamano «{name}». Quale intendi?",
+    "placeNotFound": "Non troviamo il comune «{name}».",
+    "placeSuggestions": "Forse cercavi:",
+    "placeCheck": "Controlla come è scritto e riprova.",
+    "placeOption": "{name} ({province})",
+    "where": "{municipality} ({province})",
+    "salaryMissing": "Compenso da concordare (lavoro autonomo o collaborazione)",
+    "whyTitle": "Perché la vedi:",
+    "reasons": {
+      "same_occupation": "Stessa mansione ({label})",
+      "similar_occupation": "Mansione simile a {label}",
+      "title_words": "Le parole cercate sono nel titolo",
+      "description_words": "Le parole cercate sono nella descrizione",
+      "distance": "{km, plural, =0 {Nel comune cercato} other {A # km}}",
+      "published": "{days, plural, =0 {Pubblicata oggi} =1 {Pubblicata ieri} other {Pubblicata # giorni fa}}"
+    },
+    "howItWorks": "Come ordiniamo le offerte",
+    "pagination": "Pagine dei risultati",
+    "previous": "Pagina precedente",
+    "next": "Pagina successiva",
+    "pageOf": "Pagina {page} di {count}"
+  },
+  "howItWorks": {
+    "metaTitle": "Come ordiniamo le offerte",
+    "title": "Come ordiniamo le offerte",
+    "intro": "Nessuna intelligenza artificiale e nessun trucco: l'ordine dei risultati segue regole fisse, uguali per tutti, che trovi qui. Accanto a ogni offerta scriviamo perché la vedi.",
+    "filtersTitle": "1. Prima si filtra",
+    "filters": "Vedi solo le offerte pubblicate, non scadute, di aziende verificate, che rispettano ciò che hai scelto: la mansione o le parole cercate, la distanza dal comune, il tipo di contratto, l'orario, lo stipendio minimo e la data di pubblicazione.",
+    "scoreTitle": "2. Poi si ordina con un punteggio",
+    "scoreIntro": "Ogni offerta prende dei punti per ciascun criterio. A parità di punti viene prima la più recente.",
+    "tableCriterion": "Criterio",
+    "tablePoints": "Punti al massimo",
+    "tableHow": "Come si calcola",
+    "criteria": {
+      "occupation": {
+        "name": "Mansione",
+        "how": "Tutti i punti se è la mansione cercata o se le parole sono nel titolo; metà se è una mansione simile o se le parole sono solo nella descrizione."
+      },
+      "distance": {
+        "name": "Vicinanza",
+        "how": "Tutti i punti nel comune cercato, poi sempre meno fino a zero al limite della distanza scelta."
+      },
+      "skills": {
+        "name": "Competenze in comune",
+        "how": "Solo quando cerchi dal tuo profilo (in arrivo): quante delle competenze richieste hai."
+      },
+      "freshness": {
+        "name": "Freschezza",
+        "how": "Tutti i punti il giorno della pubblicazione, poi sempre meno fino a zero dopo 30 giorni."
+      },
+      "preferences": {
+        "name": "Come preferisci",
+        "how": "Solo quando cerchi dal tuo profilo (in arrivo): contratto e orario come li hai indicati."
+      }
+    },
+    "salaryTitle": "Lo stipendio minimo",
+    "salary": "Confrontiamo la cifra più alta dell'offerta con quella che scrivi. Per le offerte all'anno dividiamo per 13 mensilità; per quelle a ore moltiplichiamo per le ore settimanali indicate (40 se mancano) e per 52 settimane, e dividiamo per 12 mesi. È una stima: la cifra vera è quella scritta nell'offerta.",
+    "neverTitle": "Cosa non usiamo mai",
+    "never": "Età, sesso, nazionalità, aspetto e altri dati personali di chi cerca: non li chiediamo e non entrano in nessun calcolo. Chi paga non sale nella classifica: eventuali offerte sponsorizzate saranno al massimo due, separate e con la scritta «Sponsorizzata».",
+    "backToSearch": "Torna alla ricerca"
   }
 }

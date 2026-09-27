@@ -4,38 +4,13 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getServerEnv } from "@/lib/env";
 import { getPublishedOffer } from "@/modules/offers";
-import { jobPostingJsonLd, serializeJsonLd, type PublicOffer } from "@/modules/offers/domain";
+import { formatSalary, jobPostingJsonLd, serializeJsonLd } from "@/modules/offers/domain";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const euroFormat = (digits: number) =>
-  new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: digits,
-  });
-const euroWhole = euroFormat(0);
-const euroCents = euroFormat(2);
-const euro = (n: number) => (Number.isInteger(n) ? euroWhole : euroCents).format(n);
 const day = new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "Europe/Rome" });
 
 async function load(id: string) {
   return UUID.test(id) ? getPublishedOffer(id) : null;
-}
-
-function salaryText(
-  o: PublicOffer,
-  t: (key: string, values?: Record<string, string>) => string,
-): string | null {
-  if (o.salaryMin == null || !o.salaryPeriod) return null;
-  const amount =
-    o.salaryMax != null && o.salaryMax !== o.salaryMin
-      ? t("salaryRange", { min: euro(o.salaryMin), max: euro(o.salaryMax) })
-      : euro(o.salaryMin);
-  return t("salary", {
-    amount,
-    period: t(`periods.${o.salaryPeriod}`),
-    basis: t(`bases.${o.salaryBasis}`),
-  });
 }
 
 export async function generateMetadata({ params }: PageProps<"/offerte/[id]">): Promise<Metadata> {
@@ -53,7 +28,7 @@ export async function generateMetadata({ params }: PageProps<"/offerte/[id]">): 
         title: o.title,
         municipality: o.municipality,
       }),
-      salaryText(o, t),
+      formatSalary(o, t),
     ]
       .filter(Boolean)
       .join(" "),
@@ -87,7 +62,7 @@ export default async function PublicOfferPage({ params }: PageProps<"/offerte/[i
   }
 
   const o = result.offer;
-  const salary = salaryText(o, t);
+  const salary = formatSalary(o, t);
   const jsonLd = jobPostingJsonLd(o, `${getServerEnv().APP_URL}/offerte/${o.id}`);
 
   return (

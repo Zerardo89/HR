@@ -37,3 +37,9 @@ export {
   serializeJsonLd,
   type PublicOffer,
 } from "./job-posting";
+export {
+  formatEuro,
+  formatSalary,
+  type SalaryFields,
+  type SalaryTranslator,
+} from "./salary-format";

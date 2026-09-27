@@ -13,12 +13,20 @@ export async function SiteHeader() {
         <Link href="/" className="text-lg font-bold text-primary">
           {meta("siteName")}
         </Link>
-        <Link
-          href="/accedi"
-          className="text-base font-medium text-primary underline underline-offset-4"
-        >
-          {t("signIn")}
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/offerte"
+            className="text-base font-medium text-primary underline underline-offset-4"
+          >
+            {t("searchJobs")}
+          </Link>
+          <Link
+            href="/accedi"
+            className="text-base font-medium text-primary underline underline-offset-4"
+          >
+            {t("signIn")}
+          </Link>
+        </div>
       </nav>
     </header>
   );

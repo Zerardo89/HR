@@ -12,6 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const offers = await listOffersForSitemap();
   return [
     { url: base, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/offerte`, changeFrequency: "hourly", priority: 0.9 },
+    { url: `${base}/come-funziona`, changeFrequency: "monthly", priority: 0.3 },
     ...offers.map((o) => ({
       url: `${base}/offerte/${o.id}`,
       lastModified: o.updatedAt,

@@ -11,7 +11,7 @@
 | 012 | ✅ Dominio fatto (Claude, 27/09) | Validatore puro + 22 test di accettazione. L'uso nel form e nel salvataggio arriva con WP-013. |
 | 013 | ✅ Fatto (Claude, 27/09) | ✅ **13a** form offerta (`/azienda/offerte/nuova`, modifica di bozze e offerte in moderazione) con **controllo dal vivo** del validatore, selettore delle mansioni accessibile (ricerca nel browser), luogo di lavoro = sede verificata, bozza → in moderazione / pubblicata con scadenza. ✅ **13b** pannello del moderatore `/moderazione` (approva / rifiuta con motivo visibile all'azienda, verifica manuale delle aziende), log di audit. |
 | 014 | 🟡 Pagina offerta fatta (Claude, 27/09) | ✅ `/offerte/[id]` SSR con dati strutturati **JobPosting** (Google for Jobs), sitemap e robots. ⏳ Pagine SEO "Lavoro [mansione] a [provincia]" (testi da Gemini). |
-| 015 | ⏳ Da fare | Ricerca (full-text + trigrammi, ADR-0003) + "perché la vedi". |
+| 015 | ✅ Fatto (Claude, 27/09) | Ricerca `/offerte` "Cosa + Dove" (mansione dalla tassonomia, full-text + trigrammi, raggio PostGIS), filtri, punteggio a pesi pubblici con "perché la vedi", pagina `/come-funziona`. |
 | 016 | ⏳ Da fare | Zona gratuita (già nel dominio, WP-005) + entitlement + periodo fondatori. |
 
 ---
@@ -138,3 +138,28 @@ pagina `/offerte/[id]`, `src/app/sitemap.ts`, `src/app/robots.ts`
   (pagina, JSON-LD, `noindex`, 404, sitemap e robots).
 - Da fare: pagine "Lavoro [mansione] a [provincia]" (con testi di Gemini, dopo WP-015), immagine per la condivisione,
   pulsante "Candidati" (WP-019).
+
+## WP-015 — Ricerca delle offerte e "perché la vedi" ✅
+**Esecutore:** Claude · **Codice:** `src/modules/matching/domain/search.ts` (puro), `src/modules/matching/server/search.ts`,
+pagine `/offerte` e `/come-funziona`
+
+- Modulo **GET** (funziona senza JavaScript; l'indirizzo si può condividere): *Cosa* (mansione o parole), *Dove*
+  (comune), distanza 5-100 km (predefinita 20), e in "Altri filtri" contratto, orario, stipendio minimo al mese,
+  data di pubblicazione. Parametri non validi ignorati, mai un errore.
+- **Filtri rigidi nel DB**: pubblicata, non scaduta, azienda verificata; raggio con `ST_DWithin` sulla sfera (stessa
+  formula di `distanceKm`); testo = mansione riconosciuta **oppure** stesso gruppo ISCO **oppure** full-text
+  `italian_unaccent` **oppure** trigrammi sul titolo ≥ 0,6 (ADR-0003). Fino a 1000 candidate (le più recenti).
+- **Nessun limite di zona per chi cerca** (ADR-0009: la zona gratuita riguarda avvisi e mail, WP-016/020).
+- **Punteggio nel dominio puro** (ADR-0005) con i pesi pubblici di 01-PRODOTTO §8: mansione 40 (uguale o parole nel
+  titolo = pieno; simile o solo descrizione = metà), vicinanza 25 (1 − distanza/raggio), freschezza 10 (a zero in
+  30 giorni). Competenze (20) e preferenze (5) entrano con il profilo (WP-017). A parità: la più recente.
+- **Perché la vedi** su ogni risultato ("Stessa mansione (Cameriere di sala) · A 12 km · Pubblicata ieri") e pagina
+  **Come ordiniamo le offerte** con la tabella dei pesi letta dal codice (R-DSA-06, R-PRIV-06).
+- Stipendio minimo: confronto sulla cifra più alta; anno ÷ 13 mensilità, ora × ore settimanali (40) × 52 ÷ 12.
+- Comune: maiuscole, accenti e apostrofi ignorati; refusi → "Forse cercavi"; omonimi → scelta con la provincia
+  ("Castro (LE)").
+- Risultati filtrati `noindex`; `/offerte` e `/come-funziona` nella sitemap; link "Cerca lavoro" nel menu.
+- Test: 12 unitari (parametri, pesi, motivi, ordine, stipendio, pagine), 4 di integrazione (PostGIS + full-text:
+  ordine e motivi, refusi, filtri, comuni), 3 e2e × 2 dispositivi.
+- Da fare: autocompletamento del comune (ora si scrive e si corregge), "cerca vicino a me" dal profilo (WP-017),
+  slot sponsorizzati separati (max 2, R-ADS-04) quando ci saranno i pagamenti.

@@ -8,7 +8,7 @@
 - `main` contiene lo Sprint 1 fino a WP-007 (PR #1).
 - **PR #3** (branch `claude/optimistic-franklin-w8ou54`) è verde e aspetta il merge: WP-006 resto, WP-008 accesso,
   WP-009 landing e lista d'attesa, WP-011a registrazione aziende, WP-011b verifica in due passaggi (2FA),
-  WP-012 validatore annunci, WP-013 form delle offerte e moderazione, WP-014 pagina pubblica dell'offerta.
+  WP-012 validatore annunci, WP-013 form delle offerte e moderazione, WP-014 pagina pubblica dell'offerta, WP-015 ricerca.
   **Uniscila prima di
   iniziare altro lavoro**, poi riparti da `main`.
 - Dettagli: [SPRINT-1.md](SPRINT-1.md), [SPRINT-2.md](SPRINT-2.md). Decisioni nuove: [ADR-0013](../adr/ADR-0013-auth-in-casa.md).
@@ -44,7 +44,7 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
 | 011c | Sedi operative (comune + approvazione del moderatore) e inviti ai colleghi (email con token, ruolo `recruiter`) | Ollama, test di Claude | Moduli `companies`, niente crittografia |
-| 015 | Ricerca offerte (full-text `italian_unaccent` + trigrammi, ADR-0003) + "perché la vedi" | Ollama, test di Claude | |
+| 016 | Periodo fondatori + entitlement "Nazionale"/"In evidenza" (costruiti, spenti finché non c'è la P.IVA) | Ollama, test di Claude | Zona gratuita già nel dominio (WP-005) |
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
 
 Per i WP di Ollama: prompt in [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md); i test di
