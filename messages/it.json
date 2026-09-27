@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "siteName": "HR",
+    "title": "HR — Il lavoro vicino a casa",
+    "description": "Offerte di lavoro vicino a casa, con lo stipendio sempre indicato. Gratis per chi cerca lavoro, gratis per le aziende della tua zona."
+  },
+  "common": {
+    "previewBanner": "Anteprima con dati di prova: le offerte non sono reali.",
+    "skipToContent": "Vai al contenuto"
+  },
+  "home": {
+    "title": "Il lavoro vicino a casa",
+    "subtitle": "Offerte vere, con lo stipendio sempre indicato. Senza truffe e senza giri strani.",
+    "launch": "Siamo online dal 1° novembre 2026.",
+    "pointsTitle": "Perché è diverso",
+    "points": {
+      "freeWorkers": "Gratis per chi cerca lavoro. Sempre.",
+      "freeCompanies": "Gratis per le aziende nella loro regione o entro 50 km.",
+      "salary": "Ogni offerta dice quanto si guadagna.",
+      "privacy": "I tuoi dati personali sono cifrati e decidi tu a chi mostrarli."
+    }
+  }
+}

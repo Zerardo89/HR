@@ -1,6 +1,6 @@
 # ADR-0006 — Hosting su VPS in Italia con Docker Compose e Caddy
 
-**Stato:** Accettata · **Data:** 26/09/2026
+**Stato:** Sostituita in parte da [ADR-0012](ADR-0012-hosting-costo-zero.md) (27/09/2026: niente VPS a pagamento all'inizio) · **Data:** 26/09/2026
 
 ## Contesto
 Dominio già su Aruba. Budget ridotto. Dati personali: preferenza per Italia/UE (niente trasferimenti extra-UE).

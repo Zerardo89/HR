@@ -1,0 +1,8 @@
+# Configurazione gitleaks (WP-003): regole predefinite + eccezione per le chiavi di test,
+# che sono pubbliche e prevedibili per costruzione (tests/fixtures/*.b64).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Chiavi di test non segrete"
+paths = ['''tests/fixtures/.*\.b64''']

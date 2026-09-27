@@ -25,3 +25,13 @@ Servono: dati relazionali, ricerca testuale in italiano tollerante agli errori, 
 
 ## Verifica
 Test di integrazione con Postgres reale (container) su: ricerca con refuso ("magazinniere"), raggio, regola di zona ai confini.
+
+## Aggiornamento 26/09/2026 (WP-004)
+- **Lo stemmer Snowball italiano non unifica singolare/plurale di molte mansioni** (verificato: "cameriere" → `camer`,
+  "camerieri" → `camerier`; "magazziniere" → `magazzin`, "magazzinieri" → `magazzinier`). La ricerca testuale del WP-015
+  deve quindi combinare **full-text** (`italian_unaccent`) **oppure** similarità a trigrammi sul titolo
+  (`word_similarity ≥ 0,6`: cameriere/camerieri 0,80; cuoco/cuoca 0,67). Fissato in `tests/integration/schema.test.ts`.
+  La via principale resta comunque la **mansione** (tassonomia con sinonimi, WP-006).
+- Il centroide dei comuni è una colonna `geography` **generata** da `lat`/`lon` (drizzle-kit non gestisce il modificatore
+  `(Point,4326)`); nel codice si usano sempre `lat`/`lon`.
+- Distanze: sfera con raggio medio (`ST_DWithin(…, false)`) = stessa formula della funzione pura `distanceKm`; verificato.

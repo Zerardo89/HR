@@ -8,7 +8,7 @@
 
 ## Decisione
 - **Next.js 16 (App Router) + TypeScript strict**, UI e backend nello stesso progetto (Server Components, Server Actions, route handler per webhook).
-- **Un solo `package.json`**, moduli in `src/modules/<modulo>/{domain,server,ui,index.ts}`, confini imposti da `eslint-plugin-boundaries`.
+- **Un solo `package.json`**, moduli in `src/modules/<modulo>/{domain,server,ui,index.ts}`, confini imposti da ESLint (strumento aggiornato: vedi "Aggiornamento 26/09/2026").
 - Un secondo entrypoint (`src/worker/`) nello stesso pacchetto per i job in background.
 
 ## Alternative scartate
@@ -25,3 +25,11 @@
 
 ## Verifica
 `pnpm check` verde; regola ESLint che fallisce se un modulo importa l'interno di un altro.
+
+## Aggiornamento 26/09/2026 (WP-001)
+- I confini tra moduli sono imposti con `import/no-restricted-paths` (già incluso in `eslint-config-next`) e
+  `no-restricted-imports` per la purezza del `domain/`, **invece di** `eslint-plugin-boundaries`: la v7 di quel plugin
+  ha cambiato completamente la configurazione (poco adatta ai modelli locali) e aggiungeva una dipendenza.
+  Le zone sono generate automaticamente leggendo `src/modules/*` in `eslint.config.mjs`. Verificato con violazioni di prova.
+- API pubbliche di un modulo: `index.ts` (lato server) e `domain/index.ts` (pura, usabile dal dominio di altri moduli).
+- TypeScript resta alla 5.9: typescript-eslint non supporta ancora TS ≥ 6.1.

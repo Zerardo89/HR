@@ -81,8 +81,8 @@ flowchart LR
 
 ## 4. Struttura del codice: monolite modulare in **un solo pacchetto**
 Un solo `package.json` (niente monorepo): i modelli locali si confondono con workspace multipli.
-I confini tra moduli sono imposti da regole ESLint (`eslint-plugin-boundaries`): un modulo usa gli altri
-**solo** tramite il loro `index.ts`.
+I confini tra moduli sono imposti da regole ESLint (`import/no-restricted-paths` + `no-restricted-imports`, vedi
+aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `index.ts` o `domain/index.ts`.
 
 ```
 .

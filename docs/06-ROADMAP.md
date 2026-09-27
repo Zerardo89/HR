@@ -36,6 +36,17 @@ Android: "Aggiungi a schermata Home"), e si comunica "App Play Store in arrivo".
 - [ ] Leggi [00-SINTESI.md](00-SINTESI.md) e rispondi a [09-DOMANDE-APERTE.md](09-DOMANDE-APERTE.md) (almeno Q1-Q6: nome, dominio, area pilota, co-fondatori, hardware, tempo disponibile).
 - [ ] Scegli il **nome del pacchetto Android** (immutabile, R-PLAY-06).
 
+> **Aggiornamento 27/09/2026 — piano "costi quasi zero"** ([ADR-0012](adr/ADR-0012-hosting-costo-zero.md), [05 §1-bis](05-MONETIZZAZIONE.md)):
+> niente VPS a pagamento né professionisti a pagamento prima del crowdfunding. Il giorno zero diventa:
+> 1. **Account Google Play** personale (25 $) — invariato, è il percorso critico.
+> 2. **Account Cloudflare gratuito** e spostamento dei nameserver di `inspectio.cloud` da Aruba a Cloudflare
+>    (prima si controlla se il dominio ha caselle email: i record MX vanno copiati). Nessuna VPS da comprare.
+> 3. **Account Brevo gratuito** (i record DNS si aggiungono in Cloudflare).
+> 4. **20 tester**.
+> 5. **CSV della tua provincia**: appuntamento gratuito per costituire l'associazione (sostituisce il commercialista).
+> 6. **PEC al Ministero del Lavoro** sulla procedura art. 6 (la bozza la prepara Claude); professionista a pagamento dopo il crowdfunding.
+> Le voci sotto su VPS, commercialista e professionisti a pagamento restano valide solo come piano B.
+
 ### Lunedì 28/09 — Giorno zero (burocrazia e strumenti) — gate **G0**
 🅲 **Store e infrastruttura (Tu)**
 - [ ] Crea l'account **Google Play Console personale** ($25), completa la verifica d'identità.

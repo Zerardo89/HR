@@ -18,6 +18,7 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 4. `docs/04-PRIVACY-SICUREZZA.md` — cifratura e sicurezza
 5. `docs/adr/` — decisioni; per cambiarne una scrivi un nuovo ADR, non modificare in silenzio quello vecchio
 6. `docs/06-ROADMAP.md` — calendario e gate
+7. `VERSIONS.md` e `node_modules/next/dist/docs/` — versioni installate e documentazione di Next.js (cambia spesso: non fidarti della memoria)
 
 ## Cosa scrivi tu (non delegare ai modelli locali)
 - `src/lib/crypto/**` (ADR-0004) e ogni chiamata a `decryptPii()`
@@ -39,10 +40,14 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 6. Esito: approva, oppure elenco numerato di correzioni da ripassare al modello locale.
 
 ## Comandi
-- `pnpm check` = lint + typecheck + test (obbligatorio prima di ogni PR)
-- `pnpm test:e2e` = Playwright
+- `pnpm check` = lint + typecheck + test unitari (obbligatorio prima di ogni PR)
+- `pnpm test:integration` = test sul DB reale (serve `DATABASE_URL` di un DB migrato)
+- `pnpm test:e2e` = Playwright (fa partire `pnpm start`: prima `pnpm build`)
+- `pnpm db:generate` / `pnpm db:migrate` = genera / applica le migrazioni
+- `pnpm keys:generate` = crea KEK e chiave dell'indice cieco in `./secrets` (mai committare)
+- `pnpm format` = Prettier
 - `docker compose -f docker-compose.dev.yml up -d` = Postgres/PostGIS + Mailpit in locale
-(I comandi esatti vengono fissati dal WP-001; aggiorna questa sezione quando cambiano.)
+- Versioni e differenze da ricordare: `VERSIONS.md`
 
 ## Regole non negoziabili
 - **Mai dati personali reali** nel repo o nei prompt. Solo seed sintetici.
@@ -53,6 +58,9 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - I testi legali restano "BOZZA" finché il professionista non li ha revisionati.
 
 ## Stato del progetto
-- 26/09/2026: progettazione completata (questo repository contiene solo documentazione).
-- Prossimo passo: WP-001 martedì 29/09 (`docs/work-packages/SPRINT-1.md`).
+- 26/09/2026: progettazione completata.
+- 26/09/2026 (in anticipo sul calendario): WP-001, WP-002, WP-003, WP-004, WP-005, WP-007 completati
+  da Claude nella sessione di avvio. Stato dettagliato in `docs/work-packages/SPRINT-1.md`.
+- Prossimi: WP-006 mansioni (serve G-05), WP-008 auth, WP-009 landing + lista d'attesa, WP-010 PWA/TWA (servono Q1-Q2).
+- Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).
