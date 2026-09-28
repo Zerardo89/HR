@@ -92,8 +92,12 @@
     },
     "terms": {
       "title": "Condizioni d'uso",
-      "p1": "Il servizio è gratuito per chi cerca lavoro, sempre. Per le aziende è gratuito nella loro regione o entro 50 km dalle loro sedi.",
-      "p2": "Le condizioni d'uso complete saranno pubblicate qui prima del lancio."
+      "currentVersion": "Versione in vigore dal {date}.",
+      "oldVersion": "Versione del {date}: non è più in vigore.",
+      "readCurrent": "Leggi la versione in vigore",
+      "historyTitle": "Tutte le versioni",
+      "historyCurrent": "{date} (in vigore)",
+      "historyItem": "{date}"
     },
     "cookies": {
       "title": "Cookie",
@@ -102,8 +106,18 @@
     },
     "contacts": {
       "title": "Contatti",
-      "p1": "L'associazione che gestirà il servizio è in costituzione: indirizzo email e PEC saranno pubblicati qui.",
-      "p2": "Per le richieste sui tuoi dati personali potrai usare anche le funzioni del tuo account (scarica i dati, cancella l'account)."
+      "intro": "Punto di contatto unico per chi usa il servizio e per le autorità (Regolamento UE 2022/2065 sui servizi digitali, articoli 11 e 12).",
+      "emailLabel": "Email",
+      "pecLabel": "PEC",
+      "pending": "sarà pubblicata qui appena l'associazione sarà costituita",
+      "languagesLabel": "Lingue",
+      "languages": "italiano e inglese",
+      "human": "Ti risponde sempre una persona, non un programma automatico.",
+      "reports": "Per segnalare un'offerta o un'azienda usa il link «Segnala» in fondo all'offerta.",
+      "reportsLink": "Come segnalare",
+      "review": "Se una nostra decisione su un'offerta o su un account non ti convince, puoi chiederne il riesame scrivendo a questo indirizzo entro 6 mesi dalla decisione.",
+      "data": "Per i tuoi dati personali (scaricarli, cancellare l'account) puoi fare tutto in autonomia da «Privacy e dati».",
+      "dataLink": "Privacy e dati"
     },
     "about": {
       "title": "Chi siamo",
@@ -1229,7 +1243,8 @@
       "facts": "Fatti che hanno portato alla decisione: {facts}",
       "ground": "Fondamento: {ground}.",
       "automation": "La verifica è partita da una o più segnalazioni degli utenti. Non abbiamo usato strumenti automatici per decidere: ha deciso una persona del nostro staff.",
-      "redress": "Se pensi che la decisione sia sbagliata, puoi chiederne il riesame entro 6 mesi scrivendoci dal punto di contatto: {contact}. Resta il tuo diritto di rivolgerti al giudice."
+      "redress": "Se pensi che la decisione sia sbagliata, puoi chiederne il riesame entro 6 mesi scrivendoci dal punto di contatto: {contact}. Resta il tuo diritto di rivolgerti al giudice.",
+      "rules": "Il regolamento degli annunci: {rules}"
     },
     "form": {
       "metaTitle": "Segnala un'offerta",
@@ -1259,6 +1274,12 @@
         "rate_limited": "Hai inviato molte segnalazioni: riprova tra qualche minuto.",
         "not_found": "Questa offerta non è più pubblicata."
       }
+    },
+    "termsBanner": {
+      "label": "Condizioni d'uso aggiornate",
+      "text": "Abbiamo aggiornato le condizioni d'uso.",
+      "read": "Leggi le novità",
+      "accept": "Accetto"
     }
   }
 }

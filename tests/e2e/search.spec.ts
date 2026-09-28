@@ -8,6 +8,11 @@ import { Pool } from "pg";
 async function seedOffer(token: string): Promise<void> {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
   try {
+    // Con `fullyParallel` il beforeAll può ripartire nello stesso worker: una sola offerta per parola.
+    const existing = await pool.query(`select 1 from job_offers where title = $1`, [
+      `Magazziniere/a ${token}`,
+    ]);
+    if (existing.rowCount) return;
     await pool.query(
       `insert into regions (code, name) values ('03','Lombardia') on conflict do nothing`,
     );
@@ -39,7 +44,11 @@ async function seedOffer(token: string): Promise<void> {
 }
 
 test.describe("ricerca delle offerte", () => {
-  const token = `rif${randomInt(100_000, 1_000_000)}`;
+  // Parola di sole lettere a caso: codici come «rif397059» e «rif397884» si somigliano (trigrammi) e la
+  // ricerca di uno troverebbe anche l'offerta dell'altro worker.
+  const token = Array.from({ length: 9 }, () => String.fromCharCode(97 + randomInt(0, 26))).join(
+    "",
+  );
   const title = `Magazziniere/a ${token}`;
 
   test.beforeAll(async () => {

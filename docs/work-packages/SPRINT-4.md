@@ -9,7 +9,7 @@
 | WP | Stato | Note |
 |----|-------|------|
 | 023 | ✅ Fatto (Claude, 28/09) | ✅ **023a** centro privacy `/account/privacy`: esporta i miei dati (JSON), consensi, cancellazione dell'account con crypto-shredding (ADR-0014). ✅ **023b** job di conservazione (inattività 6/23/24 mesi, log di sicurezza 12 mesi, lista d'attesa). |
-| 024 | 🟡 024a fatto (Claude, 28/09) | ✅ **024a** segnalazioni (art. 16) e decisioni motivate (art. 17); un'azienda sospesa non legge più i dati dei candidati. ⏳ **024b** T&C versionati, regolamento annunci, punto di contatto (R-DSA-01/02; testi con Gemini). |
+| 024 | ✅ Fatto (Claude, 28/09) | ✅ **024a** segnalazioni (art. 16) e decisioni motivate (art. 17); un'azienda sospesa non legge più i dati dei candidati. ✅ **024b** condizioni d'uso versionate con regolamento annunci e moderazione (art. 14), nuova accettazione dopo un aggiornamento, punto di contatto (art. 11-12). Testi in **BOZZA**: revisione di Gemini e del professionista. |
 | 025 | ⏳ Da fare | Pubblicità: slot, sponsor, CMP, AdSense (flag). |
 | 026 | ⏳ Da fare | Stripe (flag) + webhook + portale. |
 | 027 | ⏳ Da fare | Hardening: CSP, header, rate limit, backup + prova di ripristino (anche: ripetere le cancellazioni dopo il ripristino, ADR-0014). |
@@ -93,7 +93,7 @@ bersaglio dalla segnalazione più vecchia: annuncio, azienda, motivi con contegg
   dati dei candidati** (controllo in `modules/privacy`).
 - **Motivazione** (art. 17), salvata in `reports.statement_of_reasons` e spedita a tutti i membri attivi
   dell'azienda: decisione e portata, fatti, fondamento, uso di mezzi automatici (nessuno: decide una persona, a
-  partire da una segnalazione), rimedi (riesame rispondendo entro 6 mesi; giudice ordinario).
+  partire da una segnalazione), rimedi (riesame entro 6 mesi dal punto di contatto; giudice ordinario).
 - Audit `report.decide`: attore il moderatore, bersaglio offerta o azienda, scopo la decisione.
 
 **Test di accettazione** (scritti prima): dominio (input della segnalazione e della decisione, rilevatore di
@@ -116,3 +116,30 @@ l'offerta non c'è più → l'azienda riceve la motivazione).
   "Lodi" prima di inserirlo nel DB; funzionavano solo se un altro test l'aveva già messo. Ora `seedLodi()` in
   `tests/e2e/helpers.ts`, chiamato all'inizio.
 - Test: 10 unitari, 5 di integrazione, 1 e2e × 2 dispositivi.
+
+## WP-024b — Condizioni d'uso versionate e punto di contatto (DSA art. 11-14) ✅
+**Esecutore:** Claude (codice e bozza dei testi; da rivedere con Gemini e il professionista) · **Regole:** R-DSA-01,
+R-DSA-02 · **Codice:** `content/legal/condizioni.ts`, `src/lib/markdown-lite.ts`, `src/modules/trust/{domain/terms.ts,
+server/terms.ts,ui/terms-banner.tsx}`, pagine `/condizioni` e `/contatti`, `src/app/_components/legal-document.tsx`
+
+- **Testi versionati** in `content/legal/condizioni.ts`: ogni versione pubblicata resta nel file, identica. Un test
+  confronta l'impronta (SHA-256) di ogni versione: per cambiare il testo si **aggiunge** una versione (e la sua
+  impronta nel test) e si aggiorna `LEGAL_VERSIONS.terms`. Formato Markdown ridotto (titoli con ancora, paragrafi,
+  elenchi, grassetto, link interni), reso con componenti React: nessun HTML dal testo. Moduli TS e non file letti a
+  runtime: con l'immagine `standalone` finiscono sempre nel bundle.
+- **Bozza "bozza-2026-09-28"** (sostituisce il segnaposto "bozza-2026-09-27", che resta consultabile): chi siamo,
+  chi può usare il servizio, costi, **regolamento degli annunci** (`#regolamento-annunci`, citato nelle motivazioni
+  delle decisioni), **come controlliamo gli annunci** (art. 14: controllo automatico a regole senza IA, controllo
+  umano, segnalazioni, decisioni motivate, riesame, ordine dei risultati), obblighi, dati personali (rimando
+  all'informativa, nessun claim), sospensione, modifiche, contatti e legge applicabile.
+- **`/condizioni`**: versione in vigore con data, archivio di tutte le versioni (`?versione=`, non indicizzate).
+- **Nuova accettazione** (art. 14.2): chi ha accettato una versione precedente vede in ogni pagina l'avviso
+  «Abbiamo aggiornato le condizioni d'uso» con il link e il pulsante «Accetto»; l'accettazione è una nuova riga in
+  `consents`, così resta la prova di entrambe le versioni. Non blocca la navigazione.
+- **`/contatti`**: punto di contatto unico per utenti e autorità (art. 11-12): email e PEC da `lib/organization`
+  (oggi "in costituzione"), lingue italiano e inglese, risponde una persona, come segnalare, riesame entro 6 mesi,
+  dati personali in autonomia da «Privacy e dati».
+- La motivazione delle decisioni (024a) ora include il link al regolamento degli annunci.
+- Test: 4 unitari (versioni immutabili, sezioni DSA, archivio, nuova accettazione) + 3 del Markdown ridotto,
+  2 di integrazione (nuova accettazione una sola volta, prova delle due versioni), 3 e2e × 2 dispositivi.
+- Da fare: revisione dei testi (Gemini, poi il professionista); informativa privacy versionata allo stesso modo.

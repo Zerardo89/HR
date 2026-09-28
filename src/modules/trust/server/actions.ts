@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { clientIp } from "@/lib/client-ip";
+import { getDb } from "@/lib/db";
 import { getCurrentUser, requireUser } from "@/modules/identity";
 import {
   REPORT_DETAILS_MAX,
@@ -14,6 +15,7 @@ import {
 } from "../domain";
 import { decideReports, submitReport } from "./reports";
 import { reportLimiter, runtimeDeps } from "./runtime";
+import { acceptCurrentTerms } from "./terms";
 
 /*
  * Server Actions delle segnalazioni (WP-024a). Next.js controlla `Origin` e `Host` (CSRF).
@@ -77,4 +79,12 @@ export async function decideReportAction(form: FormData): Promise<void> {
   const result = await decideReports(runtimeDeps(), user.id, parsed.data);
   revalidatePath("/moderazione");
   redirect(`/moderazione?esito=report_${result.status}`);
+}
+
+/** "Accetto" le condizioni d'uso aggiornate (WP-024b): registra la versione in vigore. */
+export async function acceptTermsAction(): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user) return;
+  await acceptCurrentTerms(getDb(), user.id, new Date());
+  revalidatePath("/", "layout");
 }

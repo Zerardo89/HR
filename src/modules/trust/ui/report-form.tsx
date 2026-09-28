@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState, useId } from "react";
-import { REPORT_DETAILS_MAX, REPORT_REASONS } from "../domain";
+import { REPORT_DETAILS_MAX, REPORT_REASONS } from "../domain/reports";
 import { submitReportAction, type ReportState } from "../server/actions";
 
 const field = "w-full rounded-lg border border-border bg-surface px-3 py-3 text-lg text-foreground";

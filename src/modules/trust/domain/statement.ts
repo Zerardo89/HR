@@ -43,11 +43,13 @@ export function statementOfReasons(
     facts: input.facts,
     ground: groundText(input.ground),
     contact: `${input.appUrl}/contatti`,
+    rules: `${input.appUrl}/condizioni#regolamento-annunci`,
   };
   return [
     fillTemplate(input.targetType === "offer" ? t.offerRemoved : t.companySuspended, values),
     fillTemplate(t.facts, values),
     fillTemplate(t.ground, values),
+    fillTemplate(t.rules, values),
     fillTemplate(t.automation, values),
     fillTemplate(t.redress, values),
   ].join("\n\n");

@@ -104,7 +104,7 @@ export function signupCookieName(secure: boolean): string {
 /** Versioni dei testi legali accettati alla registrazione (restano "bozza" fino alla revisione del professionista). */
 export const LEGAL_VERSIONS = {
   privacyNotice: "bozza-2026-09-27",
-  terms: "bozza-2026-09-27",
+  terms: "bozza-2026-09-28",
 } as const;
 
 // ─── Verifica in due passaggi (2FA TOTP, WP-011b) ───────────────────────────────────────────────────

@@ -27,3 +27,10 @@ export {
   statementOfReasons,
   type RenderedEmail,
 } from "./statement";
+export {
+  CURRENT_TERMS,
+  termsHistory,
+  termsOutdated,
+  termsVersion,
+  type TermsVersion,
+} from "./terms";

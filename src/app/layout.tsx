@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { SiteFooter } from "@/app/_components/site-footer";
 import { SiteHeader } from "@/app/_components/site-header";
 import { flags } from "@/lib/flags";
+import { TermsUpdateBanner } from "@/modules/trust";
 import "./globals.css";
 
 // I flag (es. PREVIEW_MODE) si leggono a runtime: la stessa immagine Docker gira in anteprima e in produzione.
@@ -50,6 +51,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </div>
         )}
         <SiteHeader />
+        <TermsUpdateBanner />
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
         <SiteFooter />
       </body>
