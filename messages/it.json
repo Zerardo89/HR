@@ -193,6 +193,18 @@
     "common": {
       "intro": "Ciao,",
       "signature": "{siteName} — {appUrl}"
+    },
+    "offerExpiring": {
+      "subject": "La tua offerta «{title}» scade il {date}",
+      "body": "L'offerta «{title}» scade il {date}. Se la posizione è ancora aperta, rinnovala; se l'hai già coperta, chiudila: i candidati riceveranno un avviso e nessuno resta senza risposta.",
+      "link": "Gestisci l'offerta: {link}"
+    },
+    "positionClosed": {
+      "subject": "La posizione «{title}» è chiusa",
+      "closed": "{company} ha chiuso l'offerta «{title}» a cui ti eri candidata/o.",
+      "expired": "L'offerta «{title}» di {company}, a cui ti eri candidata/o, è scaduta.",
+      "thanks": "Grazie per la candidatura. Altre offerte ti aspettano qui: {search}",
+      "link": "Le tue candidature: {link}"
     }
   },
   "waitlist": {
@@ -427,7 +439,7 @@
     "noSites": "Per pubblicare un'offerta serve almeno una sede approvata. La sede legale arriva dalla verifica della Partita IVA; le altre sedi le aggiungi dalla pagina «Sedi» dell'area azienda.",
     "backToCompany": "Torna all'area azienda",
     "statusLabel": "Stato",
-    "notEditable": "Un'offerta pubblicata non si modifica: presto potrai chiuderla o rinnovarla da qui.",
+    "notEditable": "Un'offerta pubblicata non si modifica: puoi chiuderla o, vicino alla scadenza, rinnovarla.",
     "status": {
       "draft": "Bozza",
       "pending_review": "In moderazione",
@@ -439,7 +451,11 @@
     "outcome": {
       "draft": "Bozza salvata. Puoi completarla quando vuoi.",
       "pending_review": "Offerta inviata: la controlla un moderatore, di solito entro un giorno lavorativo. Poi sarà visibile a tutti.",
-      "published": "Offerta pubblicata: è visibile a tutti."
+      "published": "Offerta pubblicata: è visibile a tutti.",
+      "closed": "Offerta chiusa: non si vede più e i candidati riceveranno un avviso entro domattina.",
+      "renewed": "Offerta rinnovata: nuova scadenza il {date}.",
+      "not_allowed": "Operazione non possibile per questa offerta.",
+      "not_found": "Offerta non trovata."
     },
     "form": {
       "title": "Titolo dell'offerta",
@@ -554,7 +570,22 @@
       "other": "Non rispetta il regolamento degli annunci."
     },
     "viewPublic": "Vedi la pagina pubblica",
-    "applicationsLink": "Candidature ricevute"
+    "applicationsLink": "Candidature ricevute",
+    "lifecycle": {
+      "expiresOn": "Scade il {date}.",
+      "renewTitle": "Rinnova l'offerta",
+      "renewHelp": "La posizione è ancora aperta? Rinnovala: resta visibile dalla data di oggi.",
+      "renewDays": "Per quanti giorni",
+      "renewOption": "{days} giorni",
+      "renew": "Rinnova",
+      "renewableFrom": "Potrai rinnovarla dal {date} (negli ultimi {days} giorni prima della scadenza).",
+      "closeTitle": "Chiudi l'offerta",
+      "closeHelp": "Hai trovato chi cercavi o la posizione non è più disponibile? Chiudila: sparisce dalla ricerca e i candidati ricevono un avviso, così nessuno resta senza risposta.",
+      "close": "Chiudi l'offerta",
+      "expiredNote": "Scaduta il {date}. I candidati hanno ricevuto (o ricevono entro domattina) un avviso. Per cercare ancora, pubblica una nuova offerta.",
+      "closedNote": "Offerta chiusa. I candidati hanno ricevuto (o ricevono entro domattina) un avviso.",
+      "newOffer": "Pubblica una nuova offerta"
+    }
   },
   "moderation": {
     "metaTitle": "Moderazione",

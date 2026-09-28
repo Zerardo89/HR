@@ -1,7 +1,7 @@
 import { and, desc, eq, inArray } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { companyMembers, jobOffers, municipalities, provinces } from "@/lib/db/schema";
-import { OTHER_PLACE } from "../domain";
+import { effectiveStatus, OTHER_PLACE } from "../domain";
 
 export type CompanyOfferRow = {
   id: string;
@@ -11,13 +11,14 @@ export type CompanyOfferRow = {
   updatedAt: Date;
 };
 
-/** Offerte delle aziende di cui l'utente è membro (autorizzazione: solo le proprie). */
+/** Offerte delle aziende di cui l'utente è membro (autorizzazione: solo le proprie). Stato effettivo (WP-022). */
 export async function listOffersForCompany(
   db: NodePgDatabase,
   userId: string,
   companyId: string,
+  now: Date = new Date(),
 ): Promise<CompanyOfferRow[]> {
-  return db
+  const rows = await db
     .select({
       id: jobOffers.id,
       title: jobOffers.title,
@@ -32,12 +33,17 @@ export async function listOffersForCompany(
     )
     .where(eq(jobOffers.companyId, companyId))
     .orderBy(desc(jobOffers.updatedAt));
+  return rows.map((r) => ({ ...r, status: effectiveStatus(r.status, r.validThrough, now) }));
 }
 
 export type EditableOffer = {
   id: string;
   companyId: string;
+  /** Stato effettivo: una pubblicata oltre la scadenza è già "scaduta" (WP-022). */
   status: CompanyOfferRow["status"];
+  /** Stato salvato nel DB (per chiusura e rinnovo). */
+  storedStatus: CompanyOfferRow["status"];
+  validThrough: Date | null;
   values: Record<string, string>;
   /** Ultimo rifiuto del moderatore (DSA art. 17: l'azienda vede il motivo), se l'offerta è tornata bozza. */
   rejection: { reason: string; note?: string } | null;
@@ -48,6 +54,7 @@ export async function getOfferForMember(
   db: NodePgDatabase,
   userId: string,
   offerId: string,
+  now: Date = new Date(),
 ): Promise<EditableOffer | null> {
   const [o] = await db
     .select({ offer: jobOffers, place: municipalities.name, province: provinces.abbreviation })
@@ -70,7 +77,9 @@ export async function getOfferForMember(
   return {
     id: offer.id,
     companyId: offer.companyId,
-    status: offer.status,
+    status: effectiveStatus(offer.status, offer.validThrough, now),
+    storedStatus: offer.status,
+    validThrough: offer.validThrough,
     values: {
       // Senza sede = luogo di lavoro scritto a mano ("altro comune", WP-016).
       siteId: offer.siteId ?? OTHER_PLACE,

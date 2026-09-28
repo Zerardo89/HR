@@ -65,8 +65,8 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 27/09/2026: PR #1 unita su `main`. WP-008 accesso completato, con cambio di libreria (ADR-0013: niente Better Auth).
 - 28/09/2026: PR #3 (Sprint 1-2) e #4 (WP-017) unite. WP-019 candidature fatto. Stato per sprint in
   `docs/work-packages/SPRINT-{1,2,3}.md`.
-- 28/09/2026: WP-020 worker pg-boss + avvisi + email di esito (020c).
-- Prossimi: WP-022 scadenza offerte, WP-021 mail mensile, WP-018 CV PDF,
+- 28/09/2026: WP-020 worker pg-boss + avvisi + email di esito (020c). WP-022 ciclo di vita delle offerte.
+- Prossimi: WP-021 mail mensile, WP-018 CV PDF, WP-023 centro privacy,
   WP-010 PWA/TWA (servono nome e server).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

@@ -130,7 +130,7 @@ Implementa R-PRIV-03 con job `pg-boss` giornalieri (fuso orario `Europe/Rome`; a
 | `retention.inactive-hide` | Nessuna attività per 6 mesi → profilo nascosto + email di avviso |
 | `retention.inactive-delete-notice` | 23 mesi di inattività → preavviso di cancellazione |
 | `retention.inactive-delete` | 24 mesi → cancellazione con crypto-shredding |
-| `retention.applications` | Candidature: rimosse dalla vista azienda 6 mesi dopo la chiusura dell'offerta |
+| `retention.applications` | Candidature: rimosse dalla vista azienda 6 mesi dopo la chiusura dell'offerta (controllo in lettura, `company_visible_until`); poi il messaggio cifrato si cancella (job, WP-022) |
 | `retention.audit` | Log di sicurezza oltre 12 mesi → eliminati |
 | `retention.waitlist` | Iscritti alla lista d'attesa non convertiti entro 6 mesi dal lancio → eliminati |
 

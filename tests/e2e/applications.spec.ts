@@ -1,7 +1,14 @@
 import { createHash, randomInt } from "node:crypto";
 import { expect, test, type BrowserContext } from "@playwright/test";
 import { Pool } from "pg";
-import { enableTwoFactor, MAILPIT, mailpitReachable, newTestEmail, signUp } from "./helpers";
+import {
+  enableTwoFactor,
+  MAILPIT,
+  mailpitReachable,
+  newTestEmail,
+  runWorkerJob,
+  signUp,
+} from "./helpers";
 
 // Test di accettazione WP-019: il lavoratore si candida; l'azienda riceve un'email senza dati personali,
 // apre la candidatura (dati decifrati per lei) e aggiorna lo stato, che il lavoratore vede.
@@ -85,7 +92,11 @@ async function lastMailTo(
   return found!;
 }
 
-test("candidatura: dal lavoratore all'azienda e ritorno", async ({ browser, request }) => {
+test("candidatura: dal lavoratore all'azienda e ritorno", async ({
+  browser,
+  request,
+}, testInfo) => {
+  test.setTimeout(120_000);
   test.skip(
     (!(await mailpitReachable(request)) || !process.env.DATABASE_URL) && !process.env.CI,
     "Servono Mailpit e DATABASE_URL",
@@ -157,6 +168,20 @@ test("candidatura: dal lavoratore all'azienda e ritorno", async ({ browser, requ
   const card = worker.getByRole("article", { name: title });
   await expect(card).toContainText("L'azienda ti contatterà");
   await expect(card).toContainText("vista il");
+
+  // WP-022: l'azienda chiude l'offerta; la pagina pubblica lo dice, il candidato lo vede e riceve l'avviso.
+  await company.goto(`/azienda/offerte/${offerId}`);
+  await company.getByRole("button", { name: "Chiudi l'offerta" }).click();
+  await expect(company.getByRole("status")).toContainText("Offerta chiusa");
+  await expect(company.getByText("Stato: Chiusa")).toBeVisible();
+  await worker.goto(`/offerte/${offerId}`);
+  await expect(worker.getByText("non è più disponibile")).toBeVisible();
+  await worker.goto("/candidature");
+  await expect(worker.getByRole("article", { name: title })).toContainText("Offerta chiusa");
+  runWorkerJob("offers.lifecycle", String(testInfo.project.use.baseURL));
+  const closed = await lastMailTo(request, workerEmail, "è chiusa");
+  expect(closed.Subject).toBe(`La posizione «${title}» è chiusa`);
+  expect(closed.Text).toContain(`Enoteca Finta ha chiuso l'offerta «${title}»`);
 
   await companyContext.close();
   await workerContext.close();

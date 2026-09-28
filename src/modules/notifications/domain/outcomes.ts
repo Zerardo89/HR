@@ -92,3 +92,47 @@ export function renderApplicationUpdate(input: {
     t.safety,
   ]);
 }
+
+// ─── Ciclo di vita dell'offerta (WP-022) ─────────────────────────────────────────────────────────────
+
+const longDate = new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "Europe/Rome" });
+
+/** All'azienda, tre giorni prima della scadenza: rinnova o chiudi (così nessun candidato resta senza risposta). */
+export function renderExpiryNotice(input: {
+  appUrl: string;
+  offerId: string;
+  title: string;
+  validThrough: Date;
+}): RenderedEmail {
+  const t = messages.emails.offerExpiring;
+  const values = {
+    title: input.title,
+    date: longDate.format(input.validThrough),
+    link: `${input.appUrl}/azienda/offerte/${input.offerId}`,
+  };
+  return compose(input.appUrl, fillTemplate(t.subject, values), [
+    fillTemplate(t.body, values),
+    fillTemplate(t.link, values),
+  ]);
+}
+
+/** Al candidato: l'offerta è stata chiusa dall'azienda o è scaduta (R-ANN-07). */
+export function renderPositionClosed(input: {
+  appUrl: string;
+  title: string;
+  company: string;
+  reason: "closed" | "expired";
+}): RenderedEmail {
+  const t = messages.emails.positionClosed;
+  const values = {
+    title: input.title,
+    company: input.company,
+    search: `${input.appUrl}/offerte`,
+    link: `${input.appUrl}/candidature`,
+  };
+  return compose(input.appUrl, fillTemplate(t.subject, values), [
+    fillTemplate(t[input.reason], values),
+    fillTemplate(t.thanks, values),
+    fillTemplate(t.link, values),
+  ]);
+}

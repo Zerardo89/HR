@@ -1,5 +1,11 @@
+import { purgeApplicationMessages } from "@/modules/applications/jobs";
 import { cleanupAuthRows } from "@/modules/identity/jobs";
-import { cleanupEmailTokens, sendJobAlerts } from "@/modules/notifications/jobs";
+import {
+  cleanupEmailTokens,
+  sendJobAlerts,
+  sendOfferLifecycleEmails,
+} from "@/modules/notifications/jobs";
+import { expireOffers } from "@/modules/offers/jobs";
 
 /*
  * Job pianificati del worker (WP-020, ADR-0003). Orari in ora italiana: pg-boss calcola il cron nel fuso
@@ -21,6 +27,24 @@ export const scheduledJobs: readonly ScheduledJob[] = [
     name: "maintenance.cleanup",
     cron: "30 3 * * *",
     run: async () => ({ ...(await cleanupAuthRows()), ...(await cleanupEmailTokens()) }),
+  },
+  {
+    // Conservazione (docs/04 §8): messaggi delle candidature oltre la finestra dell'azienda (R-PRIV-03).
+    name: "retention.applications",
+    cron: "45 3 * * *",
+    run: purgeApplicationMessages,
+  },
+  {
+    // WP-022 (R-ANN-07): scadenze, promemoria alle aziende, "posizione chiusa" ai candidati. Di mattina:
+    // le email di chiusura non partono di notte; le offerte scadute spariscono comunque subito dalla ricerca.
+    name: "offers.lifecycle",
+    cron: "30 7 * * *",
+    run: async () => {
+      const expired = await expireOffers();
+      const emails = await sendOfferLifecycleEmails();
+      if (emails.failures > 0) throw new Error(`email non spedite: ${emails.failures}`);
+      return { ...expired, ...emails };
+    },
   },
   {
     // 01-PRODOTTO §6: gli invii partono alle 9; gli avvisi un'ora prima, per chi cerca al mattino.

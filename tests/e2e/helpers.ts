@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { createHmac, randomUUID } from "node:crypto";
 import { expect, type APIRequestContext, type Page } from "@playwright/test";
 
@@ -94,4 +95,21 @@ export async function enableTwoFactor(page: Page): Promise<string> {
     page.getByRole("heading", { name: "Salva questi codici di recupero" }),
   ).toBeVisible();
   return key;
+}
+
+/** Un giro di un job del worker, come lo fa pg-boss (`pnpm worker --once <job>`), con la configurazione di prova. */
+export function runWorkerJob(job: string, appUrl: string): void {
+  execFileSync("pnpm", ["-s", "worker", "--once", job], {
+    env: {
+      ...process.env,
+      APP_URL: appUrl,
+      KEK_FILE: "./tests/fixtures/test-kek.b64",
+      BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
+      SMTP_HOST: "localhost",
+      SMTP_PORT: "1025",
+      MAIL_FROM: "HR test <noreply@localhost>",
+    },
+    stdio: "pipe",
+    timeout: 90_000,
+  });
 }

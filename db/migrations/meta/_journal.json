@@ -71,6 +71,13 @@
       "when": 1790555050974,
       "tag": "0009_saved_searches_drop_old",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790574623792,
+      "tag": "0010_offer_lifecycle",
+      "breakpoints": true
     }
   ]
 }
