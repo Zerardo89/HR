@@ -12,7 +12,7 @@
 | 024 | ✅ Fatto (Claude, 28/09) | ✅ **024a** segnalazioni (art. 16) e decisioni motivate (art. 17); un'azienda sospesa non legge più i dati dei candidati. ✅ **024b** condizioni d'uso versionate con regolamento annunci e moderazione (art. 14), nuova accettazione dopo un aggiornamento, punto di contatto (art. 11-12). Testi in **BOZZA**: revisione di Gemini e del professionista. |
 | 025 | ⏳ Da fare | Pubblicità: slot, sponsor, CMP, AdSense (flag). |
 | 026 | ⏳ Da fare | Stripe (flag) + webhook + portale. |
-| 027 | ⏳ Da fare | Hardening: CSP, header, rate limit, backup + prova di ripristino (anche: ripetere le cancellazioni dopo il ripristino, ADR-0014). |
+| 027 | 🟡 027a-c fatti (Claude, 28/09) | ✅ CSP con nonce e header di sicurezza; ✅ ruoli DB separati (`hr_app`, `hr_worker`), e2e in CI con i ruoli ristretti; ✅ backup, prova di ripristino e ripetizione delle cancellazioni (ADR-0014), runbook. ⏳ sul server (WP-010): cron dei backup, restic, Caddy con HSTS e limite di frequenza generale. |
 | 028 | ⏳ Da fare | E2E dei percorsi critici, accessibilità, carico. |
 
 ---
@@ -143,3 +143,33 @@ server/terms.ts,ui/terms-banner.tsx}`, pagine `/condizioni` e `/contatti`, `src/
 - Test: 4 unitari (versioni immutabili, sezioni DSA, archivio, nuova accettazione) + 3 del Markdown ridotto,
   2 di integrazione (nuova accettazione una sola volta, prova delle due versioni), 3 e2e × 2 dispositivi.
 - Da fare: revisione dei testi (Gemini, poi il professionista); informativa privacy versionata allo stesso modo.
+
+## WP-027 — Sicurezza, ruoli del database, backup e ripristino (027a-c) ✅
+**Esecutore:** Claude (proxy, ruoli, privacy) · **Codice:** `src/lib/security-headers.ts`, `src/proxy.ts`,
+`next.config.ts`, `src/lib/db/roles.ts`, `scripts/db-roles.ts`, `src/modules/privacy/{domain/erasure-log.ts,
+server/ledger.ts,server/erasure.ts}`, `scripts/reapply-erasures.ts`, `scripts/ops/{backup,restore-test}.sh`,
+[runbook](../runbook/BACKUP-E-RIPRISTINO.md)
+
+- **027a — Header e CSP.** CSP con nonce nuovo a ogni pagina e `strict-dynamic` (guida Next.js 16): niente script
+  inline senza nonce, niente origini esterne, `frame-ancestors 'none'`, `object-src 'none'`, `form-action 'self'`;
+  `upgrade-insecure-requests` solo in HTTPS. Su tutte le risposte (API comprese): `nosniff`, `X-Frame-Options`,
+  `Referrer-Policy: same-origin` (i link con token delle email non escono verso altri siti; non `no-referrer`, che
+  toglierebbe l'`Origin` ai POST usato da Next.js contro il CSRF), `Permissions-Policy`, COOP; HSTS in HTTPS.
+  Pubblicità (WP-025) e statistiche dovranno aggiungere le loro origini alla CSP, dietro i flag.
+- **027b — Ruoli separati.** `pnpm db:roles` (idempotente, dopo ogni migrazione): `hr_app` per il sito (niente DDL,
+  log di audit solo in aggiunta), `hr_worker` per i job (+ cancellazione del log oltre 12 mesi, schema `pgboss`,
+  permesso di creare schemi che pg-boss richiede). **Trovato e risolto**: con i ruoli ristretti il worker non partiva
+  (pg-boss esegue `CREATE SCHEMA IF NOT EXISTS`, che chiede il permesso anche se lo schema c'è). La CI ora fa girare
+  **tutti gli e2e** col sito come `hr_app` e i job come `hr_worker`.
+- **027c — Backup e ripristino (ADR-0014).** Registro delle cancellazioni fuori dal DB (`ERASURE_LEDGER_FILE`, una
+  riga JSON con il solo id, permessi 600); se non si scrive, la cancellazione vale lo stesso e il log segnala
+  l'errore. `pnpm privacy:reapply-erasures` ripete le cancellazioni dopo un ripristino (attore `system:restore`).
+  `scripts/ops/backup.sh` (pg_dump + restic, 7/4/6) e `scripts/ops/restore-test.sh` (DB di prova, conteggi, ripetizione
+  delle cancellazioni, pulizia): prova fatta su un dump reale del DB di test, riuscita.
+- **Limiti di frequenza**: rivisti. Ci sono dove servono (codici di accesso per IP, lista d'attesa e segnalazioni per
+  IP, inviti per azienda, una candidatura per offerta); il limite generale va su Caddy con il server (WP-010).
+- Test: 4 + 2 unitari (header, registro), 4 di integrazione sui ruoli + 3 sul ripristino, 4 e2e × 2 dispositivi
+  (header, nonce diverso per richiesta, nessuna violazione CSP, componenti interattivi funzionanti). Verificato che
+  gli e2e falliscono se la CSP blocca gli script.
+- Da fare sul server (WP-010): cron dei backup alle 01:30 e del registro ogni ora, repository restic fuori sede,
+  prima prova di ripristino in produzione, Caddy (HSTS, limite generale).

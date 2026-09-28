@@ -105,6 +105,8 @@ export function runWorkerJob(job: string, appUrl: string): void {
   execFileSync("pnpm", ["-s", "worker", "--once", job], {
     env: {
       ...process.env,
+      // Con E2E_WORKER_DATABASE_URL i job girano col ruolo ristretto `hr_worker` (WP-027).
+      DATABASE_URL: process.env.E2E_WORKER_DATABASE_URL ?? process.env.DATABASE_URL,
       APP_URL: appUrl,
       KEK_FILE: "./tests/fixtures/test-kek.b64",
       BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",

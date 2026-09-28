@@ -33,7 +33,12 @@ export default defineConfig({
         // Configurazione di test (nessun segreto reale). Il DB può mancare: /api/health risponde "down".
         env: {
           APP_URL: baseURL,
-          DATABASE_URL: process.env.DATABASE_URL ?? "postgres://hr:hr_dev_only@localhost:5432/hr",
+          // Con E2E_APP_DATABASE_URL il sito gira col ruolo ristretto `hr_app` (WP-027); i test preparano i dati
+          // con DATABASE_URL (proprietario).
+          DATABASE_URL:
+            process.env.E2E_APP_DATABASE_URL ??
+            process.env.DATABASE_URL ??
+            "postgres://hr:hr_dev_only@localhost:5432/hr",
           KEK_FILE: "./tests/fixtures/test-kek.b64",
           BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
           SMTP_HOST: "localhost",

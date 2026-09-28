@@ -93,7 +93,8 @@ critico. L'interfaccia `KeyProvider` rende la migrazione un lavoro di 1-2 giorni
    non usare mai `ports: "5432:5432"` nel compose di produzione.
 2. **Credenziali DB** generate al provisioning, salvate come Docker secret; **non** annotate altrove.
 3. **Niente pgAdmin/Adminer** in produzione.
-4. **Migrazioni** eseguite solo dalla pipeline di deploy.
+4. **Migrazioni** eseguite solo dalla pipeline di deploy. **Ruoli separati** (WP-027): l'app web si collega come
+   `hr_app` (niente DDL, log di audit solo in aggiunta), il worker come `hr_worker`; il proprietario solo in pipeline.
 5. **Pannello admin senza dati personali:** moderazione offerte (dati pubblici), statistiche aggregate, segnalazioni DSA,
    stato dei job. Le richieste degli utenti sui propri dati si gestiscono **in self-service** (export, cancellazione).
    Le segnalazioni mostrano al moderatore solo motivo e descrizione (in cui email e numeri di telefono sono
@@ -117,7 +118,7 @@ critico. L'interfaccia `KeyProvider` rende la migrazione un lavoro di 1-2 giorni
 | Dipendenze | Renovate/Dependabot, `pnpm audit`, blocco versioni (lockfile), Trivy sulle immagini |
 | Segreti | gitleaks in CI; `.env` mai committato; `.env.example` senza valori |
 | Server | Solo chiavi SSH, root disabilitato, `unattended-upgrades`, firewall (22 limitato, 80/443), CrowdSec o fail2ban |
-| Backup | `restic` cifrato, giornaliero, **offsite presso un altro fornitore UE**; retention 7 giornalieri / 4 settimanali / 6 mensili; **test di ripristino** mensile documentato |
+| Backup | `restic` cifrato, giornaliero, **offsite presso un altro fornitore UE**; retention 7 giornalieri / 4 settimanali / 6 mensili; **test di ripristino** mensile documentato. Dopo ogni ripristino si ripetono le cancellazioni dal registro (ADR-0014). Procedura e script: [runbook](runbook/BACKUP-E-RIPRISTINO.md) |
 | Monitoraggio | Uptime Kuma (uptime + certificati), log JSON con redazione dei campi personali (pino `redact`), allarmi via email/Telegram al gestore |
 
 ## 7. Log di audit

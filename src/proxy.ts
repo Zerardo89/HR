@@ -1,16 +1,30 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { contentSecurityPolicy, HSTS, newNonce } from "@/lib/security-headers";
 import { SESSION_COOKIE_MAX_AGE_S, sessionCookieName } from "@/modules/identity/domain";
 
 /**
- * Rinnovo scorrevole del cookie di sessione (ADR-0013): a ogni pagina visitata il cookie riparte da 30 giorni.
- * Il cookie è solo il contenitore del token: la validità vera la decide la riga in `auth_sessions`.
- * Qui niente DB e niente moduli "server-only" (il proxy gira separato dal rendering).
+ * Proxy delle pagine (gira separato dal rendering: niente DB e niente moduli "server-only").
+ * - CSP con un nonce nuovo a ogni pagina (WP-027): Next.js lo legge dall'header della richiesta e lo mette sui
+ *   propri script. Le pagine sono già dinamiche (`force-dynamic` nel layout).
+ * - Rinnovo scorrevole del cookie di sessione (ADR-0013): a ogni pagina visitata il cookie riparte da 30 giorni.
+ *   Il cookie è solo il contenitore del token: la validità vera la decide la riga in `auth_sessions`.
  */
 export function proxy(request: NextRequest) {
-  const response = NextResponse.next();
-  if (request.method !== "GET") return response;
+  if (request.method !== "GET") return NextResponse.next();
 
   const secure = (process.env.APP_URL ?? "").startsWith("https://");
+  const nonce = newNonce();
+  const csp = contentSecurityPolicy(nonce, {
+    dev: process.env.NODE_ENV === "development",
+    https: secure,
+  });
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set("Content-Security-Policy", csp);
+  if (secure) response.headers.set(...HSTS);
+
   const name = sessionCookieName(secure);
   const token = request.cookies.get(name)?.value;
   if (token) {
@@ -26,7 +40,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Solo le pagine: niente file statici, immagini e API.
+  // Solo le pagine: niente file statici, immagini e API (gli header fissi li mette next.config.ts ovunque).
   matcher: [
     "/((?!_next/static|_next/image|api/|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|ico|webp|txt|xml|webmanifest)$).*)",
   ],

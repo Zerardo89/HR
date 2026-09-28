@@ -15,6 +15,7 @@ import {
   waitlistExpired,
 } from "../domain";
 import { eraseAccount } from "./erasure";
+import type { ErasureLedger } from "./ledger";
 import { notificationEmail } from "./notify";
 
 /*
@@ -29,6 +30,8 @@ export type RetentionDeps = {
   mailer: Mailer;
   now: () => Date;
   appUrl: string;
+  /** Registro delle cancellazioni fuori dal DB (ADR-0014). */
+  ledger?: ErasureLedger;
 };
 
 const BATCH = 500;

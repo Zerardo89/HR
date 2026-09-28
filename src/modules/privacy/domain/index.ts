@@ -1,5 +1,6 @@
 // API pura del modulo privacy.
 export { DELETE_CONFIRM_WORD, deleteAccountInput } from "./center";
+export { ERASURE_EVENT, erasureLedgerLine, parseErasedUserIds } from "./erasure-log";
 export {
   AUDIT_RETENTION_MONTHS,
   canDeleteInactive,

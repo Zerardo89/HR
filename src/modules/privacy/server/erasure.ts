@@ -13,6 +13,7 @@ import {
   workerProfiles,
 } from "@/lib/db/schema";
 import { logger } from "@/lib/logger";
+import type { ErasureLedger } from "./ledger";
 
 /*
  * Cancellazione dell'account con crypto-shredding (WP-023, R-PRIV-04, docs/04 §3).
@@ -25,13 +26,15 @@ import { logger } from "@/lib/logger";
  * - L'email si libera: ci si può registrare di nuovo con lo stesso indirizzo (nuovo account, nuova chiave).
  * - Unico titolare di un'azienda con colleghi: la titolarità passa al collega attivo più anziano, così l'azienda
  *   non resta senza responsabile (registrato nell'audit).
+ * - Oltre al log, il registro delle cancellazioni (`ERASURE_LEDGER_FILE`, WP-027) tiene l'id fuori dal DB: dopo un
+ *   ripristino da backup `reapplyErasures` ripete le cancellazioni (motivo `restore`, runbook).
  */
 
-export type ErasureReason = "self" | "retention";
+export type ErasureReason = "self" | "retention" | "restore";
 export type ErasureResult = { status: "deleted" | "not_found" };
 
 export async function eraseAccount(
-  deps: { db: NodePgDatabase; now: () => Date },
+  deps: { db: NodePgDatabase; now: () => Date; ledger?: ErasureLedger },
   userId: string,
   reason: ErasureReason,
 ): Promise<ErasureResult> {
@@ -116,7 +119,7 @@ export async function eraseAccount(
         })
         .where(eq(users.id, userId));
       await tx.insert(auditLog).values({
-        actorId: reason === "self" ? userId : "system:retention",
+        actorId: reason === "self" ? userId : `system:${reason}`,
         action: "account.delete",
         targetTable: "users",
         targetId: userId,
@@ -125,10 +128,31 @@ export async function eraseAccount(
       });
       return { status: "deleted" as const };
     })
-    .then((result) => {
-      // Fuori dal DB (log applicativo): serve a ripetere la cancellazione dopo un ripristino da backup (ADR-0014).
-      if (result.status === "deleted")
+    .then(async (result) => {
+      // Fuori dal DB (log applicativo e registro): serve a ripetere la cancellazione dopo un ripristino (ADR-0014).
+      if (result.status === "deleted") {
         logger.info({ userId, event: "account.erased", reason }, "account cancellato");
+        await deps.ledger?.(userId, now).catch((error: Error) => {
+          // La cancellazione resta valida; resta la riga del log. Va sistemato: allarme a livello error.
+          logger.error({ err: error.name, event: "erasure-ledger.failed" }, "registro non scritto");
+        });
+      }
       return result;
     });
+}
+
+/**
+ * Dopo un ripristino da backup (runbook, ADR-0014): ripete le cancellazioni registrate. Chi è già cancellato nel
+ * backup ripristinato si salta; un id sconosciuto (account creato dopo il backup e poi cancellato) pure.
+ */
+export async function reapplyErasures(
+  deps: { db: NodePgDatabase; now: () => Date },
+  userIds: readonly string[],
+): Promise<{ erased: number; alreadyGone: number }> {
+  let erased = 0;
+  for (const id of userIds) {
+    const result = await eraseAccount(deps, id, "restore");
+    if (result.status === "deleted") erased += 1;
+  }
+  return { erased, alreadyGone: userIds.length - erased };
 }
