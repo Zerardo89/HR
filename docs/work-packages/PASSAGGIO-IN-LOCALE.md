@@ -1,28 +1,30 @@
 # Passaggio in locale — da dove ripartire
 
-> Aggiornato domenica 27/09/2026 dalla sessione cloud di Claude. Serve quando il lavoro continua sul tuo computer:
+> Aggiornato lunedì 28/09/2026 dalla sessione cloud di Claude. Serve quando il lavoro continua sul tuo computer:
 > con Claude Code (app desktop, oppure `claude` / `claude remote-control` nel terminale dentro la cartella del
-> progetto) o con i modelli locali (Ollama via Codex CLI, `AGENTS.md`).
+> progetto), che da lì chiama ChatGPT (Codex CLI), Gemini e Ollama.
 
 ## 1. Stato
-- `main` contiene gli **Sprint 1 e 2 completi** (PR #1 e #3): accesso con codice e 2FA, lista d'attesa, aziende con
-  sedi e colleghi, validatore e form delle offerte, moderazione, pagina pubblica, ricerca, zona gratuita e periodo
-  fondatori.
-- Sprint 3 in corso: **WP-017 profilo del lavoratore** sul branch `claude/optimistic-franklin-w8ou54` (PR aperta da
-  unire). Poi si riparte da `main`.
-- Dettagli: [SPRINT-1.md](SPRINT-1.md), [SPRINT-2.md](SPRINT-2.md), [SPRINT-3.md](SPRINT-3.md). Decisioni nuove:
-  [ADR-0013](../adr/ADR-0013-auth-in-casa.md).
+- `main` contiene gli Sprint 1 e 2 e il WP-017 (PR #1, #3, #4) e le PR #5-#7 (candidature, worker, avvisi, email).
+- **PR #8 da unire** (branch `claude/optimistic-franklin-w8ou54`, CI verde): WP-021 mail mensile, WP-022 offerte,
+  WP-023 centro privacy e conservazione, WP-024 segnalazioni DSA e condizioni d'uso versionate, WP-027 sicurezza,
+  ruoli del database, backup e ripristino. Dopo il merge si riparte da `main`.
+- Dettagli: [SPRINT-1.md](SPRINT-1.md) … [SPRINT-4.md](SPRINT-4.md); runbook in [../runbook/](../runbook/).
 
 ## 2. Mettere in piedi il progetto sul tuo computer (Windows)
 Cartella del progetto: **`C:\Users\Utente\Desktop\PROGETTO HR`**.
 
-Serve una volta sola: **Git**, **Node.js 24 LTS** e **Docker Desktop** installati. Poi, in **PowerShell**:
+Serve una volta sola: **Git**, **Node.js 24 LTS** e **Docker Desktop** installati.
+Prima **unisci la PR #8** su GitHub (così `main` ha tutto). Poi, in **PowerShell**:
 ```powershell
 cd "$env:USERPROFILE\Desktop"
-git clone https://github.com/Zerardo89/HR.git "PROGETTO HR"   # se il repository è privato, Git chiede di accedere a GitHub
+# Se la cartella NON esiste ancora:
+git clone https://github.com/Zerardo89/HR.git "PROGETTO HR"   # repository privato: Git chiede di accedere a GitHub
 cd "PROGETTO HR"
+# Se la cartella esiste già (clonata in passato): al posto del clone, dentro la cartella
+#   git fetch origin ; git checkout main ; git pull
 git checkout main
-corepack enable                       # attiva pnpm (la versione giusta è in package.json)
+corepack enable                       # attiva pnpm 10 (la versione giusta è in package.json)
 pnpm install
 docker compose -f docker-compose.dev.yml up -d   # Postgres/PostGIS + Mailpit (posta di prova: http://localhost:8025)
 Copy-Item .env.example .env.local
@@ -31,13 +33,25 @@ pnpm db:migrate
 pnpm taxonomy:import                  # 263 mansioni
 pnpm dev                              # http://localhost:3000
 ```
-Comuni ISTAT: `pnpm geo:build` e `pnpm geo:import` (istruzioni in `data/README.md`).
-Per diventare moderatore/admin: registrati dal sito, poi `pnpm users:role tua@email.it admin` (al primo accesso
-attivi la verifica in due passaggi). Il pannello è su `/moderazione`.
-Per lavorare con Claude in quella cartella: app **Claude Desktop**, oppure `claude` (o `claude remote-control`) nel
-terminale aperto in `PROGETTO HR`.
-Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATABASE_URL` del DB di sviluppo), poi
-`pnpm build` e `pnpm test:e2e`.
+Se non vuoi aspettare il merge: dopo il clone `git checkout claude/optimistic-franklin-w8ou54` al posto di `main`.
+
+- Comuni ISTAT: `pnpm geo:build` e `pnpm geo:import` (istruzioni in `data/README.md`; dal cloud il sito ISTAT è
+  bloccato, dal tuo computer no).
+- Moderatore/admin: registrati dal sito, poi `pnpm users:role tua@email.it admin` (al primo accesso attivi la verifica
+  in due passaggi). Il pannello è su `/moderazione`.
+- Job pianificati in locale: `pnpm worker` (oppure `pnpm worker --once alerts.send` per un giro subito).
+- Test: `pnpm check`; `pnpm test:integration` (con `DATABASE_URL` del DB di sviluppo); `pnpm exec playwright install
+  chromium` una volta, poi `pnpm build` e `pnpm test:e2e`.
+- In sviluppo si usa l'utente proprietario `hr`; i ruoli ristretti (`pnpm db:roles`) servono sul server e in CI.
+
+**Per lavorare con Claude e il team di IA nella cartella** (una volta sola, poi Claude li chiama da solo):
+```powershell
+npm install -g @openai/codex          # ChatGPT: al primo avvio di `codex` scegli l'accesso con l'account ChatGPT
+npm install -g @google/gemini-cli     # Gemini: al primo avvio di `gemini` accedi con l'account Google
+```
+Poi apri Claude Code nella cartella `PROGETTO HR` (app Claude Desktop, oppure `claude` nel terminale; con
+`claude remote-control` la sessione compare anche nell'app Claude Code sul telefono). Se un comando d'installazione
+è cambiato, vale quello del sito ufficiale dello strumento.
 
 ## 3. Prossimi work package (in ordine)
 
