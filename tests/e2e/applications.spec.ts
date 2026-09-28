@@ -61,13 +61,17 @@ async function seedOffer(ownerId: string, title: string): Promise<string> {
   });
 }
 
-async function lastMailTo(request: import("@playwright/test").APIRequestContext, to: string) {
+async function lastMailTo(
+  request: import("@playwright/test").APIRequestContext,
+  to: string,
+  subject = "Nuova candidatura",
+) {
   let found: { Subject: string; Text: string } | undefined;
   await expect
     .poll(
       async () => {
         const search = await request.get(`${MAILPIT}/api/v1/search`, {
-          params: { query: `to:"${to}" subject:"Nuova candidatura"` },
+          params: { query: `to:"${to}" subject:"${subject}"` },
         });
         const { messages } = (await search.json()) as { messages: { ID: string }[] };
         if (!messages[0]) return false;
@@ -99,7 +103,8 @@ test("candidatura: dal lavoratore all'azienda e ritorno", async ({ browser, requ
   // Lavoratore: profilo minimo, poi candidatura con messaggio.
   const workerContext = await browser.newContext();
   const worker = await workerContext.newPage();
-  await signUp(worker, request, newTestEmail("candidata"), "lavoratore");
+  const workerEmail = newTestEmail("candidata");
+  await signUp(worker, request, workerEmail, "lavoratore");
   await worker.goto(`/offerte/${offerId}`);
   await worker.getByRole("link", { name: "Completa il profilo" }).click();
   await worker.getByLabel("Nome", { exact: true }).fill("Carlottafinta");
@@ -141,6 +146,12 @@ test("candidatura: dal lavoratore all'azienda e ritorno", async ({ browser, requ
   await expect(company.getByRole("link", { name: /@esempio\.it$/ })).toBeVisible();
   await company.getByRole("button", { name: "Lo contatteremo" }).click();
   await expect(company.getByRole("status")).toContainText("Stato aggiornato");
+
+  // WP-020c: il lavoratore riceve l'esito per email, senza dati dell'azienda oltre al nome pubblico.
+  const update = await lastMailTo(request, workerEmail, "Novità sulla tua candidatura");
+  expect(update.Subject).toBe(`Novità sulla tua candidatura per «${title}»`);
+  expect(update.Text).toContain("Enoteca Finta ha letto la tua candidatura");
+  expect(update.Text).not.toContain(ownerEmail);
 
   await worker.reload();
   const card = worker.getByRole("article", { name: title });

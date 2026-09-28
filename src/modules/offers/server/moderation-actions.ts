@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { requireUser } from "@/modules/identity";
+import { sendOfferOutcomeEmail } from "@/modules/notifications";
 import { moderationDecisionInput } from "../domain";
 import { decideOffer } from "./moderation";
 
@@ -18,6 +19,9 @@ export async function decideOfferAction(form: FormData): Promise<void> {
   });
   if (!parsed.success) redirect("/moderazione?esito=invalid");
   const result = await decideOffer({ db: getDb(), now: () => new Date() }, user.id, parsed.data);
+  if (result.status === "approved" || result.status === "rejected") {
+    await sendOfferOutcomeEmail(parsed.data.offerId);
+  }
   revalidatePath("/moderazione");
   redirect(`/moderazione?esito=${result.status}`);
 }

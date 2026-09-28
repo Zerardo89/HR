@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { decryptPii, dekContextFor, type AuditSink } from "@/lib/crypto";
-import { users } from "@/lib/db/schema";
+import { companyMembers, users } from "@/lib/db/schema";
 import { dbAuditSink } from "./audit";
 import type { PrivacyDeps } from "./worker-pii";
 
@@ -10,7 +10,13 @@ import type { PrivacyDeps } from "./worker-pii";
  * `system:notify` con lo scopo della comunicazione; gli scopi ammessi sono solo questi.
  */
 
-export const NOTIFICATION_PURPOSES = ["notification.job-alert"] as const;
+export const NOTIFICATION_PURPOSES = [
+  "notification.job-alert",
+  "notification.offer-outcome",
+  "notification.site-outcome",
+  "notification.company-verified",
+  "notification.application-status",
+] as const;
 export type NotificationPurpose = (typeof NOTIFICATION_PURPOSES)[number];
 
 /** Email di un utente attivo (`null` se l'account non è attivo o la chiave è stata distrutta). */
@@ -37,4 +43,35 @@ export async function notificationEmail(
     location: { table: "users", column: "email_enc", rowId: userId },
     schema: z.string(),
   });
+}
+
+/**
+ * Indirizzi dei membri attivi di un'azienda (solo i titolari con `ownersOnly`), per gli esiti che la riguardano.
+ * Ogni lettura è registrata; chi non è più attivo o ha cancellato l'account non riceve nulla.
+ */
+export async function companyMemberEmails(
+  deps: PrivacyDeps,
+  companyId: string,
+  purpose: NotificationPurpose,
+  options: { ownersOnly?: boolean } = {},
+): Promise<string[]> {
+  const members = await deps.db
+    .select({ userId: users.id, role: companyMembers.role })
+    .from(companyMembers)
+    .innerJoin(users, eq(users.id, companyMembers.userId))
+    .where(
+      and(
+        eq(companyMembers.companyId, companyId),
+        eq(users.role, "company_member"),
+        eq(users.status, "active"),
+      ),
+    );
+  const audit = dbAuditSink(deps.db, deps.now);
+  const emails: string[] = [];
+  for (const m of members) {
+    if (options.ownersOnly && m.role !== "owner") continue;
+    const email = await notificationEmail(deps, m.userId, purpose, audit);
+    if (email) emails.push(email);
+  }
+  return emails;
 }

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { isTokenShape } from "@/lib/tokens";
 import { getCurrentUser, requireUser } from "@/modules/identity";
+import { sendSiteOutcomeEmail } from "@/modules/notifications";
 import { inviteInput, siteDecisionInput, siteInput } from "../domain";
 import { clearPendingInvite, setPendingInvite } from "./invite-cookie";
 import { acceptInvite, createInvite, revokeInvite } from "./invites";
@@ -133,6 +134,9 @@ export async function decideSiteAction(form: FormData): Promise<void> {
   });
   if (!parsed.success) redirect("/moderazione?esito=invalid");
   const result = await decideSite(plain(), user.id, parsed.data);
+  if (result.status === "approved" || result.status === "rejected") {
+    await sendSiteOutcomeEmail(parsed.data.siteId);
+  }
   revalidatePath("/moderazione");
   redirect(`/moderazione?esito=site_${result.status}`);
 }

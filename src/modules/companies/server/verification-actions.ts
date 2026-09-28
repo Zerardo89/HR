@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { requireUser } from "@/modules/identity";
+import { sendCompanyVerifiedEmail } from "@/modules/notifications";
 import { verifyCompanyManually } from "./verification";
 
 /** Verifica manuale di un'azienda "in verifica" (solo moderatori e admin, con 2FA). */
@@ -17,6 +18,7 @@ export async function verifyCompanyAction(form: FormData): Promise<void> {
     user.id,
     companyId.data,
   );
+  if (result.status === "verified") await sendCompanyVerifiedEmail(companyId.data);
   revalidatePath("/moderazione");
   redirect(`/moderazione?esito=company_${result.status}`);
 }

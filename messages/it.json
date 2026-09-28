@@ -159,6 +159,40 @@
       "safety": "Ricorda: per candidarti non devi mai pagare nulla né dare IBAN o documenti.",
       "footer": "Ricevi questa email perché hai creato degli avvisi. Gestiscili qui: {manage}\nNon vuoi più avvisi? {unsubscribe}",
       "signature": "{siteName} — {appUrl}"
+    },
+    "offerApproved": {
+      "subject": "La tua offerta «{title}» è pubblicata",
+      "body": "La moderazione ha approvato l'offerta «{title}»: da ora la vede chi cerca lavoro. Le candidature arrivano nella tua area: {link}"
+    },
+    "offerRejected": {
+      "subject": "La tua offerta «{title}» non è stata pubblicata",
+      "body": "La moderazione non ha pubblicato l'offerta «{title}». Motivo: {reason}",
+      "note": "Nota della moderazione: {note}",
+      "next": "L'offerta è tornata in bozza: correggila e inviala di nuovo da qui: {link}"
+    },
+    "siteApproved": {
+      "subject": "Sede di {place} approvata",
+      "body": "La sede di {place} è approvata: da ora anche la sua zona è nella tua zona gratuita. {link}"
+    },
+    "siteRejected": {
+      "subject": "Sede di {place} non approvata",
+      "body": "La sede di {place} non è stata approvata. Motivo: {reason}. Se pensi che sia un errore, rispondi a questa email o scrivici dalla pagina Contatti. {link}"
+    },
+    "companyVerified": {
+      "subject": "{company} è verificata",
+      "body": "Abbiamo verificato la tua azienda: ora puoi pubblicare offerte. {link}"
+    },
+    "applicationUpdate": {
+      "subject": "Novità sulla tua candidatura per «{title}»",
+      "contacted": "{company} ha letto la tua candidatura per «{title}» e ti contatterà.",
+      "rejected": "{company} ha scelto altri candidati per «{title}». Grazie per esserti candidata/o: altre offerte ti aspettano qui: {search}",
+      "hired": "{company} ti ha segnata/o come assunta/o per «{title}». Congratulazioni!",
+      "link": "Le tue candidature: {link}",
+      "safety": "Ricorda: nessuna azienda seria ti chiede soldi, IBAN o documenti prima del contratto."
+    },
+    "common": {
+      "intro": "Ciao,",
+      "signature": "{siteName} — {appUrl}"
     }
   },
   "waitlist": {
