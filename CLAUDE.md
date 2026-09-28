@@ -62,6 +62,9 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 26/09/2026 (in anticipo sul calendario): WP-001, WP-002, WP-003, WP-004, WP-005, WP-007 completati
   da Claude nella sessione di avvio. Stato dettagliato in `docs/work-packages/SPRINT-1.md`.
 - 27/09/2026: PR #1 unita su `main`. WP-008 accesso completato, con cambio di libreria (ADR-0013: niente Better Auth).
-- Prossimi: WP-006 resto (import DB + autocompletamento), WP-009 landing + lista d'attesa, WP-010 PWA/TWA (servono nome e server).
+- 28/09/2026: PR #3 (Sprint 1-2) e #4 (WP-017) unite. WP-019 candidature fatto. Stato per sprint in
+  `docs/work-packages/SPRINT-{1,2,3}.md`.
+- Prossimi: WP-020 avvisi + pg-boss, WP-022 scadenza offerte, WP-018 CV PDF, WP-021 mail mensile,
+  WP-010 PWA/TWA (servono nome e server).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

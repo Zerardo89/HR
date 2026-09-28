@@ -3,7 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getServerEnv } from "@/lib/env";
+import { ApplyForm, getMyApplicationForOffer } from "@/modules/applications";
+import { getCurrentUser } from "@/modules/identity";
 import { getPublishedOffer } from "@/modules/offers";
+import { hasProfile } from "@/modules/profiles";
 import { formatSalary, jobPostingJsonLd, serializeJsonLd } from "@/modules/offers/domain";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -37,8 +40,12 @@ export async function generateMetadata({ params }: PageProps<"/offerte/[id]">): 
 }
 
 /** Pagina pubblica dell'offerta (WP-014): SSR, dati strutturati JobPosting, stipendio sempre in vista (R-ANN-01). */
-export default async function PublicOfferPage({ params }: PageProps<"/offerte/[id]">) {
+export default async function PublicOfferPage({
+  params,
+  searchParams,
+}: PageProps<"/offerte/[id]">) {
   const { id } = await params;
+  const { esito } = await searchParams;
   const result = await load(id);
   if (!result) notFound();
   const t = await getTranslations("publicOffer");
@@ -121,7 +128,7 @@ export default async function PublicOfferPage({ params }: PageProps<"/offerte/[i
       </section>
 
       <section className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5">
-        <p className="font-medium">{t("applySoon")}</p>
+        <ApplySection offerId={o.id} applied={esito === "applied"} />
         <p className="text-sm text-muted">{t("safety")}</p>
         <Link
           href="/segnalazioni"
@@ -132,4 +139,52 @@ export default async function PublicOfferPage({ params }: PageProps<"/offerte/[i
       </section>
     </main>
   );
+}
+
+/**
+ * Candidatura (WP-019): chi non è entrato → accesso; lavoratore senza profilo → profilo; già candidato →
+ * stato; altrimenti il pulsante. Le aziende non si candidano.
+ */
+async function ApplySection({ offerId, applied }: { offerId: string; applied: boolean }) {
+  const t = await getTranslations("applications.apply");
+  const ts = await getTranslations("applications.status");
+  const user = await getCurrentUser();
+  const link = "self-start font-semibold text-primary underline underline-offset-4";
+  if (!user) {
+    return (
+      <>
+        <p className="font-medium">{t("signInFirst")}</p>
+        <Link href="/accedi?tipo=lavoratore" className={link}>
+          {t("signIn")}
+        </Link>
+      </>
+    );
+  }
+  if (user.role !== "worker") return <p className="text-muted">{t("workersOnly")}</p>;
+  const mine = await getMyApplicationForOffer(user.id, offerId);
+  if (mine) {
+    return (
+      <>
+        <p role="status" className="font-medium">
+          {applied
+            ? t("done")
+            : t("already", { date: day.format(mine.createdAt), status: ts(mine.status) })}
+        </p>
+        <Link href="/candidature" className={link}>
+          {t("myApplications")}
+        </Link>
+      </>
+    );
+  }
+  if (!(await hasProfile(user.id))) {
+    return (
+      <>
+        <p className="font-medium">{t("profileFirst")}</p>
+        <Link href="/profilo" className={link}>
+          {t("completeProfile")}
+        </Link>
+      </>
+    );
+  }
+  return <ApplyForm offerId={offerId} />;
 }

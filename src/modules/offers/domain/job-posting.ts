@@ -92,8 +92,8 @@ export function jobPostingJsonLd(offer: PublicOffer, pageUrl: string): Record<st
           },
         }
       : {}),
-    // Candidatura sul sito arriva con WP-019: fino ad allora niente "directApply".
-    directApply: false,
+    // Ci si candida direttamente sul sito, con il proprio profilo (WP-019).
+    directApply: true,
   };
 }
 

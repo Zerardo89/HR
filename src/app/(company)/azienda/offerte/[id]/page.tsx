@@ -47,6 +47,14 @@ export default async function OfferPage({
           {t("viewPublic")}
         </Link>
       )}
+      {offer.status !== "draft" && offer.status !== "pending_review" && (
+        <Link
+          href={`/azienda/candidature?offerta=${offer.id}`}
+          className="self-start rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground"
+        >
+          {t("applicationsLink")}
+        </Link>
+      )}
       {offer.rejection && (
         <div role="note" className="flex flex-col gap-1 rounded-lg border border-accent px-4 py-3">
           <p className="font-semibold">{t("rejected")}</p>
