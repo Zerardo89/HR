@@ -243,7 +243,10 @@ export type InboxRow = {
   provinceAbbr: string | null;
 };
 
-/** Candidature di un'offerta, per i membri dell'azienda (`null` se l'utente non ne fa parte). */
+/**
+ * Candidature di un'offerta, per i membri dell'azienda (`null` se l'utente non ne fa parte o se l'azienda è
+ * sospesa, WP-024a).
+ */
 export async function listApplicationsForOffer(
   deps: Pick<ApplicationDeps, "db" | "now">,
   userId: string,
@@ -256,7 +259,8 @@ export async function listApplicationsForOffer(
       companyMembers,
       and(eq(companyMembers.companyId, jobOffers.companyId), eq(companyMembers.userId, userId)),
     )
-    .where(eq(jobOffers.id, offerId))
+    .innerJoin(companies, eq(companies.id, jobOffers.companyId))
+    .where(and(eq(jobOffers.id, offerId), eq(companies.status, "verified")))
     .limit(1);
   if (!offer) return null;
   const rows = await deps.db

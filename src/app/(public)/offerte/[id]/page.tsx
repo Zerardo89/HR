@@ -131,7 +131,7 @@ export default async function PublicOfferPage({
         <ApplySection offerId={o.id} applied={esito === "applied"} />
         <p className="text-sm text-muted">{t("safety")}</p>
         <Link
-          href="/segnalazioni"
+          href={`/segnalazioni?offerta=${o.id}`}
           className="self-start text-sm text-primary underline underline-offset-4"
         >
           {t("report")}

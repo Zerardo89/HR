@@ -94,7 +94,13 @@ export async function sendPositionClosedEmails(deps: OutcomeDeps): Promise<Lifec
             appUrl: deps.appUrl,
             title: app.title,
             company: app.company,
-            reason: app.offerStatus === "expired" ? "expired" : "closed",
+            // Offerta tolta dalla moderazione (WP-024a): l'avviso mette in guardia da richieste di soldi.
+            reason:
+              app.offerStatus === "expired"
+                ? "expired"
+                : app.offerStatus === "removed"
+                  ? "removed"
+                  : "closed",
           }),
         });
         summary.sent += 1;

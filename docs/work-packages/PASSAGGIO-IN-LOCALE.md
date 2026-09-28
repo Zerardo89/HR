@@ -45,7 +45,7 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 |----|------|---------------|--------|
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
 | 018 | CV in PDF generato dal profilo (senza foto) | Claude (legge i dati cifrati) | Il lavoratore lo scarica o lo allega |
-| 024 | Segnalazioni DSA + decisioni motivate + T&C versionati | Ollama, test di Claude | 02-REGOLE R-DSA-* |
+| 024b | T&C versionati, regolamento annunci, punto di contatto (024a segnalazioni fatto) | Gemini i testi, Claude il codice | 02-REGOLE R-DSA-01/02 |
 
 Per i WP di Ollama: prompt in [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md); i test di
 accettazione vanno scritti **prima** (da Claude) e non si modificano per farli passare.

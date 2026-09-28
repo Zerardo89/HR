@@ -96,6 +96,8 @@ critico. L'interfaccia `KeyProvider` rende la migrazione un lavoro di 1-2 giorni
 4. **Migrazioni** eseguite solo dalla pipeline di deploy.
 5. **Pannello admin senza dati personali:** moderazione offerte (dati pubblici), statistiche aggregate, segnalazioni DSA,
    stato dei job. Le richieste degli utenti sui propri dati si gestiscono **in self-service** (export, cancellazione).
+   Le segnalazioni mostrano al moderatore solo motivo e descrizione (in cui email e numeri di telefono sono
+   rifiutati), mai chi ha segnalato; l'azienda sospesa perde subito l'accesso ai dati dei candidati (WP-024a).
 6. **Procedura "break-glass"** (emergenze): richiede il custode, viene registrata e comunicata.
 7. **Protezione del codice:** branch `main` protetto, merge solo via PR con CI verde; deploy solo da CI; tag firmati.
    Quando c'è il secondo sviluppatore/custode: revisione obbligatoria di una seconda persona sui moduli `crypto`, `privacy`, `identity`.

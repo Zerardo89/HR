@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { createHmac, randomUUID } from "node:crypto";
 import { expect, type APIRequestContext, type Page } from "@playwright/test";
+import { Pool } from "pg";
 
 // Aiuti condivisi dagli e2e: posta di prova (Mailpit) e app di autenticazione simulata (TOTP, RFC 6238).
 
@@ -114,4 +115,26 @@ export function runWorkerJob(job: string, appUrl: string): void {
     stdio: "pipe",
     timeout: 90_000,
   });
+}
+
+/**
+ * Il comune di Lodi nel DB di prova. Chi lo cerca o lo scrive nel profilo lo prepara PRIMA: su un DB nuovo può
+ * non esserci ancora (nessun altro test l'ha inserito, o la pulizia del test di import l'ha tolto).
+ */
+export async function seedLodi(): Promise<void> {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
+  try {
+    await pool.query(
+      `insert into regions (code, name) values ('03','Lombardia') on conflict do nothing`,
+    );
+    await pool.query(
+      `insert into provinces (code, name, abbreviation, region_code) values ('098','Lodi','LO','03') on conflict do nothing`,
+    );
+    await pool.query(
+      `insert into municipalities (istat_code, name, province_code, region_code, lat, lon)
+       values ('098031','Lodi','098','03',45.3097,9.5037) on conflict do nothing`,
+    );
+  } finally {
+    await pool.end();
+  }
 }

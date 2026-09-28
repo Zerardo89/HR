@@ -121,7 +121,7 @@ export function renderPositionClosed(input: {
   appUrl: string;
   title: string;
   company: string;
-  reason: "closed" | "expired";
+  reason: "closed" | "expired" | "removed";
 }): RenderedEmail {
   const t = messages.emails.positionClosed;
   const values = {

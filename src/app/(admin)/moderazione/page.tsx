@@ -10,6 +10,8 @@ import { SITE_REJECTION_REASONS } from "@/modules/companies/domain";
 import { requireUser } from "@/modules/identity";
 import { decideOfferAction, listOffersToModerate } from "@/modules/offers";
 import { REJECTION_REASONS } from "@/modules/offers/domain";
+import { decideReportAction, getOpenReports, type OpenReportGroup } from "@/modules/trust";
+import { FACTS_MAX, FACTS_MIN, REPORT_GROUNDS } from "@/modules/trust/domain";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("moderation");
@@ -30,22 +32,32 @@ const OUTCOMES = [
   "site_rejected",
   "site_not_found",
   "site_not_allowed",
+  "report_removed",
+  "report_suspended",
+  "report_dismissed",
+  "report_not_found",
+  "report_not_allowed",
+  "report_invalid",
 ] as const;
 
 const button = "rounded-lg px-4 py-3 font-semibold";
 const field =
   "w-full rounded-lg border border-border bg-surface px-3 py-2 text-base text-foreground";
 
+const day = new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "Europe/Rome" });
+
 /**
- * Pannello del moderatore (WP-013b): offerte in moderazione e aziende da verificare.
- * Solo dati pubblici delle aziende e degli annunci: nessun dato personale dei lavoratori (docs/04 §5).
+ * Pannello del moderatore (WP-013b): segnalazioni (WP-024a), offerte in moderazione, aziende da verificare, sedi.
+ * Solo dati pubblici delle aziende e degli annunci e i testi delle segnalazioni: nessun dato personale dei
+ * lavoratori né l'identità di chi ha segnalato (docs/04 §5).
  */
 export default async function ModerationPage({ searchParams }: PageProps<"/moderazione">) {
   await requireUser(["moderator", "admin"]);
   const { esito } = await searchParams;
   const t = await getTranslations("moderation");
   const ti = await getTranslations("offers.issues");
-  const [offers, companies, sites] = await Promise.all([
+  const [reports, offers, companies, sites] = await Promise.all([
+    getOpenReports(),
     listOffersToModerate(),
     listCompaniesToVerify(),
     listSitesToApprove(),
@@ -60,6 +72,8 @@ export default async function ModerationPage({ searchParams }: PageProps<"/moder
           {t(`outcome.${outcome}`)}
         </p>
       )}
+
+      <ReportsSection reports={reports} />
 
       <section aria-labelledby="offerte-da-moderare" className="flex flex-col gap-4">
         <h2 id="offerte-da-moderare" className="text-2xl font-semibold">
@@ -226,5 +240,132 @@ export default async function ModerationPage({ searchParams }: PageProps<"/moder
         ))}
       </section>
     </main>
+  );
+}
+
+/** Segnalazioni (WP-024a): per bersaglio, dalla più vecchia; togliere o sospendere chiede fondamento e fatti. */
+async function ReportsSection({ reports }: { reports: OpenReportGroup[] }) {
+  const t = await getTranslations("moderation.reports");
+  const tr = await getTranslations("trust.reasons");
+  const tg = await getTranslations("trust.groundLabels");
+  return (
+    <section
+      id="segnalazioni"
+      aria-labelledby="segnalazioni-titolo"
+      className="flex flex-col gap-4"
+    >
+      <h2 id="segnalazioni-titolo" className="text-2xl font-semibold">
+        {t("title", { count: reports.length })}
+      </h2>
+      {reports.length === 0 && <p className="text-muted">{t("empty")}</p>}
+      {reports.map((r) => (
+        <article
+          key={`${r.targetType}-${r.targetId}`}
+          aria-label={`${t(r.targetType)}: ${r.title}`}
+          className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5"
+        >
+          <p className="text-sm font-semibold uppercase text-muted">{t(r.targetType)}</p>
+          <h3 className="text-xl font-semibold">
+            {r.targetType === "offer" && r.status === "published" ? (
+              <a href={`/offerte/${r.targetId}`} className="underline underline-offset-4">
+                {r.title}
+              </a>
+            ) : (
+              r.title
+            )}
+          </h3>
+          {r.offer && (
+            <p className="text-muted">
+              {r.company} · {r.offer.municipality}
+            </p>
+          )}
+          {r.companyInfo && (
+            <p className="text-muted">
+              {t("companyInfo", {
+                legalName: r.companyInfo.legalName,
+                vat: r.companyInfo.vatNumber,
+                published: String(r.companyInfo.publishedOffers),
+              })}
+            </p>
+          )}
+          <p className="text-sm">{t("targetStatus", { status: t(`statuses.${r.status}`) })}</p>
+          <p className="font-medium">
+            {t("count", { count: r.count, date: day.format(r.firstAt) })}
+          </p>
+          {r.offer && <p className="whitespace-pre-line text-sm">{r.offer.description}</p>}
+          <div>
+            <p className="text-sm font-medium">{t("reasonsLabel")}</p>
+            <ul className="list-disc pl-5 text-sm">
+              {r.reasons.map((x) => (
+                <li key={x.reason}>
+                  {tr(x.reason)} ({x.count})
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-sm font-medium">{t("detailsLabel")}</p>
+            {r.details.length === 0 ? (
+              <p className="text-sm text-muted">{t("noDetails")}</p>
+            ) : (
+              <ul className="list-disc pl-5 text-sm">
+                {r.details.map((d, n) => (
+                  <li key={n} className="whitespace-pre-line">
+                    {d}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <form action={decideReportAction} className="flex flex-1 flex-col gap-2">
+              <input type="hidden" name="targetType" value={r.targetType} />
+              <input type="hidden" name="targetId" value={r.targetId} />
+              <label className="flex flex-col gap-1 text-sm font-medium">
+                {t("ground")}
+                <select name="ground" required className={field}>
+                  {REPORT_GROUNDS.map((g) => (
+                    <option key={g} value={g}>
+                      {tg(g)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1 text-sm font-medium">
+                {t("facts")}
+                <textarea
+                  name="facts"
+                  required
+                  minLength={FACTS_MIN}
+                  maxLength={FACTS_MAX}
+                  rows={3}
+                  className={field}
+                />
+              </label>
+              <button
+                type="submit"
+                name="decision"
+                value="act"
+                className={`${button} border border-accent`}
+              >
+                {t(r.targetType === "offer" ? "removeOffer" : "suspendCompany")}
+              </button>
+            </form>
+            <form action={decideReportAction}>
+              <input type="hidden" name="targetType" value={r.targetType} />
+              <input type="hidden" name="targetId" value={r.targetId} />
+              <button
+                type="submit"
+                name="decision"
+                value="dismiss"
+                className={`${button} bg-primary text-primary-foreground`}
+              >
+                {t("dismiss")}
+              </button>
+            </form>
+          </div>
+        </article>
+      ))}
+    </section>
   );
 }

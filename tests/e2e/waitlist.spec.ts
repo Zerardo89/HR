@@ -67,7 +67,8 @@ test("la pagina 'Chi siamo' e il piè di pagina riportano i dati dell'ente (R-LA
 });
 
 test("le pagine legali esistono e sono marcate come bozza", async ({ page }) => {
-  for (const path of ["/privacy", "/cookie", "/condizioni", "/contatti", "/segnalazioni"]) {
+  // `/segnalazioni` non è più un segnaposto: dal WP-024a è la pagina per segnalare (tests/e2e/reports.spec.ts).
+  for (const path of ["/privacy", "/cookie", "/condizioni", "/contatti"]) {
     const res = await page.goto(path);
     expect(res?.status(), path).toBe(200);
     await expect(page.getByRole("note")).toContainText("BOZZA");

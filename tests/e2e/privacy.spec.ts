@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { mailpitReachable, newTestEmail, signUp } from "./helpers";
+import { mailpitReachable, newTestEmail, seedLodi, signUp } from "./helpers";
 
 // Test di accettazione WP-023 (R-PRIV-04): esporta i miei dati e cancella l'account, da sola/o, dal sito.
 
@@ -14,6 +14,7 @@ test("centro privacy: scarico i miei dati, cancello l'account, posso registrarmi
   test.setTimeout(90_000);
   const email = newTestEmail("privacy");
   const seen: string[] = [];
+  await seedLodi();
   await signUp(page, request, email, "lavoratore", seen);
   await page.goto("/profilo");
   await page.getByLabel("Nome", { exact: true }).fill("Luciafinta");

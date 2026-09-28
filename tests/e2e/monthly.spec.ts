@@ -1,7 +1,7 @@
 import { createHash, randomInt } from "node:crypto";
 import { expect, test, type APIRequestContext, type BrowserContext } from "@playwright/test";
 import { Pool } from "pg";
-import { MAILPIT, mailpitReachable, newTestEmail, runWorkerJob, signUp } from "./helpers";
+import { MAILPIT, mailpitReachable, newTestEmail, runWorkerJob, seedLodi, signUp } from "./helpers";
 
 // Test di accettazione WP-021: il lavoratore "aperto" sceglie la mail mensile nel profilo; il job la spedisce;
 // la risposta vale solo dopo la pagina di conferma (R-MAIL-02); disiscrizione "un clic" (RFC 8058).
@@ -90,6 +90,7 @@ test("mail mensile: dal profilo all'email, risposta confermata e disiscrizione",
   );
   test.setTimeout(120_000);
   const email = newTestEmail("mensile");
+  await seedLodi();
   await signUp(page, request, email, "lavoratore");
   await page.goto("/profilo");
   await page.getByLabel("🟡 Ho un lavoro, ma sono aperto a proposte").check();

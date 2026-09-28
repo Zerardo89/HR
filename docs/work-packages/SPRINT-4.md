@@ -9,7 +9,7 @@
 | WP | Stato | Note |
 |----|-------|------|
 | 023 | ✅ Fatto (Claude, 28/09) | ✅ **023a** centro privacy `/account/privacy`: esporta i miei dati (JSON), consensi, cancellazione dell'account con crypto-shredding (ADR-0014). ✅ **023b** job di conservazione (inattività 6/23/24 mesi, log di sicurezza 12 mesi, lista d'attesa). |
-| 024 | ⏳ Da fare | Segnalazioni DSA + decisioni motivate + T&C versionati. |
+| 024 | 🟡 024a fatto (Claude, 28/09) | ✅ **024a** segnalazioni (art. 16) e decisioni motivate (art. 17); un'azienda sospesa non legge più i dati dei candidati. ⏳ **024b** T&C versionati, regolamento annunci, punto di contatto (R-DSA-01/02; testi con Gemini). |
 | 025 | ⏳ Da fare | Pubblicità: slot, sponsor, CMP, AdSense (flag). |
 | 026 | ⏳ Da fare | Stripe (flag) + webhook + portale. |
 | 027 | ⏳ Da fare | Hardening: CSP, header, rate limit, backup + prova di ripristino (anche: ripetere le cancellazioni dopo il ripristino, ADR-0014). |
@@ -67,3 +67,52 @@ Regola R-PRIV-03, tabella in docs/04 §8. Tre job giornalieri, a lotti di 500 e 
 - Test: 8 unitari (soglie, date annunciate, mesi a cavallo del 31, lista d'attesa), 5 di integrazione
   (nascondi una volta sola, preavviso e ritorno, cancellazione solo dopo il preavviso e mai per il personale, log
   oltre 12 mesi cancellato e recente immodificabile, lista d'attesa) + 1 nella mail mensile (la risposta è attività).
+
+## WP-024a — Segnalazioni e decisioni motivate (DSA art. 16-17) ✅
+**Esecutore:** Claude (tocca l'accesso ai dati dei candidati) · **Regole:** R-DSA-03, R-DSA-04, R-ANN-08, R-PRIV-02 ·
+**Codice:** `src/modules/trust/**`, pagina `/segnalazioni`, sezione in `/moderazione`
+
+**Segnalare** (art. 16). Da ogni offerta pubblicata, link "Segnala" → `/segnalazioni?offerta=<id>`:
+- si sceglie cosa segnalare (l'annuncio o l'azienda che lo pubblica), il motivo (truffa, discriminazione, richiesta
+  di soldi, informazioni false, lavoro illegale, altro) e una descrizione facoltativa (max 1000 caratteri; **senza
+  email né numeri di telefono**, R-PRIV-02: il moderatore vede già l'annuncio). Obbligatoria la dichiarazione di
+  buona fede (art. 16.2.d).
+- Anche **senza account**. Con l'account: ricevuta subito (art. 16.4) ed esito dopo la decisione (art. 16.5), all'email
+  dell'account. Senza account nessuna email (non chiediamo indirizzi a chi non è registrato).
+- Limiti: 5 segnalazioni ogni 15 minuti per IP (in memoria), una sola segnalazione aperta per utente e bersaglio;
+  si segnala solo ciò che è pubblico (offerta pubblicata di azienda verificata).
+
+**Decidere** (moderatori e admin, con 2FA; controllo del ruolo anche nel servizio). In `/moderazione`, coda per
+bersaglio dalla segnalazione più vecchia: annuncio, azienda, motivi con conteggio, descrizioni.
+- Annuncio → **rimuovi** o **archivia**; azienda → **sospendi** o **archivia**. Rimuovere e sospendere richiedono il
+  **fondamento** (da un elenco: legge o Regolamento annunci) e i **fatti** (20-1000 caratteri, senza email né
+  telefoni). Tutte le segnalazioni aperte sul bersaglio si chiudono insieme; una seconda decisione non trova nulla.
+- Rimozione: offerta `removed`, sparisce ovunque, le candidature aperte si chiudono e i candidati ricevono l'email
+  "offerta tolta" con l'avviso di non dare soldi o documenti. Sospensione: azienda `suspended`, le sue offerte
+  pubblicate o in moderazione diventano `removed` (stesse email ai candidati) e **i suoi membri non leggono più i
+  dati dei candidati** (controllo in `modules/privacy`).
+- **Motivazione** (art. 17), salvata in `reports.statement_of_reasons` e spedita a tutti i membri attivi
+  dell'azienda: decisione e portata, fatti, fondamento, uso di mezzi automatici (nessuno: decide una persona, a
+  partire da una segnalazione), rimedi (riesame rispondendo entro 6 mesi; giudice ordinario).
+- Audit `report.decide`: attore il moderatore, bersaglio offerta o azienda, scopo la decisione.
+
+**Test di accettazione** (scritti prima): dominio (input della segnalazione e della decisione, rilevatore di
+contatti, testo della motivazione con tutti gli elementi dell'art. 17), integrazione (anonima e con account,
+bersaglio non pubblico, doppione, rimozione con candidature chiuse ed email, archiviazione, sospensione con
+accesso ai dati dei candidati negato, solo moderatori), e2e (segnala senza account → il moderatore rimuove →
+l'offerta non c'è più → l'azienda riceve la motivazione).
+
+**Fatto (28/09).** Come da specifica, più:
+- **Buco chiuso in `modules/privacy`**: prima un'azienda sospesa poteva ancora aprire le candidature e leggere i
+  dati dei candidati. Ora `companyRecipient` (e le notifiche di nuove candidature, e l'elenco della casella)
+  richiedono un'azienda verificata. Il test di integrazione della sospensione fallisce senza questa correzione.
+- Email "offerta tolta" ai candidati (motivo `removed` di "posizione chiusa") con la messa in guardia su soldi,
+  dati bancari e documenti.
+- Il modulo di segnalazione si ricrea a ogni errore con i valori scritti (prima il motivo scelto si perdeva: una
+  `select` non torna al valore precedente dopo il reset del form di React). **Da correggere allo stesso modo**:
+  la provincia nel modulo della lista d'attesa (WP-009).
+- `/segnalazioni` non è più una pagina "bozza": il test e2e delle pagine legali (WP-009) non la elenca più.
+- **E2e più robusti su DB nuovo** (come in CI): avvisi, centro privacy e mail mensile cercavano o scrivevano
+  "Lodi" prima di inserirlo nel DB; funzionavano solo se un altro test l'aveva già messo. Ora `seedLodi()` in
+  `tests/e2e/helpers.ts`, chiamato all'inizio.
+- Test: 10 unitari, 5 di integrazione, 1 e2e × 2 dispositivi.
