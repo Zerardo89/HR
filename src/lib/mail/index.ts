@@ -7,7 +7,14 @@ import { logger } from "@/lib/logger";
  * Invio delle email (SMTP: Mailpit in sviluppo, Brevo in produzione). Il fornitore si cambia solo qui.
  * R-PRIV-05: nei log mai il destinatario né il contenuto, solo l'esito.
  */
-export type MailMessage = { to: string; subject: string; text: string; html?: string };
+export type MailMessage = {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+  /** Intestazioni aggiuntive, per esempio `List-Unsubscribe` e `List-Unsubscribe-Post` (RFC 8058, R-MAIL-01). */
+  headers?: Record<string, string>;
+};
 
 export interface Mailer {
   send(message: MailMessage): Promise<void>;

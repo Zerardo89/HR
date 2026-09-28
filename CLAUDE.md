@@ -44,6 +44,7 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - `pnpm test:integration` = test sul DB reale (serve `DATABASE_URL` di un DB migrato)
 - `pnpm test:e2e` = Playwright (fa partire `pnpm start`: prima `pnpm build`)
 - `pnpm db:generate` / `pnpm db:migrate` = genera / applica le migrazioni
+- `pnpm worker` = worker pg-boss (job pianificati); `pnpm worker --once alerts.send` = esegue subito un job
 - `pnpm keys:generate` = crea KEK e chiave dell'indice cieco in `./secrets` (mai committare)
 - `pnpm format` = Prettier
 - `docker compose -f docker-compose.dev.yml up -d` = Postgres/PostGIS + Mailpit in locale
@@ -64,7 +65,8 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 27/09/2026: PR #1 unita su `main`. WP-008 accesso completato, con cambio di libreria (ADR-0013: niente Better Auth).
 - 28/09/2026: PR #3 (Sprint 1-2) e #4 (WP-017) unite. WP-019 candidature fatto. Stato per sprint in
   `docs/work-packages/SPRINT-{1,2,3}.md`.
-- Prossimi: WP-020 avvisi + pg-boss, WP-022 scadenza offerte, WP-018 CV PDF, WP-021 mail mensile,
+- 28/09/2026: WP-020 worker pg-boss + avvisi (resta 020c, email di esito).
+- Prossimi: WP-020c, WP-022 scadenza offerte, WP-021 mail mensile, WP-018 CV PDF,
   WP-010 PWA/TWA (servono nome e server).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

@@ -44,7 +44,7 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
-| 020 | Avvisi e job pianificati (pg-boss), email di esito moderazione | Ollama, test di Claude | Chiude i "da fare" di WP-011c/013b/016 |
+| 020c | Email di esito (offerta, sede, stato della candidatura) | Ollama, test di Claude | Chiude i "da fare" di WP-011c/013b/019 |
 | 022 | Scadenza e chiusura delle offerte | Ollama | Lo stato "scaduta" oggi si calcola solo in lettura |
 
 Per i WP di Ollama: prompt in [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md); i test di

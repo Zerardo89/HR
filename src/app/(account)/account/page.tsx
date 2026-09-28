@@ -31,6 +31,12 @@ export default async function AccountPage() {
           >
             {t("applicationsLink")}
           </Link>
+          <Link
+            href="/avvisi"
+            className="self-start font-medium text-primary underline underline-offset-4"
+          >
+            {t("alertsLink")}
+          </Link>
         </>
       )}
       {user.role === "company_member" && (

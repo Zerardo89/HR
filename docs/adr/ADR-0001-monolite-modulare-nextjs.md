@@ -33,3 +33,12 @@
   Le zone sono generate automaticamente leggendo `src/modules/*` in `eslint.config.mjs`. Verificato con violazioni di prova.
 - API pubbliche di un modulo: `index.ts` (lato server) e `domain/index.ts` (pura, usabile dal dominio di altri moduli).
 - TypeScript resta alla 5.9: typescript-eslint non supporta ancora TS ≥ 6.1.
+
+## Aggiornamento 28/09/2026 (WP-020)
+- Terza API pubblica di un modulo: **`jobs.ts`**, per il worker pg-boss. Il worker gira fuori dal rendering di
+  Next.js (`tsx --conditions=react-server`): gli `index.ts` esportano anche componenti e Server Actions, che lì non si
+  caricano (verificato: `next/navigation` fallisce). `jobs.ts` esporta solo funzioni server, senza React né Next.
+- Regole di lint: il worker (`src/worker`) importa solo `@/modules/<nome>/jobs` o `@/modules/<nome>/domain`; un
+  modulo può importare da un altro anche il suo `jobs.ts` (serve al codice che gira nel worker, per esempio gli
+  avvisi usano la ricerca di `matching/jobs`); `src/app` resta su `index.ts` e `domain/index.ts`.
+

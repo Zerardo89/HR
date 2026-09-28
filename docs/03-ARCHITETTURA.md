@@ -82,7 +82,8 @@ flowchart LR
 ## 4. Struttura del codice: monolite modulare in **un solo pacchetto**
 Un solo `package.json` (niente monorepo): i modelli locali si confondono con workspace multipli.
 I confini tra moduli sono imposti da regole ESLint (`import/no-restricted-paths` + `no-restricted-imports`, vedi
-aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `index.ts` o `domain/index.ts`.
+aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `index.ts`, `domain/index.ts` o
+`jobs.ts` (API per il worker, senza React né Next.js — aggiornamento WP-020 di ADR-0001).
 
 ```
 .
@@ -111,7 +112,7 @@ aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `in
 │  │  └─ taxonomy/                 # mansioni (ESCO/CP2021), competenze
 │  │     # ogni modulo: domain/ (puro, testabile) · server/ (DB, servizi) · ui/ (componenti) · index.ts
 │  ├─ lib/                         # crypto, db, env, logger, rate-limit, flags, i18n
-│  └─ worker/                      # entrypoint del worker pg-boss
+│  └─ worker/                      # worker pg-boss: `index.ts` (avvio), `jobs.ts` (job pianificati) — WP-020
 ├─ db/migrations/                  # SQL generato da drizzle-kit (versionato, revisionato)
 ├─ scripts/                        # import comuni, import ESCO, seed sintetico
 ├─ messages/it.json                # testi UI (Gemini) — niente stringhe cablate nei componenti
@@ -124,7 +125,7 @@ aggiornamento di ADR-0001): un modulo usa gli altri **solo** tramite il loro `in
 ### Regole di dipendenza
 - `domain/` **non importa** nulla da Next.js, DB o rete → funzioni pure, testabili con Vitest in millisecondi.
 - `server/` usa `lib/db`, `lib/crypto`, e il `domain/` del proprio modulo.
-- `app/` chiama solo gli `index.ts` dei moduli.
+- `app/` chiama solo gli `index.ts` dei moduli; `worker/` solo i loro `jobs.ts`.
 - Solo `modules/privacy` e `lib/crypto` possono chiamare `decryptPii()`; gli altri moduli ricevono DTO già autorizzati.
 
 ## 5. Modello dati (v1)

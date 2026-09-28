@@ -5,7 +5,8 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
 // Confini tra moduli (ADR-0001): un modulo può importare da un altro modulo
-// SOLO il suo `index.ts` (API server) o `domain/index.ts` (API pura).
+// SOLO il suo `index.ts` (API server), `domain/index.ts` (API pura) o `jobs.ts` (API per il worker, WP-020:
+// niente componenti né Next.js, perché il worker gira fuori dal rendering).
 const modulesDir = path.resolve("src/modules");
 const moduleNames = fs.existsSync(modulesDir)
   ? fs
@@ -21,19 +22,32 @@ const moduleZones = moduleNames.map((name) => ({
     `./${name}`,
     ...moduleNames
       .filter((other) => other !== name)
-      .flatMap((other) => [`./${other}/index.ts`, `./${other}/domain/index.ts`]),
+      .flatMap((other) => [
+        `./${other}/index.ts`,
+        `./${other}/domain/index.ts`,
+        `./${other}/jobs.ts`,
+      ]),
   ],
   message:
-    "Confine tra moduli (ADR-0001): importa solo `@/modules/<nome>` o `@/modules/<nome>/domain`.",
+    "Confine tra moduli (ADR-0001): importa solo `@/modules/<nome>`, `@/modules/<nome>/domain` o `@/modules/<nome>/jobs`.",
 }));
 
-// Le route (src/app) e il worker usano i moduli solo tramite le loro API pubbliche.
-const publicApiZones = ["./src/app", "./src/worker"].map((target) => ({
-  target,
-  from: "./src/modules",
-  except: moduleNames.flatMap((name) => [`./${name}/index.ts`, `./${name}/domain/index.ts`]),
-  message: "Usa solo l'API pubblica del modulo (`index.ts` o `domain/index.ts`).",
-}));
+// Le route (src/app) usano i moduli solo tramite le loro API pubbliche; il worker solo tramite `jobs.ts`
+// (gli `index.ts` portano con sé componenti React e Next.js, che fuori dal rendering non si caricano).
+const publicApiZones = [
+  {
+    target: "./src/app",
+    from: "./src/modules",
+    except: moduleNames.flatMap((name) => [`./${name}/index.ts`, `./${name}/domain/index.ts`]),
+    message: "Usa solo l'API pubblica del modulo (`index.ts` o `domain/index.ts`).",
+  },
+  {
+    target: "./src/worker",
+    from: "./src/modules",
+    except: moduleNames.flatMap((name) => [`./${name}/jobs.ts`, `./${name}/domain/index.ts`]),
+    message: "Il worker usa solo `@/modules/<nome>/jobs` o `@/modules/<nome>/domain`.",
+  },
+];
 
 const eslintConfig = defineConfig([
   ...nextVitals,
