@@ -116,7 +116,7 @@ pagina `/moderazione`, script `pnpm users:role`
 - `pnpm users:role <email> <ruolo>`: promuove un utente già registrato (l'email non si salva né si stampa: indice cieco).
 - Test: 4 di integrazione, 1 e2e (lavoratore escluso, promozione a moderatore, 2FA obbligatoria, approvazione e
   rifiuto con motivo).
-- Da fare: email all'azienda con l'esito (WP-020, notifiche), segnalazioni DSA nello stesso pannello (WP-024).
+- Da fare: segnalazioni DSA nello stesso pannello (WP-024). L'email all'azienda con l'esito è arrivata con WP-020c.
 
 ## WP-014 — Pagina pubblica dell'offerta ✅ (senza pagine SEO)
 **Esecutore:** Claude · **Codice:** `src/modules/offers/domain/job-posting.ts`, `src/modules/offers/server/public-offer.ts`,
@@ -184,7 +184,7 @@ approvare" in `/moderazione`, migrazione `0007`
 - Test: 5 di integrazione (autorizzazioni, stati delle sedi, pannello, invito con indice cieco, account sbagliato,
   scadenza, sostituzione, revoca, limiti, invio fallito), 2 e2e × 2 dispositivi (sede con comune sbagliato + invito
   accettato da un nuovo account con 2FA; approvazione della sede dal pannello).
-- Da fare: togliere un collega dall'azienda, passaggio di titolarità, email all'azienda con l'esito della sede (WP-020).
+- Da fare: togliere un collega dall'azienda, passaggio di titolarità. L'email con l'esito della sede è arrivata con WP-020c.
 
 ## WP-016 — Zona gratuita, Piano Nazionale e periodo fondatori ✅
 **Esecutore:** Claude · **Codice:** `src/modules/billing/{domain,server}/entitlements.ts`,

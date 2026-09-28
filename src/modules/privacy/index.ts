@@ -19,6 +19,7 @@ export {
   type ApplicantView,
 } from "./server/application-pii";
 export {
+  companyMemberEmails,
   NOTIFICATION_PURPOSES,
   notificationEmail,
   type NotificationPurpose,

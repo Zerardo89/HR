@@ -19,3 +19,12 @@ export {
   type AlertOffer,
   type AlertSection,
 } from "./alerts";
+export {
+  isNotifiedApplicationStatus,
+  renderApplicationUpdate,
+  renderCompanyVerified,
+  renderOfferOutcome,
+  renderSiteOutcome,
+  type ApplicationUpdate,
+  type RenderedEmail,
+} from "./outcomes";

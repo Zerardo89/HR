@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireUser } from "@/modules/identity";
+import { sendApplicationUpdateEmail } from "@/modules/notifications";
 import { applyInput, companyDecisionInput } from "../domain";
 import { apply, decideApplication, withdraw } from "./applications";
 import { runtimeDeps } from "./runtime";
@@ -48,5 +49,6 @@ export async function decideAction(form: FormData): Promise<void> {
     parsed.data.applicationId,
     parsed.data.status,
   );
+  if (result.status === "updated") await sendApplicationUpdateEmail(parsed.data.applicationId);
   redirect(`/azienda/candidature/${parsed.data.applicationId}?esito=${result.status}`);
 }

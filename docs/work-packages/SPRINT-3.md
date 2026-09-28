@@ -10,7 +10,7 @@
 | 017 | ✅ Fatto (Claude, 28/09) | Profilo del lavoratore `/profilo`: dati di ricerca in chiaro, dati identificativi **cifrati** dal modulo `privacy` con audit di ogni lettura; stati cerco / aperto / nascosto; "disponibile a trasferirmi in…". |
 | 018 | ⏳ Da fare | CV in PDF generato dal profilo (senza foto). |
 | 019 | ✅ Fatto (Claude, 28/09) | Candidatura dalla pagina dell'offerta, "le mie candidature" con stato e ritiro, casella dell'azienda: dati identificativi decifrati **solo** per l'azienda destinataria, con audit; email all'azienda senza dati del candidato. |
-| 020 | 🟡 Avvisi e worker fatti (Claude, 28/09) | ✅ Worker pg-boss con job pianificati in ora italiana, pulizia giornaliera; avvisi per le ricerche salvate con disiscrizione in un clic (RFC 8058). ⏳ **020c**: email di esito (offerta, sede, stato della candidatura). |
+| 020 | ✅ Fatto (Claude, 28/09) | Worker pg-boss con job pianificati in ora italiana, pulizia giornaliera; avvisi per le ricerche salvate con disiscrizione in un clic (RFC 8058); **020c** email di esito (offerta, sede, azienda verificata, candidatura). |
 | 021 | ⏳ Da fare | Mail ogni 30 giorni per gli "aperti" + token + pagine di conferma + RFC 8058. |
 | 022 | ⏳ Da fare | Scadenza e chiusura delle offerte + notifica ai candidati. |
 
@@ -72,18 +72,18 @@ pagina `/profilo`, link da `/account`
   cambiano più; decisione e ritiro sono scritture condizionate allo stato letto (niente sovrascritture incrociate).
 - **Avviso all'azienda**: un'email a ciascun membro attivo con il titolo dell'offerta e il link alla casella,
   **nessun dato del candidato** (gli indirizzi dei membri li decifra `modules/privacy` come `system:notify`, con
-  audit). Se l'email non parte la candidatura resta valida (l'azienda la vede nell'area). Per ora l'invio è nella
-  richiesta: con WP-020 passa alla coda pg-boss.
+  audit). Se l'email non parte la candidatura resta valida (l'azienda la vede nell'area). L'invio resta nella
+  richiesta, come le email di esito (vedi WP-020c).
 - JSON-LD `JobPosting`: `directApply: true` (ci si candida sul sito).
 - Test: 4 unitari (transizioni di stato, visibilità, input), 6 di integrazione (email senza dati del candidato a tutti
   i membri, chi può candidarsi, doppio invio simultaneo, apertura con audit e stato "vista", nessun accesso di
   estranei / dopo ritiro / dopo scadenza, decisioni, chiave distrutta), 1 e2e × 2 dispositivi (candidatura con
   messaggio → email all'azienda → apertura → "lo contatteremo" → il lavoratore vede lo stato).
-- Da fare: email al lavoratore quando cambia lo stato (con gli avvisi, WP-020), chiusura delle candidature e data di
+- Da fare: ~~email al lavoratore quando cambia lo stato~~ (fatto in WP-020c), chiusura delle candidature e data di
   fine visibilità alla scadenza dell'offerta (WP-022), esportazione e cancellazione (WP-023), CV in PDF allegabile
   (WP-018).
 
-## WP-020 — Worker pg-boss e avvisi delle ricerche salvate 🟡
+## WP-020 — Worker pg-boss, avvisi delle ricerche salvate, email di esito ✅
 **Esecutore:** Claude · **Codice:** `src/worker/**`, `src/modules/notifications/**`, `src/modules/*/jobs.ts`,
 `src/modules/privacy/server/notify.ts`, pagine `/avvisi` e `/avvisi/disiscrizione`, route
 `/api/avvisi/disiscrizione`, riquadro "Ricevi le nuove offerte via email" in `/offerte`, migrazioni 0008-0009
@@ -119,7 +119,24 @@ pagina `/profilo`, link da `/account`
   2 sugli orari dei job, 7 di integrazione (salvataggio e limiti, finestra e raggio, una email per più ricerche,
   settimanale, stati e account cancellato, SMTP giù, disiscrizione e token scaduto, gestione), 2 e2e × 2 dispositivi
   (dalla ricerca all'email con il job vero, POST "un clic", pagina di conferma; invito ad accedere).
-- Da fare: **020c** email di esito (offerta approvata/rifiutata e sede all'azienda, cambio di stato della candidatura
-  al lavoratore); avvisi dal profilo e mail mensile (WP-021); job di conservazione (docs/04 §8, WP-022/023); in
+- **020c — email di esito** (`notifications/domain/outcomes.ts` per i testi, `notifications/server/outcomes.ts` per
+  l'invio, chiamati dalle Server Action DOPO che la decisione è salvata):
+  - offerta approvata o rifiutata → tutti i membri attivi dell'azienda, con il **motivo** e l'eventuale nota del
+    moderatore (DSA art. 17) e il link all'offerta tornata in bozza;
+  - sede approvata o rifiutata → solo i **titolari** (sono loro a gestire le sedi), con il motivo;
+  - azienda verificata a mano → tutti i membri attivi;
+  - candidatura → il lavoratore, solo per "ti contatterà", "altri candidati" e "assunta/o" ("vista" e "in
+    valutazione" si vedono in `/candidature`, senza riempire la casella), con l'avviso anti-truffa.
+  - Mai dati di altre persone: solo titolo dell'offerta, nome pubblico dell'azienda, comune della sede, motivo.
+    Indirizzi decifrati da `modules/privacy` (`companyMemberEmails`, `notificationEmail`) con uno scopo per tipo
+    (`notification.offer-outcome`, `…site-outcome`, `…company-verified`, `…application-status`), ognuno nel log di
+    audit; membri sospesi o account cancellati esclusi.
+  - **Invio nella richiesta, non in coda**: come l'email di nuova candidatura (WP-019). Se l'SMTP non risponde la
+    decisione resta valida e visibile nell'area riservata; l'errore va solo nel log. Una coda con tentativi (outbox
+    nel DB + job del worker) si aggiunge se in produzione l'SMTP dà problemi.
+  - Test: 6 unitari (testi, motivi, note, stati che danno un'email), 5 di integrazione (destinatari, titolari,
+    audit, nessuna email senza decisione, stati non notificati, SMTP giù), e2e delle candidature esteso (email
+    "Novità sulla tua candidatura" dopo "Lo contatteremo").
+- Da fare: avvisi dal profilo e mail mensile (WP-021); job di conservazione (docs/04 §8, WP-022/023); in
   produzione: servizio del worker e utente DB che può creare lo schema `pgboss` (WP-010).
 
