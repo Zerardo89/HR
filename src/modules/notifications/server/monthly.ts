@@ -4,6 +4,7 @@ import { logger } from "@/lib/logger";
 import { hashToken, isTokenShape, newToken } from "@/lib/tokens";
 import { loadCompanyEntitlements } from "@/modules/billing";
 import { activeEntitlement } from "@/modules/billing/domain";
+import { recordActivity } from "@/modules/identity/jobs";
 import { SEARCH_RADII_KM, toSearchParams } from "@/modules/matching/domain";
 import { findOffersForProfile } from "@/modules/matching/jobs";
 import { notificationEmail } from "@/modules/privacy/jobs";
@@ -196,6 +197,7 @@ export async function answerMonthlyCheck(
   const now = deps.now();
   if (action === "stop") {
     await optOutMonthlyChecks(deps.db, row.userId, now);
+    await recordActivity(deps.db, row.userId, now);
     await deps.db.insert(auditLog).values({
       actorId: row.userId,
       action: "monthly.stop",
@@ -214,6 +216,7 @@ export async function answerMonthlyCheck(
       .returning({ userId: emailActionTokens.userId });
     if (consumed.length === 0) return { status: "used" as const };
     const result = await applyMonthlyAnswer(tx, row.userId, action, now);
+    await recordActivity(tx, row.userId, now); // un clic dalla mail è attività (R-PRIV-03)
     await tx.insert(auditLog).values({
       actorId: row.userId,
       action: "monthly.answer",

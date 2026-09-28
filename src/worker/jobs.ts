@@ -7,6 +7,7 @@ import {
   sendOfferLifecycleEmails,
 } from "@/modules/notifications/jobs";
 import { expireOffers } from "@/modules/offers/jobs";
+import { purgeAuditLog, purgeWaitlistEntries, runAccountRetention } from "@/modules/privacy/jobs";
 
 /*
  * Job pianificati del worker (WP-020, ADR-0003). Orari in ora italiana: pg-boss calcola il cron nel fuso
@@ -34,6 +35,24 @@ export const scheduledJobs: readonly ScheduledJob[] = [
     name: "retention.applications",
     cron: "45 3 * * *",
     run: purgeApplicationMessages,
+  },
+  {
+    // R-PRIV-03 (WP-023b): inattività 6 mesi → profilo nascosto; 23 → preavviso; 24 → cancellazione.
+    name: "retention.accounts",
+    cron: "15 4 * * *",
+    run: runAccountRetention,
+  },
+  {
+    // Log di sicurezza: 12 mesi (docs/04 §8). Il trigger di audit_log ammette solo questa cancellazione.
+    name: "retention.audit",
+    cron: "30 4 * * *",
+    run: purgeAuditLog,
+  },
+  {
+    // Lista d'attesa: chi si è registrato esce subito; tutti 6 mesi dopo il lancio.
+    name: "retention.waitlist",
+    cron: "40 4 * * *",
+    run: purgeWaitlistEntries,
   },
   {
     // WP-022 (R-ANN-07): scadenze, promemoria alle aziende, "posizione chiusa" ai candidati. Di mattina:

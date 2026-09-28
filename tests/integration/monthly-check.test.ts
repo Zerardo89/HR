@@ -236,6 +236,15 @@ describe.skipIf(!DATABASE_URL)("mail mensile (WP-021)", () => {
     expect(await checkMonthlyToken(deps(), token)).toBe("invalid");
   });
 
+  it("rispondere dalla mail è attività: rimanda la conservazione (R-PRIV-03, WP-023b)", async () => {
+    const w = await worker({});
+    await pool.query(`update users set last_active_at = $2 where id = $1`, [w.id, at(-400)]);
+    await sendMonthlyChecks(deps());
+    await answerMonthlyCheck(deps(), tokenOf(sent.find((m) => m.to === w.email)!), "open");
+    const { rows } = await pool.query(`select last_active_at from users where id = $1`, [w.id]);
+    expect(rows[0]!.last_active_at).toEqual(T0);
+  });
+
   it("'cerco', 'nascondimi' e 'cancella il profilo'", async () => {
     const [a, b, c] = [await worker({}), await worker({}), await worker({})];
     await sendMonthlyChecks(deps());

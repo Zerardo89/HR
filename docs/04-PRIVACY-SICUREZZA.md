@@ -119,7 +119,9 @@ critico. L'interfaccia `KeyProvider` rende la migrazione un lavoro di 1-2 giorni
 | Monitoraggio | Uptime Kuma (uptime + certificati), log JSON con redazione dei campi personali (pino `redact`), allarmi via email/Telegram al gestore |
 
 ## 7. Log di audit
-Tabella `audit_log` **append-only** (trigger che impedisce UPDATE/DELETE; il ruolo DB dell'app ha solo INSERT/SELECT):
+Tabella `audit_log` **append-only** (trigger che impedisce UPDATE e DELETE; unica eccezione, la cancellazione delle
+righe più vecchie di 12 mesi, per il job di conservazione — migrazione 0013; il ruolo DB dell'app web ha solo
+INSERT/SELECT, il DELETE è del solo worker — ruoli separati in WP-027):
 - chi (id utente o "system"), cosa (`pii.decrypt`, `application.view`, `offer.moderate`, `account.delete`, `admin.login`…),
   su cosa (id risorsa), quando, IP **hashato**.
 - Visibile in forma aggregata nel pannello admin; il lavoratore può vedere **chi ha visualizzato la sua candidatura** (trasparenza: funzione molto apprezzata).
@@ -127,14 +129,17 @@ Tabella `audit_log` **append-only** (trigger che impedisce UPDATE/DELETE; il ruo
 ## 8. Conservazione e cancellazione (job automatici)
 Implementa R-PRIV-03 con job `pg-boss` giornalieri (fuso orario `Europe/Rome`; attenzione al cambio d'ora del 25/10/2026):
 
-| Job | Regola |
+| Job (worker) | Regola |
 |-----|--------|
-| `retention.inactive-hide` | Nessuna attività per 6 mesi → profilo nascosto + email di avviso |
-| `retention.inactive-delete-notice` | 23 mesi di inattività → preavviso di cancellazione |
-| `retention.inactive-delete` | 24 mesi → cancellazione con crypto-shredding |
-| `retention.applications` | Candidature: rimosse dalla vista azienda 6 mesi dopo la chiusura dell'offerta (controllo in lettura, `company_visible_until`); poi il messaggio cifrato si cancella (job, WP-022) |
-| `retention.audit` | Log di sicurezza oltre 12 mesi → eliminati |
-| `retention.waitlist` | Iscritti alla lista d'attesa non convertiti entro 6 mesi dal lancio → eliminati |
+| `retention.accounts` (04:15) | Tre passi, in ordine (WP-023b): |
+| — nascondi | Nessuna attività per 6 mesi (né accesso né interazione col profilo) → profilo nascosto, mail mensile spenta + email di avviso (una volta sola) |
+| — preavviso | 23 mesi senza accesso → preavviso con la **data** di cancellazione (30 giorni dopo, mai prima dei 24 mesi). Se l'utente entra anche una volta, il preavviso decade |
+| — cancella | Dal giorno annunciato (ora italiana) → cancellazione con crypto-shredding, come quella fatta dall'utente (ADR-0014; audit `account.delete` con attore `system:retention`). Personale (moderatori, amministratori) escluso |
+| `retention.applications` (03:45) | Candidature: rimosse dalla vista azienda 6 mesi dopo la chiusura dell'offerta (controllo in lettura, `company_visible_until`); poi il messaggio cifrato si cancella (job, WP-022) |
+| `retention.audit` (04:30) | Log di sicurezza oltre 12 mesi → eliminati (il trigger ammette solo questa cancellazione) |
+| `retention.waitlist` (04:40) | Iscritti alla lista d'attesa: chi si è registrato esce subito; dal 01/05/2027 (6 mesi dal lancio) escono tutti |
+
+Ogni job lavora a lotti (500 righe) ed è ripetibile: rifarlo non cambia nulla, ciò che resta si fa il giorno dopo.
 
 ## 9. Modello delle minacce (sintesi STRIDE)
 

@@ -46,6 +46,9 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0010_offer_lifecycle.sql` — generata: `applications.closure_notified_at` e `job_offers.expiry_notice_at`,
   indici per le email da spedire e per la finestra di visibilità — WP-022.
 - `0011_monthly_check.sql` — generata: valore `monthly_check` dell'enum `email_action` (un token per mail mensile) — WP-021.
+- `0012_deletion_notice.sql` — generata: `users.deletion_notice_at` (preavviso di cancellazione per inattività) — WP-023b.
+- `0013_audit_retention.sql` — scritta a mano (`db:generate --custom`): il trigger di `audit_log` ammette solo la
+  cancellazione delle righe con più di 12 mesi; modifiche e altre cancellazioni restano vietate — WP-023b.
 - Il worker crea da sé il proprio schema `pgboss` all'avvio (migrazioni di pg-boss): in produzione il suo utente DB
   deve poterlo creare, oppure lo crea la pipeline di deploy (WP-010).
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.

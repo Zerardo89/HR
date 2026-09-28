@@ -66,8 +66,9 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 28/09/2026: PR #3 (Sprint 1-2) e #4 (WP-017) unite. WP-019 candidature fatto. Stato per sprint in
   `docs/work-packages/SPRINT-{1,2,3}.md`.
 - 28/09/2026: WP-020 worker pg-boss + avvisi + email di esito (020c). WP-022 ciclo di vita delle offerte.
-  WP-021 mail mensile. WP-023a centro privacy (ADR-0014: cancellazione e backup). Stato sprint 4 in `SPRINT-4.md`.
-- Prossimi: WP-023b job di conservazione, WP-024 segnalazioni DSA, WP-018 CV PDF,
+  WP-021 mail mensile. WP-023a centro privacy (ADR-0014: cancellazione e backup). WP-023b job di conservazione.
+  Stato sprint 4 in `SPRINT-4.md`.
+- Prossimi: WP-024 segnalazioni DSA, WP-018 CV PDF,
   WP-010 PWA/TWA (servono nome e server).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

@@ -8,7 +8,7 @@
 
 | WP | Stato | Note |
 |----|-------|------|
-| 023 | 🟡 023a fatto (Claude, 28/09) | ✅ **023a** centro privacy `/account/privacy`: esporta i miei dati (JSON), consensi, cancellazione dell'account con crypto-shredding (ADR-0014). ⏳ **023b** job di conservazione (inattività 6/23/24 mesi, log di sicurezza 12 mesi, lista d'attesa). |
+| 023 | ✅ Fatto (Claude, 28/09) | ✅ **023a** centro privacy `/account/privacy`: esporta i miei dati (JSON), consensi, cancellazione dell'account con crypto-shredding (ADR-0014). ✅ **023b** job di conservazione (inattività 6/23/24 mesi, log di sicurezza 12 mesi, lista d'attesa). |
 | 024 | ⏳ Da fare | Segnalazioni DSA + decisioni motivate + T&C versionati. |
 | 025 | ⏳ Da fare | Pubblicità: slot, sponsor, CMP, AdSense (flag). |
 | 026 | ⏳ Da fare | Stripe (flag) + webhook + portale. |
@@ -42,4 +42,28 @@ server/export.ts,server/consents.ts,server/actions.ts,jobs.ts}`, pagina `/accoun
   con tutto ciò che deve sparire e restare, email riutilizzabile, passaggio di titolarità), 1 e2e × 2 dispositivi
   (esporta dal sito, 401 senza accesso, parola sbagliata, cancellazione, sessione non più valida, nuova
   registrazione con la stessa email senza il vecchio profilo).
-- Da fare: 023b (job di conservazione); pagina pubblica "come cancellare l'account" per la scheda Play (WP-010).
+- Da fare: pagina pubblica "come cancellare l'account" per la scheda Play (WP-010).
+
+## WP-023b — Job di conservazione ✅
+**Esecutore:** Claude (tocca `audit_log` e la cancellazione) · **Codice:** `src/modules/privacy/{domain/retention.ts,
+server/retention.ts,jobs.ts}`, `src/modules/identity/server/activity.ts`, job del worker, migrazioni 0012 e 0013
+
+Regola R-PRIV-03, tabella in docs/04 §8. Tre job giornalieri, a lotti di 500 e ripetibili:
+- **`retention.accounts` (04:15)**, in ordine:
+  1. *6 mesi* senza accesso né interazione col profilo → profilo nascosto, mail mensile spenta, un avviso.
+  2. *23 mesi* senza accesso → preavviso con la **data** di cancellazione: 30 giorni dopo, ma mai prima dei 24 mesi
+     (a cavallo dei mesi di 31 giorni la data slitta di un giorno). Chi entra anche una volta perde il preavviso.
+  3. *Dal giorno annunciato* (ora italiana, così il job che gira qualche secondo prima non rimanda di un giorno) →
+     la stessa cancellazione con crypto-shredding del centro privacy, attore `system:retention`. Personale escluso.
+- **`retention.audit` (04:30)**: righe del log di sicurezza oltre 12 mesi. Il trigger (migrazione 0013) ammette
+  solo questa cancellazione; modifiche e cancellazioni delle righe recenti restano vietate. Il job usa anche la
+  soglia dell'orologio del DB, così uno scarto di qualche secondo col worker non fa fallire il lotto.
+- **`retention.waitlist` (04:40)**: chi si è registrato esce subito dalla lista d'attesa (confronto per indice cieco,
+  senza decifrare); dal 01/05/2027 (6 mesi dal lancio) esce chiunque.
+- **Attività = accesso o clic** (R-PRIV-03): rispondere alla mail mensile (o disiscriversi) aggiorna
+  `users.last_active_at` (`recordActivity`, API `identity/jobs.ts`), così chi risponde senza mai entrare non riceve
+  il preavviso di cancellazione.
+- Ruoli DB separati (il DELETE su `audit_log` al solo worker): WP-027.
+- Test: 8 unitari (soglie, date annunciate, mesi a cavallo del 31, lista d'attesa), 5 di integrazione
+  (nascondi una volta sola, preavviso e ritorno, cancellazione solo dopo il preavviso e mai per il personale, log
+  oltre 12 mesi cancellato e recente immodificabile, lista d'attesa) + 1 nella mail mensile (la risposta è attività).

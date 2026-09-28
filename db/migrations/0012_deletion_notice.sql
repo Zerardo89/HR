@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "deletion_notice_at" timestamp with time zone;

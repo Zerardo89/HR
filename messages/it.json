@@ -229,6 +229,14 @@
     "monthlyPaused": {
       "subject": "Abbiamo messo in pausa il tuo profilo",
       "body": "Non abbiamo ricevuto risposta alle ultime 6 email mensili: abbiamo nascosto il tuo profilo e sospeso queste email. Quando vuoi, lo riattivi dal profilo: {link}"
+    },
+    "inactiveHidden": {
+      "subject": "Abbiamo nascosto il tuo profilo",
+      "body": "Non ti vediamo da 6 mesi: per proteggere i tuoi dati abbiamo nascosto il tuo profilo e sospeso le email. Se cerchi ancora lavoro, entra e cambia stato quando vuoi: {link}"
+    },
+    "deletionNotice": {
+      "subject": "Il {date} cancelleremo il tuo account",
+      "body": "Non entri nel tuo account da quasi 2 anni. Per non tenere i tuoi dati più del necessario, il {date} cancelleremo l'account e tutti i dati collegati. Se vuoi tenerlo basta entrare, anche una volta sola: {link}"
     }
   },
   "waitlist": {
