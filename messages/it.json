@@ -80,7 +80,8 @@
     "security": "Sicurezza dell'account",
     "profileLink": "Il tuo profilo",
     "applicationsLink": "Le mie candidature",
-    "alertsLink": "I miei avvisi"
+    "alertsLink": "I miei avvisi",
+    "privacyLink": "Privacy e dati"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -1107,5 +1108,36 @@
     "choose": "Scegli una risposta:",
     "profile": "Vai al profilo",
     "search": "Cerca offerte"
+  },
+  "privacyCenter": {
+    "metaTitle": "Privacy e dati",
+    "title": "Privacy e dati",
+    "intro": "Qui eserciti i tuoi diritti da sola/o, subito: scaricare i tuoi dati, vedere i consensi, cancellare l'account.",
+    "exportTitle": "Scarica i tuoi dati",
+    "exportHelp": "Un file (JSON) con tutto ciò che ci hai dato e le candidature inviate, compreso chi ha letto i tuoi dati cifrati e perché.",
+    "exportLink": "Scarica i miei dati",
+    "consentsTitle": "I tuoi consensi",
+    "consentsEmpty": "Nessun consenso registrato.",
+    "consentGranted": "dato il {date} (versione {version})",
+    "consentRevoked": "revocato il {date}",
+    "consentTypes": {
+      "privacy_notice": "Presa visione dell'informativa privacy",
+      "terms": "Accettazione delle condizioni d'uso",
+      "monthly_check": "Mail mensile",
+      "job_alerts": "Avvisi via email",
+      "marketing": "Comunicazioni promozionali",
+      "l68_health": "Categoria protetta (L. 68/99)",
+      "waitlist_launch": "Lista d'attesa"
+    },
+    "consentsHelp": "Gli avvisi si gestiscono in «I miei avvisi», la mail mensile nel profilo.",
+    "deleteTitle": "Cancella l'account",
+    "deleteHelp": "Cancelliamo profilo, candidature, avvisi e accessi, e distruggiamo la chiave con cui erano cifrati i tuoi dati: diventano subito illeggibili. Nelle copie di sicurezza cifrate spariscono con la loro rotazione, al più entro 6 mesi. Non si può annullare. Se hai un'azienda, l'azienda e le sue offerte restano; se eri l'unico titolare con dei colleghi, la titolarità passa al collega registrato da più tempo.",
+    "deleteConfirmLabel": "Per confermare scrivi {word}",
+    "deleteButton": "Cancella il mio account",
+    "deleteError": "Per cancellare l'account scrivi la parola richiesta.",
+    "back": "Torna al tuo account",
+    "deletedTitle": "Account cancellato",
+    "deletedBody": "Il tuo account è cancellato e i tuoi dati non sono più leggibili. Se vuoi tornare, puoi registrarti di nuovo quando vuoi.",
+    "home": "Torna alla pagina iniziale"
   }
 }

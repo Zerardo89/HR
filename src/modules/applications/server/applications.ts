@@ -25,7 +25,7 @@ import {
   readApplicantForCompany,
   sealApplicationMessage,
   type ApplicantView,
-} from "@/modules/privacy";
+} from "@/modules/privacy/jobs";
 import {
   canCompanySet,
   canWorkerWithdraw,

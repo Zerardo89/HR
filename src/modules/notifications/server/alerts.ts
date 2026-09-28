@@ -7,7 +7,7 @@ import type { Mailer } from "@/lib/mail";
 import { findMunicipality } from "@/modules/geo";
 import { rankOffers } from "@/modules/matching/domain";
 import { findCandidates, recognizeOccupation } from "@/modules/matching/jobs";
-import { notificationEmail } from "@/modules/privacy";
+import { notificationEmail } from "@/modules/privacy/jobs";
 import type { PreparedCatalog } from "@/modules/taxonomy/domain";
 import {
   ALERT_OFFERS_PER_SEARCH,

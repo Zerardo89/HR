@@ -11,7 +11,7 @@ import {
   workerProfiles,
 } from "@/lib/db/schema";
 import { findMunicipality } from "@/modules/geo";
-import { readWorkerPii, sealWorkerPii } from "@/modules/privacy";
+import { readWorkerPii, sealWorkerPii } from "@/modules/privacy/jobs";
 import {
   firstMonthlyCheck,
   type WorkerPii,

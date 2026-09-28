@@ -2,7 +2,7 @@ import { and, eq, gt, isNull, lte } from "drizzle-orm";
 import { applications, companies, jobOffers } from "@/lib/db/schema";
 import { logger } from "@/lib/logger";
 import { EXPIRY_NOTICE_DAYS } from "@/modules/offers/domain";
-import { companyMemberEmails, notificationEmail } from "@/modules/privacy";
+import { companyMemberEmails, notificationEmail } from "@/modules/privacy/jobs";
 import { renderExpiryNotice, renderPositionClosed } from "../domain";
 import type { OutcomeDeps } from "./outcomes";
 

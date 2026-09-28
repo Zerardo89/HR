@@ -57,8 +57,10 @@ Formula consigliata per il sito:
 ```
 
 - **DEK per utente** (32 byte casuali): cifra i dati C2 di quell'utente. È salvata nel DB **solo cifrata** con la KEK.
-- **Crypto-shredding:** quando l'utente cancella l'account, si distrugge la DEK → i suoi dati diventano
-  illeggibili **anche nei backup** (che non possiamo modificare). Soluzione elegante al "diritto all'oblio nei backup".
+- **Crypto-shredding:** quando l'utente cancella l'account, si distrugge la DEK → i suoi dati diventano subito
+  illeggibili nel sistema. Nei backup (che non possiamo modificare) resta la DEK cifrata fino alla loro rotazione:
+  i dati spariscono anche lì **al più entro 6 mesi**; dopo un ripristino si ripetono le cancellazioni successive al
+  backup (ADR-0014).
 - **Email per il login:** serve cercarla → si salva un **indice cieco** `email_bidx = HMAC-SHA256(K_index, email_normalizzata)`
   (chiave diversa dalla KEK) + l'email cifrata. Il DB non contiene email in chiaro.
 - **Rotazione chiavi:** campo `key_version`; job di ri-cifratura progressiva.

@@ -6,7 +6,7 @@ import { loadCompanyEntitlements } from "@/modules/billing";
 import { activeEntitlement } from "@/modules/billing/domain";
 import { SEARCH_RADII_KM, toSearchParams } from "@/modules/matching/domain";
 import { findOffersForProfile } from "@/modules/matching/jobs";
-import { notificationEmail } from "@/modules/privacy";
+import { notificationEmail } from "@/modules/privacy/jobs";
 import { MONTHLY_ANSWERS, shouldPauseMonthlyChecks } from "@/modules/profiles/domain";
 import {
   applyMonthlyAnswer,

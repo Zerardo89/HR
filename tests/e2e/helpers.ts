@@ -70,11 +70,13 @@ export async function signUp(
   request: APIRequestContext,
   email: string,
   tipo: "lavoratore" | "azienda",
+  /** Email già lette per questo indirizzo (serve quando ci si registra di nuovo con la stessa email). */
+  seen: string[] = [],
 ) {
   await page.goto(`/accedi?tipo=${tipo}`);
   await page.getByLabel("La tua email").fill(email);
   await page.getByRole("button", { name: "Ricevi il codice" }).click();
-  await page.getByLabel("Codice di 6 cifre").fill(await emailCode(request, email));
+  await page.getByLabel("Codice di 6 cifre").fill(await emailCode(request, email, seen));
   await page.getByRole("button", { name: "Entra" }).click();
   await page.getByLabel("Ho almeno 18 anni").check();
   await page
