@@ -11,6 +11,7 @@ export {
   describeAlert,
   isAlertDue,
   JOB_ALERTS_CONSENT_VERSION,
+  offerSalaryText,
   MAX_SAVED_SEARCHES,
   renderAlertEmail,
   saveAlertInput,
@@ -30,3 +31,16 @@ export {
   type ApplicationUpdate,
   type RenderedEmail,
 } from "./outcomes";
+export {
+  MONTHLY_CHOICES,
+  MONTHLY_OFFERS,
+  MONTHLY_TOKEN_DAYS,
+  MONTHLY_WINDOW_DAYS,
+  monthlyAction,
+  monthlyAnswerInput,
+  monthlyChoice,
+  renderMonthlyCheck,
+  renderMonthlyPaused,
+  type MonthlyAction,
+  type MonthlyChoice,
+} from "./monthly";

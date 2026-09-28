@@ -8,6 +8,7 @@ import { getMailer } from "@/lib/mail";
 import { getOccupationCatalog } from "@/modules/taxonomy/jobs";
 import { sendDueAlerts, type AlertRunSummary } from "./server/alerts";
 import { sendExpiryNotices, sendPositionClosedEmails } from "./server/lifecycle-emails";
+import { sendMonthlyChecks, type MonthlySummary } from "./server/monthly";
 import { outcomeRuntimeDeps } from "./server/runtime";
 
 // Modulo `notifications` — API per i job del worker (WP-020): niente componenti né Next.js.
@@ -48,4 +49,9 @@ export async function sendOfferLifecycleEmails(): Promise<{
     positionClosed: closed.sent,
     failures: notices.failures + closed.failures,
   };
+}
+
+/** Job `monthly.check` (WP-021): mail mensile per gli "aperti", pausa dopo 6 mail senza risposta. */
+export function sendMonthlyCheckEmails(): Promise<MonthlySummary> {
+  return sendMonthlyChecks(outcomeRuntimeDeps());
 }

@@ -205,6 +205,29 @@
       "expired": "L'offerta «{title}» di {company}, a cui ti eri candidata/o, è scaduta.",
       "thanks": "Grazie per la candidatura. Altre offerte ti aspettano qui: {search}",
       "link": "Le tue candidature: {link}"
+    },
+    "monthlyCheck": {
+      "subjectMany": "Stai ancora cercando lavoro? {count} offerte per te vicino a {place}",
+      "subjectOne": "Stai ancora cercando lavoro? 1 offerta per te vicino a {place}",
+      "subjectNone": "Stai ancora cercando lavoro? Dicci come va",
+      "intro": "Ciao, è il controllo mensile che hai chiesto: nel profilo risulti «occupato, ma aperto a proposte».",
+      "offersTitle": "Le offerte più adatte a te pubblicate negli ultimi 30 giorni:",
+      "offerLine": "• {title} — {company}, {place}\n  {salary}\n  {link}",
+      "noOffers": "Questo mese non ci sono offerte nuove per le tue mansioni nella tua zona.",
+      "seeAll": "Vedi tutte le offerte ({count}): {link}",
+      "question": "Come va? Scegli una risposta (si apre una pagina per confermare):",
+      "seeking": "• Sì, sto cercando: {link}",
+      "open": "• No, resto occupato ma visibile: {link}",
+      "hide": "• Nascondimi per ora: {link}",
+      "delete": "• Cancella il mio profilo: {link}",
+      "noAnswer": "Se non rispondi per 6 mesi di fila mettiamo in pausa il profilo e queste email.",
+      "safety": "Ricorda: per candidarti non devi mai pagare nulla né dare IBAN o documenti.",
+      "footer": "Ricevi questa email perché l'hai scelta nel profilo. Per non riceverla più: {unsubscribe}",
+      "signature": "{siteName} — {appUrl}"
+    },
+    "monthlyPaused": {
+      "subject": "Abbiamo messo in pausa il tuo profilo",
+      "body": "Non abbiamo ricevuto risposta alle ultime 6 email mensili: abbiamo nascosto il tuo profilo e sospeso queste email. Quando vuoi, lo riattivi dal profilo: {link}"
     }
   },
   "waitlist": {
@@ -1048,5 +1071,41 @@
       "done": "Fatto: non riceverai più avvisi. Se cambi idea, puoi crearne di nuovi dalla ricerca.",
       "manage": "Gestisci gli avvisi dal tuo account"
     }
+  },
+  "monthly": {
+    "metaTitle": "Controllo mensile",
+    "questions": {
+      "seeking": "Confermi che stai cercando lavoro?",
+      "open": "Confermi che resti occupata/o ma visibile?",
+      "hide": "Vuoi nascondere il tuo profilo per ora?",
+      "delete": "Vuoi cancellare il tuo profilo?",
+      "stop": "Non vuoi più ricevere la mail mensile?"
+    },
+    "explain": {
+      "seeking": "Il tuo stato diventa «Cerco lavoro». Per ricevere le nuove offerte via email crea un avviso dalla ricerca.",
+      "open": "Il tuo stato resta «Occupato, ma aperto a proposte»: fra un mese ti scriviamo di nuovo.",
+      "hide": "Il tuo stato diventa «Non visibile». Puoi cambiarlo quando vuoi dal profilo.",
+      "delete": "Cancelliamo il profilo: mansioni, comune, esperienze, nome e telefono. Il tuo account resta e le candidature già inviate restano. Non si può annullare.",
+      "stop": "Non ti scriviamo più ogni mese. Il profilo resta com'è."
+    },
+    "confirm": {
+      "seeking": "Sì, sto cercando",
+      "open": "Sì, resto visibile",
+      "hide": "Nascondimi",
+      "delete": "Cancella il profilo",
+      "stop": "Non scrivermi più"
+    },
+    "done": {
+      "seeking": "Fatto: ora risulti «Cerco lavoro». In bocca al lupo!",
+      "open": "Fatto: ci sentiamo fra un mese.",
+      "hide": "Fatto: il tuo profilo non è visibile.",
+      "delete": "Fatto: il profilo è cancellato.",
+      "stop": "Fatto: non riceverai più la mail mensile."
+    },
+    "used": "Hai già risposto a questa email. Puoi cambiare stato quando vuoi dal profilo.",
+    "invalid": "Il link non è valido o è scaduto (vale 30 giorni). Puoi cambiare stato dal profilo.",
+    "choose": "Scegli una risposta:",
+    "profile": "Vai al profilo",
+    "search": "Cerca offerte"
   }
 }

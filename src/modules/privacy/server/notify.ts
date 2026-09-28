@@ -18,6 +18,7 @@ export const NOTIFICATION_PURPOSES = [
   "notification.application-status",
   "notification.offer-expiry",
   "notification.position-closed",
+  "notification.monthly-check",
 ] as const;
 export type NotificationPurpose = (typeof NOTIFICATION_PURPOSES)[number];
 

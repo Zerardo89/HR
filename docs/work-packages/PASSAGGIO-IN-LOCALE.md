@@ -44,7 +44,6 @@ Controlli prima di ogni PR: `pnpm check`, poi `pnpm test:integration` (con `DATA
 | WP | Cosa | Chi lo scrive | Perché |
 |----|------|---------------|--------|
 | 010 | PWA/TWA + deploy | Tu + Claude | Servono nome dell'app e server (ADR-0012) |
-| 021 | Mail mensile per gli "aperti" (token, pagine di conferma, pausa dopo 6 mail) | Claude (dati cifrati) + Ollama (pagine) | 01-PRODOTTO §6.2; usa il worker di WP-020 |
 | 018 | CV in PDF generato dal profilo (senza foto) | Claude (legge i dati cifrati) | Il lavoratore lo scarica o lo allega |
 
 Per i WP di Ollama: prompt in [../prompts/ollama-work-package.md](../prompts/ollama-work-package.md); i test di

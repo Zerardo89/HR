@@ -2,7 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { requireUser } from "@/modules/identity";
-import { alertFrequencyInput, alertIdInput, saveAlertInput } from "../domain";
+import {
+  alertFrequencyInput,
+  alertIdInput,
+  monthlyAnswerInput,
+  monthlyChoice,
+  saveAlertInput,
+} from "../domain";
+import { answerMonthlyCheck } from "./monthly";
 import { deleteAlert, saveAlert, setAlertFrequency } from "./saved-searches";
 import { runtimeDeps } from "./runtime";
 import { unsubscribeWithToken } from "./unsubscribe";
@@ -49,4 +56,15 @@ export async function unsubscribeAction(form: FormData): Promise<void> {
   const token = form.get("token");
   const result = await unsubscribeWithToken(runtimeDeps(), token);
   redirect(`/avvisi/disiscrizione?esito=${result.status}`);
+}
+
+/** Conferma dalla pagina della mail mensile (WP-021): il token della mail è la sola prova, anche senza accesso. */
+export async function monthlyAnswerAction(form: FormData): Promise<void> {
+  const parsed = monthlyAnswerInput.safeParse({
+    token: form.get("token"),
+    action: form.get("action"),
+  });
+  if (!parsed.success) redirect("/mensile?esito=invalid");
+  const result = await answerMonthlyCheck(runtimeDeps(), parsed.data.token, parsed.data.action);
+  redirect(`/mensile?esito=${result.status}&scelta=${monthlyChoice(parsed.data.action)}`);
 }

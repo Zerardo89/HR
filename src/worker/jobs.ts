@@ -3,6 +3,7 @@ import { cleanupAuthRows } from "@/modules/identity/jobs";
 import {
   cleanupEmailTokens,
   sendJobAlerts,
+  sendMonthlyCheckEmails,
   sendOfferLifecycleEmails,
 } from "@/modules/notifications/jobs";
 import { expireOffers } from "@/modules/offers/jobs";
@@ -54,6 +55,16 @@ export const scheduledJobs: readonly ScheduledJob[] = [
       const summary = await sendJobAlerts();
       // Invii falliti: il job si ripete (pg-boss) e rispedisce solo quelli, già esclusi gli altri.
       if (summary.failures > 0) throw new Error(`avvisi non spediti: ${summary.failures}`);
+      return summary;
+    },
+  },
+  {
+    // WP-021 (01-PRODOTTO §6.2): mail mensile alle 9; ogni profilo ha il suo giorno (30 giorni dall'adesione).
+    name: "monthly.check",
+    cron: "0 9 * * *",
+    run: async () => {
+      const summary = await sendMonthlyCheckEmails();
+      if (summary.failures > 0) throw new Error(`mail mensili non spedite: ${summary.failures}`);
       return summary;
     },
   },

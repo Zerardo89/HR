@@ -11,7 +11,7 @@
 | 018 | ⏳ Da fare | CV in PDF generato dal profilo (senza foto). |
 | 019 | ✅ Fatto (Claude, 28/09) | Candidatura dalla pagina dell'offerta, "le mie candidature" con stato e ritiro, casella dell'azienda: dati identificativi decifrati **solo** per l'azienda destinataria, con audit; email all'azienda senza dati del candidato. |
 | 020 | ✅ Fatto (Claude, 28/09) | Worker pg-boss con job pianificati in ora italiana, pulizia giornaliera; avvisi per le ricerche salvate con disiscrizione in un clic (RFC 8058); **020c** email di esito (offerta, sede, azienda verificata, candidatura). |
-| 021 | ⏳ Da fare | Mail ogni 30 giorni per gli "aperti" + token + pagine di conferma + RFC 8058. |
+| 021 | ✅ Fatto (Claude, 28/09) | Mail ogni 30 giorni per gli "aperti": offerte per il profilo (con trasferimento e Piano Nazionale), quattro risposte con pagina di conferma, pausa dopo 6 mail, disiscrizione in un clic. |
 | 022 | ✅ Fatto (Claude, 28/09) | Chiusura e rinnovo dall'area azienda, scadenza automatica, promemoria di scadenza, "posizione chiusa" ai candidati, finestra di 6 mesi e cancellazione dei messaggi (R-ANN-07, R-PRIV-03). |
 
 ---
@@ -170,4 +170,36 @@ job del worker, pagina `/azienda/offerte/[id]`, migrazione 0010
   → pagina pubblica "non più disponibile" → il candidato vede "Offerta chiusa" → job → email; rinnovo dalla pagina.
 - Da fare: "duplica come nuova offerta" per ripubblicare una scaduta; cancellazione delle candidature con l'account
   (WP-023).
+
+## WP-021 — Mail mensile per gli "aperti" ✅
+**Esecutore:** Claude · **Codice:** `src/modules/notifications/{domain,server}/monthly.ts`,
+`src/modules/profiles/{domain,server}/monthly.ts` + `profiles/jobs.ts`, `src/modules/matching/server/profile-offers.ts`,
+pagina `/mensile`, route `/api/mensile/disiscrizione`, job `monthly.check`, migrazione 0011
+
+- **Chi la riceve** (01-PRODOTTO §6.1-6.2): profili "occupato ma aperto" con la mail scelta nel profilo, utenti attivi;
+  ogni 30 giorni dall'adesione (ogni profilo ha il suo giorno, gli invii si distribuiscono nel mese), alle 9 ora
+  italiana. Dopo un lungo fermo del worker non ne partono tante di fila (prossima data = 30 giorni da adesso).
+- **Offerte**: pubblicate negli ultimi 30 giorni, della stessa mansione del profilo o simile (stesso gruppo ISCO), nel
+  raggio del lavoratore; nelle regioni "disposto a trasferirmi" **solo** quelle di aziende con il Piano Nazionale
+  attivo (01-PRODOTTO §5.3, ADR-0009: è il valore a pagamento). Fino a 10 nella mail, poi "vedi tutte" (la ricerca con
+  mansione, comune e raggio del profilo). Ordine spiegabile: stessa mansione, nel raggio, più recente.
+- **Senza nome** del destinatario (minimizzazione: niente decifratura del profilo); l'indirizzo lo legge
+  `modules/privacy` (scopo `notification.monthly-check`, con audit). Niente pubblicità (art. 130).
+- **Quattro risposte** (cerco / resto aperto / nascondimi / cancella il profilo) e "non scrivermi più": ogni link apre
+  una **pagina di conferma** che da sola non cambia nulla (R-MAIL-02). **Un token per mail** (nel DB solo l'hash,
+  azione `monthly_check`, 30 giorni): autorizza una risposta (consumata nella stessa transazione: due clic non la
+  applicano due volte) e la disiscrizione anche dopo. "Cancella il profilo" elimina il profilo (dati cifrati compresi);
+  l'account e le candidature restano (la cancellazione dell'account arriva con WP-023).
+- **Pausa**: qualsiasi risposta o salvataggio del profilo azzera il conto; dopo **6 mail senza risposta** la settima
+  non parte: profilo nascosto, mail mensile spenta, un'ultima mail "ti abbiamo messo in pausa".
+- **Disiscrizione in un clic** (RFC 8058): `List-Unsubscribe` + `List-Unsubscribe-Post` → `POST
+  /api/mensile/disiscrizione` spegne la mail mensile (il profilo resta).
+- Prima si spedisce, poi si sposta la data: SMTP giù → la mail parte al giro dopo.
+- Test: 4 unitari (calendario, pausa) + 4 sulla mail (testo, senza offerte, pausa, scelte), 6 di integrazione (chi la
+  riceve, selezione delle offerte con raggio, mansioni simili, 30 giorni e Piano Nazionale, risposte e token, cancella
+  il profilo, pausa dopo 6, SMTP giù), 1 e2e × 2 dispositivi (profilo "aperto" con la mail → job vero → email senza
+  nome → conferma "resto visibile" → risposta già data → disiscrizione un clic → casella spenta nel profilo).
+- Da fare: il nome nell'oggetto ("Marco, stai cercando…", 01-PRODOTTO §6.2) solo se lo chiede il prodotto: richiede di
+  decifrare il profilo per ogni invio; l'accesso all'account come "interazione" che azzera il conto (tocca il modulo di
+  accesso).
 

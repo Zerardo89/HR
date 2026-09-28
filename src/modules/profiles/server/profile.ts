@@ -12,7 +12,12 @@ import {
 } from "@/lib/db/schema";
 import { findMunicipality } from "@/modules/geo";
 import { readWorkerPii, sealWorkerPii } from "@/modules/privacy";
-import type { WorkerPii, WorkerProfileInput, WorkerState } from "../domain";
+import {
+  firstMonthlyCheck,
+  type WorkerPii,
+  type WorkerProfileInput,
+  type WorkerState,
+} from "../domain";
 
 /*
  * Profilo del lavoratore (WP-017). Dati di ricerca (C1) in chiaro nelle colonne; dati identificativi (C2)
@@ -20,10 +25,6 @@ import type { WorkerPii, WorkerProfileInput, WorkerState } from "../domain";
  */
 
 export type ProfileDeps = { db: NodePgDatabase; keys: KeyProvider; now: () => Date };
-
-const DAY_MS = 24 * 60 * 60_000;
-/** La prima mail "stai ancora cercando?" parte 30 giorni dopo l'adesione (docs/01 §6.2, WP-021). */
-const MONTHLY_CHECK_DAYS = 30;
 
 async function isActiveWorker(db: NodePgDatabase, userId: string): Promise<boolean> {
   const [u] = await db
@@ -67,8 +68,9 @@ export async function saveWorkerProfile(
     .from(workerProfiles)
     .where(eq(workerProfiles.userId, userId))
     .limit(1);
+  // La prima mail "stai ancora cercando?" parte 30 giorni dopo l'adesione (docs/01 §6.2, WP-021).
   const nextCheckAt = input.monthlyCheckOptIn
-    ? (existing?.nextCheckAt ?? new Date(now.getTime() + MONTHLY_CHECK_DAYS * DAY_MS))
+    ? (existing?.nextCheckAt ?? firstMonthlyCheck(now))
     : null;
 
   const values = {
@@ -84,6 +86,8 @@ export async function saveWorkerProfile(
     piiEnc,
     monthlyCheckOptIn: input.monthlyCheckOptIn,
     nextCheckAt,
+    // Salvare il profilo è un'interazione: il conto delle mail senza risposta ricomincia (WP-021).
+    unansweredChecks: 0,
     lastInteractionAt: now,
     updatedAt: now,
   };

@@ -45,6 +45,7 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
   `checked_until`; tolte le vecchie colonne `query`, `occupation_ids`, `municipality_code`, `radius_km` — WP-020.
 - `0010_offer_lifecycle.sql` — generata: `applications.closure_notified_at` e `job_offers.expiry_notice_at`,
   indici per le email da spedire e per la finestra di visibilità — WP-022.
+- `0011_monthly_check.sql` — generata: valore `monthly_check` dell'enum `email_action` (un token per mail mensile) — WP-021.
 - Il worker crea da sé il proprio schema `pgboss` all'avvio (migrazioni di pg-boss): in produzione il suo utente DB
   deve poterlo creare, oppure lo crea la pipeline di deploy (WP-010).
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
