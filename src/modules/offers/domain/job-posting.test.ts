@@ -36,7 +36,7 @@ describe("JobPosting (schema.org)", () => {
       jobLocation: {
         address: { addressLocality: "Milano", addressRegion: "MI", addressCountry: "IT" },
       },
-      directApply: false,
+      directApply: true, // candidatura sul sito da WP-019
     });
   });
 

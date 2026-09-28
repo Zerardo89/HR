@@ -129,15 +129,15 @@ pagina `/offerte/[id]`, `src/app/sitemap.ts`, `src/app/robots.ts`
   italiana, descrizione come testo (mai HTML dell'azienda).
 - **JSON-LD JobPosting**: titolo, descrizione (HTML con testo dell'azienda sempre "escapato"), date, tipo di impiego,
   azienda, luogo (comune, provincia, IT), `baseSalary` in EUR con unità. Serializzato con `<` → `\u003c` (guida
-  Next.js): il testo dell'azienda non può chiudere il tag script. `directApply: false` finché non arriva la
-  candidatura (WP-019).
+  Next.js): il testo dell'azienda non può chiudere il tag script. `directApply: true` da WP-019 (candidatura sul
+  sito).
 - `sitemap.xml` (home + offerte visibili) e `robots.txt` (esclude aree private) calcolati a ogni richiesta; in
   anteprima (`PREVIEW_MODE`) sitemap vuota e tutto bloccato.
 - Dalla pagina dell'offerta in `/azienda` c'è il link alla pagina pubblica quando è pubblicata.
 - Test: 4 unitari (JSON-LD), 3 di integrazione (stati visibile / non più disponibile / 404), 4 e2e × 2 dispositivi
   (pagina, JSON-LD, `noindex`, 404, sitemap e robots).
-- Da fare: pagine "Lavoro [mansione] a [provincia]" (con testi di Gemini, dopo WP-015), immagine per la condivisione,
-  pulsante "Candidati" (WP-019).
+- Da fare: pagine "Lavoro [mansione] a [provincia]" (con testi di Gemini, dopo WP-015), immagine per la condivisione.
+  Il pulsante "Candidati" è arrivato con WP-019.
 
 ## WP-015 — Ricerca delle offerte e "perché la vedi" ✅
 **Esecutore:** Claude · **Codice:** `src/modules/matching/domain/search.ts` (puro), `src/modules/matching/server/search.ts`,

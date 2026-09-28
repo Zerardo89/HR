@@ -78,7 +78,8 @@
     "signOut": "Esci",
     "companyArea": "Vai all'area azienda",
     "security": "Sicurezza dell'account",
-    "profileLink": "Il tuo profilo"
+    "profileLink": "Il tuo profilo",
+    "applicationsLink": "Le mie candidature"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -138,6 +139,13 @@
       "link": "Per accettare apri questo link: {link}",
       "account": "Serve un account azienda con questo indirizzo email: se non ce l'hai, lo crei dalla stessa pagina. Il link vale {days} giorni.",
       "ignore": "Se non conosci questa azienda, ignora questa email: senza di te l'invito non ha effetto.",
+      "signature": "{siteName} — {appUrl}"
+    },
+    "newApplication": {
+      "subject": "Nuova candidatura per «{title}»",
+      "intro": "Ciao,",
+      "body": "hai ricevuto una nuova candidatura per l'offerta «{title}». Per vederla entra nell'area azienda: {link}",
+      "privacy": "Per rispetto della privacy del candidato, i suoi dati si vedono solo nell'area riservata.",
       "signature": "{siteName} — {appUrl}"
     }
   },
@@ -499,7 +507,8 @@
       "incomplete": "Mancano informazioni essenziali sul lavoro.",
       "other": "Non rispetta il regolamento degli annunci."
     },
-    "viewPublic": "Vedi la pagina pubblica"
+    "viewPublic": "Vedi la pagina pubblica",
+    "applicationsLink": "Candidature ricevute"
   },
   "moderation": {
     "metaTitle": "Moderazione",
@@ -588,7 +597,6 @@
     "publishedLabel": "Pubblicata il",
     "validThroughLabel": "Scade il",
     "descriptionTitle": "Il lavoro",
-    "applySoon": "Le candidature dalla piattaforma arrivano a breve: con l'apertura del 1° novembre potrai candidarti da qui con un clic.",
     "safety": "Per candidarti non devi mai pagare nulla né dare IBAN o documenti. Se qualcuno te lo chiede, segnalalo.",
     "report": "Segnala questa offerta"
   },
@@ -812,6 +820,97 @@
       "name": "Scrivi nome e cognome.",
       "phone": "Il telefono può contenere solo numeri, spazi e il segno +.",
       "invalid_occupation": "Una delle mansioni non esiste più: sceglila di nuovo dall'elenco."
+    }
+  },
+  "applications": {
+    "status": {
+      "sent": "Inviata",
+      "viewed": "Vista dall'azienda",
+      "in_review": "In valutazione",
+      "contacted": "L'azienda ti contatterà",
+      "rejected": "Non selezionata",
+      "hired": "Assunta/o 🎉",
+      "withdrawn": "Ritirata",
+      "closed": "Offerta chiusa"
+    },
+    "apply": {
+      "signInFirst": "Per candidarti entra con la tua email: se è la prima volta, crei l'account e il profilo in pochi minuti.",
+      "signIn": "Entra per candidarti",
+      "workersOnly": "Le candidature sono per chi cerca lavoro.",
+      "profileFirst": "Per candidarti serve il profilo: lo compili una volta e lo usi per tutte le offerte.",
+      "completeProfile": "Completa il profilo",
+      "already": "Ti sei candidata/o il {date}. Stato: {status}.",
+      "done": "Candidatura inviata! L'azienda riceve un avviso e vede il tuo profilo. Segui lo stato nelle tue candidature.",
+      "myApplications": "Le mie candidature",
+      "messageLabel": "Messaggio per l'azienda (facoltativo)",
+      "messageHelp": "Per esempio quando puoi iniziare. Non scrivere dati bancari o documenti: nessuna azienda seria li chiede ora.",
+      "submit": "Candidati con il tuo profilo",
+      "pending": "Invio…",
+      "errors": {
+        "invalid": "Il messaggio è troppo lungo (massimo 1000 caratteri).",
+        "no_profile": "Prima completa il profilo.",
+        "offer_unavailable": "Questa offerta non accetta più candidature.",
+        "already_applied": "Ti sei già candidata/o a questa offerta.",
+        "not_allowed": "Le candidature sono per chi cerca lavoro."
+      }
+    },
+    "mine": {
+      "metaTitle": "Le mie candidature",
+      "title": "Le mie candidature",
+      "empty": "Non ti sei ancora candidata/o a nessuna offerta.",
+      "sentOn": "Inviata il {date}",
+      "viewedOn": "vista il {date}",
+      "withdraw": "Ritira la candidatura",
+      "search": "Cerca altre offerte",
+      "outcome": {
+        "withdrawn": "Candidatura ritirata: l'azienda non la vede più.",
+        "not_found": "Candidatura non trovata.",
+        "not_allowed": "Questa candidatura non si può più ritirare."
+      }
+    },
+    "inbox": {
+      "metaTitle": "Candidature ricevute",
+      "title": "Candidature per «{title}»",
+      "privacy": "Per rispetto della privacy, nome e contatti si vedono aprendo la candidatura: ogni apertura viene registrata.",
+      "empty": "Nessuna candidatura per ora.",
+      "candidate": "Candidatura {n}",
+      "received": "Ricevuta il {date}",
+      "province": "provincia di {province}",
+      "open": "Apri la candidatura {n}",
+      "back": "Torna all'area azienda"
+    },
+    "detail": {
+      "metaTitle": "Candidatura",
+      "forOffer": "Candidatura per «{title}»",
+      "deleted": "Candidato/a che ha cancellato l'account",
+      "received": "ricevuta il {date}",
+      "contacts": "Contatti",
+      "email": "Email",
+      "phone": "Telefono",
+      "controllerNote": "Da ora sei titolare di questi dati: usali solo per questa selezione e conservali al massimo per il tempo necessario.",
+      "message": "Messaggio",
+      "profile": "Profilo",
+      "occupations": "Mansioni",
+      "experience": "Esperienza",
+      "place": "Comune",
+      "languages": "Lingue",
+      "licenses": "Patenti",
+      "availableFrom": "Disponibile da",
+      "experiences": "Esperienze",
+      "education": "Formazione",
+      "decide": "Aggiorna lo stato (lo vede il candidato)",
+      "decisions": {
+        "in_review": "In valutazione",
+        "contacted": "Lo contatteremo",
+        "rejected": "Non selezionato",
+        "hired": "Assunto"
+      },
+      "outcome": {
+        "updated": "Stato aggiornato: il candidato lo vede nelle sue candidature.",
+        "not_found": "Candidatura non trovata.",
+        "not_allowed": "Questo stato non si può più cambiare."
+      },
+      "back": "Torna alle candidature"
     }
   }
 }

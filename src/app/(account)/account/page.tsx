@@ -18,12 +18,20 @@ export default async function AccountPage() {
       <p className="text-lg">{t("signedInAs", { role: t(`roles.${user.role}`) })}</p>
       <p className="text-muted">{t("comingSoon")}</p>
       {user.role === "worker" && (
-        <Link
-          href="/profilo"
-          className="self-start rounded-lg bg-primary px-4 py-3 text-lg font-semibold text-primary-foreground"
-        >
-          {t("profileLink")}
-        </Link>
+        <>
+          <Link
+            href="/profilo"
+            className="self-start rounded-lg bg-primary px-4 py-3 text-lg font-semibold text-primary-foreground"
+          >
+            {t("profileLink")}
+          </Link>
+          <Link
+            href="/candidature"
+            className="self-start font-medium text-primary underline underline-offset-4"
+          >
+            {t("applicationsLink")}
+          </Link>
+        </>
       )}
       {user.role === "company_member" && (
         <Link

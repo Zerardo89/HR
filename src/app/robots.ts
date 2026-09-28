@@ -14,6 +14,7 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/account",
         "/profilo",
+        "/candidature",
         "/azienda",
         "/moderazione",
         "/accedi",
