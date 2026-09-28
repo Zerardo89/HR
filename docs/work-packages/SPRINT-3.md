@@ -10,7 +10,7 @@
 | 017 | ✅ Fatto (Claude, 28/09) | Profilo del lavoratore `/profilo`: dati di ricerca in chiaro, dati identificativi **cifrati** dal modulo `privacy` con audit di ogni lettura; stati cerco / aperto / nascosto; "disponibile a trasferirmi in…". |
 | 018 | ⏳ Da fare | CV in PDF generato dal profilo (senza foto). |
 | 019 | ✅ Fatto (Claude, 28/09) | Candidatura dalla pagina dell'offerta, "le mie candidature" con stato e ritiro, casella dell'azienda: dati identificativi decifrati **solo** per l'azienda destinataria, con audit; email all'azienda senza dati del candidato. |
-| 020 | ⏳ Da fare | Avvisi (ricerche salvate) + worker pg-boss. |
+| 020 | 🟡 Avvisi e worker fatti (Claude, 28/09) | ✅ Worker pg-boss con job pianificati in ora italiana, pulizia giornaliera; avvisi per le ricerche salvate con disiscrizione in un clic (RFC 8058). ⏳ **020c**: email di esito (offerta, sede, stato della candidatura). |
 | 021 | ⏳ Da fare | Mail ogni 30 giorni per gli "aperti" + token + pagine di conferma + RFC 8058. |
 | 022 | ⏳ Da fare | Scadenza e chiusura delle offerte + notifica ai candidati. |
 
@@ -82,3 +82,44 @@ pagina `/profilo`, link da `/account`
 - Da fare: email al lavoratore quando cambia lo stato (con gli avvisi, WP-020), chiusura delle candidature e data di
   fine visibilità alla scadenza dell'offerta (WP-022), esportazione e cancellazione (WP-023), CV in PDF allegabile
   (WP-018).
+
+## WP-020 — Worker pg-boss e avvisi delle ricerche salvate 🟡
+**Esecutore:** Claude · **Codice:** `src/worker/**`, `src/modules/notifications/**`, `src/modules/*/jobs.ts`,
+`src/modules/privacy/server/notify.ts`, pagine `/avvisi` e `/avvisi/disiscrizione`, route
+`/api/avvisi/disiscrizione`, riquadro "Ricevi le nuove offerte via email" in `/offerte`, migrazioni 0008-0009
+
+- **Worker** (`pnpm worker`, processo separato dal sito): pg-boss 12.33.3 (ADR-0003, pacchetto verificato: autore
+  timgit, versione di una settimana). Job pianificati con fuso `Europe/Rome` (il cambio dell'ora del 25/10 non
+  sposta nulla; nessun job tra le 2 e le 3, l'ora che il cambio salta o ripete). Coda `singleton` (un giro alla
+  volta), 2 tentativi a 5 e 10 minuti, `missed: "once"` (worker fermo all'ora prevista → un giro al riavvio). Nei
+  log solo numeri e tipi di errore. `pnpm worker --once <job>` esegue subito un job (verifiche, e2e).
+  - `maintenance.cleanup` alle 3:30: sessioni, biglietti e codici di accesso scaduti; token delle email scaduti.
+  - `alerts.send` alle 8:00: avvisi.
+- **API `jobs.ts`** (aggiornamento WP-020 di ADR-0001): il worker non può caricare gli `index.ts` dei moduli
+  (componenti React e Next.js); ogni modulo che serve al worker espone `jobs.ts`. Regola di lint aggiornata.
+- **Avvisi**: dalla pagina di ricerca il lavoratore salva la ricerca ("Ogni giorno" / "Una volta a settimana"). Si
+  salva la ricerca così com'è (parametri di `/offerte`, comune nella forma "Nome (PR)"), quindi l'avviso contiene
+  esattamente ciò che la pagina mostrerebbe, limitato alle offerte pubblicate dopo l'ultimo controllo
+  (`checked_until`, finestra chiusa: nessuna offerta in due avvisi). Serve un "cosa" o un "dove"; massimo 5 avvisi.
+  La richiesta è registrata come consenso `job_alerts`, chiuso quando non restano avvisi o con la disiscrizione.
+- **Regole** (01-PRODOTTO §6.1): avvisi solo per chi è "Cerco lavoro" o non ha ancora il profilo; "aperto" e
+  "nascosto" no (la pagina `/avvisi` lo dice e rimanda al profilo). Nessun avviso a chi ha cancellato l'account.
+- **Zona gratuita**: le ricerche salvate seguono il raggio scelto dal lavoratore, come la pagina di ricerca (il
+  lavoratore non si limita mai, ADR-0009). L'estensione a pagamento "disposti a trasferirsi" riguarda gli avvisi dal
+  profilo e la mail mensile (WP-021).
+- **Email**: una sola al giorno per persona con tutte le sue ricerche dovute, fino a 5 offerte per ricerca (titolo,
+  azienda, comune, stipendio, link) e il link per le altre; niente pubblicità (02 §5, art. 130), niente nome del
+  destinatario; l'indirizzo lo decifra `modules/privacy` come `system:notify` (scopo `notification.job-alert`, con
+  audit). Prima si spedisce, poi si segna il controllo: SMTP giù → nessuna offerta persa, il job si ripete.
+- **Disiscrizione** (R-MAIL-01, RFC 8058): intestazioni `List-Unsubscribe` (URL https con token monouso, 60 giorni,
+  nel DB solo l'hash) e `List-Unsubscribe-Post: List-Unsubscribe=One-Click`. Il POST del programma di posta toglie
+  tutti gli avvisi e chiude il consenso, risposta 200 senza dettagli. Il link nel testo apre una pagina di conferma
+  che da sola non cambia nulla (R-MAIL-02). Rifarla è innocuo.
+- Test: 9 unitari (forma canonica, "cosa o dove", descrizione, quando parte con giorni di 23 e 25 ore, stati, email) +
+  2 sugli orari dei job, 7 di integrazione (salvataggio e limiti, finestra e raggio, una email per più ricerche,
+  settimanale, stati e account cancellato, SMTP giù, disiscrizione e token scaduto, gestione), 2 e2e × 2 dispositivi
+  (dalla ricerca all'email con il job vero, POST "un clic", pagina di conferma; invito ad accedere).
+- Da fare: **020c** email di esito (offerta approvata/rifiutata e sede all'azienda, cambio di stato della candidatura
+  al lavoratore); avvisi dal profilo e mail mensile (WP-021); job di conservazione (docs/04 §8, WP-022/023); in
+  produzione: servizio del worker e utente DB che può creare lo schema `pgboss` (WP-010).
+

@@ -9,8 +9,8 @@ import {
   pgTable,
   primaryKey,
   smallint,
-  text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -127,22 +127,28 @@ export const profileLanguages = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.languageCode] })],
 );
 
-/** Ricerche salvate → avvisi email (WP-020). */
-export const savedSearches = pgTable("saved_searches", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  query: text("query"),
-  occupationIds: integer("occupation_ids")
-    .array()
-    .notNull()
-    .default(sql`'{}'::integer[]`),
-  municipalityCode: char("municipality_code", { length: 6 }).references(
-    () => municipalities.istatCode,
-  ),
-  radiusKm: smallint("radius_km").notNull().default(25),
-  frequency: alertFrequency("frequency").notNull().default("weekly"),
-  lastSentAt: timestamp("last_sent_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+/**
+ * Ricerche salvate → avvisi email (WP-020).
+ * - `params`: la ricerca come parametri dell'indirizzo di `/offerte` (forma canonica, senza pagina né "pubblicate
+ *   negli ultimi giorni"): l'avviso ripete ESATTAMENTE la ricerca che il lavoratore ha visto.
+ * - `checked_until`: le offerte pubblicate fino a questo istante sono già state considerate; il prossimo avviso
+ *   contiene solo quelle pubblicate dopo.
+ */
+export const savedSearches = pgTable(
+  "saved_searches",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    params: varchar("params", { length: 500 }).notNull(),
+    frequency: alertFrequency("frequency").notNull().default("weekly"),
+    checkedUntil: timestamp("checked_until", { withTimezone: true }).notNull().defaultNow(),
+    lastSentAt: timestamp("last_sent_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("saved_searches_user_params_uq").on(t.userId, t.params),
+    index("saved_searches_checked_idx").on(t.checkedUntil),
+  ],
+);

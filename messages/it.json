@@ -79,7 +79,8 @@
     "companyArea": "Vai all'area azienda",
     "security": "Sicurezza dell'account",
     "profileLink": "Il tuo profilo",
-    "applicationsLink": "Le mie candidature"
+    "applicationsLink": "Le mie candidature",
+    "alertsLink": "I miei avvisi"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -146,6 +147,17 @@
       "intro": "Ciao,",
       "body": "hai ricevuto una nuova candidatura per l'offerta «{title}». Per vederla entra nell'area azienda: {link}",
       "privacy": "Per rispetto della privacy del candidato, i suoi dati si vedono solo nell'area riservata.",
+      "signature": "{siteName} — {appUrl}"
+    },
+    "jobAlert": {
+      "subjectOne": "1 nuova offerta per le tue ricerche",
+      "subjectMany": "{count} nuove offerte per le tue ricerche",
+      "intro": "Ciao, ecco le offerte nuove per le ricerche che hai salvato.",
+      "sectionTitle": "Per la ricerca {search}:",
+      "offerLine": "• {title} — {company}, {place}\n  {salary}\n  {link}",
+      "more": "…e altre {count}: {link}",
+      "safety": "Ricorda: per candidarti non devi mai pagare nulla né dare IBAN o documenti.",
+      "footer": "Ricevi questa email perché hai creato degli avvisi. Gestiscili qui: {manage}\nNon vuoi più avvisi? {unsubscribe}",
       "signature": "{siteName} — {appUrl}"
     }
   },
@@ -911,6 +923,65 @@
         "not_allowed": "Questo stato non si può più cambiare."
       },
       "back": "Torna alle candidature"
+    }
+  },
+  "alerts": {
+    "describe": {
+      "what": "«{q}»",
+      "where": "{place}, entro {km} km",
+      "salary": "da {amount} € al mese"
+    },
+    "save": {
+      "title": "Ricevi le nuove offerte via email",
+      "help": "Ti scriviamo solo quando escono offerte nuove per questa ricerca: al massimo un'email al giorno, niente pubblicità, disiscrizione con un clic.",
+      "frequencyLegend": "Ogni quanto?",
+      "submit": "Crea l'avviso",
+      "signIn": "Entra per ricevere avvisi",
+      "signInHelp": "Con un account gratuito ricevi via email le nuove offerte per questa ricerca.",
+      "needWhatOrWhere": "Per creare un avviso scrivi una mansione o un comune.",
+      "already": "Hai già un avviso per questa ricerca.",
+      "manage": "Gestisci i tuoi avvisi"
+    },
+    "frequencies": {
+      "daily": "Ogni giorno",
+      "weekly": "Una volta a settimana"
+    },
+    "page": {
+      "metaTitle": "I miei avvisi",
+      "title": "I miei avvisi",
+      "intro": "Ti scriviamo quando escono offerte nuove per queste ricerche: al massimo un'email al giorno, alle 8. Puoi avere fino a {max} avvisi.",
+      "empty": "Non hai ancora avvisi. Fai una ricerca e premi «Crea l'avviso».",
+      "search": "Cerca offerte",
+      "paused": "I tuoi avvisi sono in pausa: nel profilo non hai scelto «Cerco lavoro». Cambia lo stato per riceverli.",
+      "profileLink": "Vai al profilo",
+      "lastSent": "Ultimo avviso il {date}",
+      "neverSent": "Nessun avviso spedito finora",
+      "see": "Vedi le offerte",
+      "frequencyLabel": "Frequenza dell'avviso {n}",
+      "change": "Cambia",
+      "delete": "Elimina l'avviso",
+      "alertName": "Avviso {n}",
+      "back": "Torna al tuo account",
+      "outcome": {
+        "saved": "Avviso creato: ti scriveremo quando escono offerte nuove.",
+        "duplicate": "Hai già un avviso per questa ricerca.",
+        "limit": "Hai già {max} avvisi: eliminane uno per crearne un altro.",
+        "invalid": "Per creare un avviso serve una mansione o un comune riconosciuto.",
+        "not_allowed": "Gli avvisi sono per chi cerca lavoro.",
+        "updated": "Frequenza aggiornata.",
+        "deleted": "Avviso eliminato.",
+        "not_found": "Avviso non trovato."
+      }
+    },
+    "unsubscribe": {
+      "metaTitle": "Disiscrizione dagli avvisi",
+      "title": "Non vuoi più ricevere avvisi?",
+      "body": "Confermando eliminiamo tutti i tuoi avvisi e non ti scriviamo più per le nuove offerte. Il tuo account resta com'è.",
+      "submit": "Sì, non voglio più avvisi",
+      "used": "La disiscrizione è già fatta: non riceverai più avvisi.",
+      "invalid": "Il link non è valido o è scaduto. Puoi gestire gli avvisi dal tuo account.",
+      "done": "Fatto: non riceverai più avvisi. Se cambi idea, puoi crearne di nuovi dalla ricerca.",
+      "manage": "Gestisci gli avvisi dal tuo account"
     }
   }
 }

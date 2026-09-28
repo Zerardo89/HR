@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
+import { getCurrentUser } from "@/modules/identity";
 import { findOffers, type SearchPlace } from "@/modules/matching";
 import {
   parseSearchParams,
@@ -11,6 +13,8 @@ import {
   type Reason,
   type SearchQuery,
 } from "@/modules/matching/domain";
+import { hasAlertForSearch, saveAlertAction } from "@/modules/notifications";
+import { ALERT_FREQUENCIES, alertParams, canSaveAlert } from "@/modules/notifications/domain";
 import { CONTRACT_TYPES, formatSalary, SCHEDULE_TYPES } from "@/modules/offers/domain";
 
 export async function generateMetadata({ searchParams }: PageProps<"/offerte">): Promise<Metadata> {
@@ -232,11 +236,85 @@ export default async function SearchPage({ searchParams }: PageProps<"/offerte">
           )}
         </section>
       )}
+      {outcome.status === "results" && <AlertBox query={query} place={outcome.place} />}
 
       <Link href="/come-funziona" className="self-start text-primary underline underline-offset-4">
         {t("howItWorks")}
       </Link>
     </main>
+  );
+}
+
+/** "Avvisami" (WP-020): la stessa ricerca, via email, quando escono offerte nuove. */
+async function AlertBox({ query, place }: { query: SearchQuery; place: SearchPlace | null }) {
+  const user = await getCurrentUser();
+  if (user && user.role !== "worker") return null;
+  const t = await getTranslations("alerts");
+  // Il comune nella forma "Nome (PR)", come lo salva l'avviso: resta univoco tra i comuni omonimi.
+  const search = place ? { ...query, dove: `${place.name} (${place.provinceAbbr})` } : query;
+  const link = "font-semibold text-primary underline underline-offset-4";
+
+  let body: ReactNode;
+  if (!user) {
+    body = (
+      <>
+        <p>{t("save.signInHelp")}</p>
+        <Link href="/accedi?tipo=lavoratore" className={`self-start ${link}`}>
+          {t("save.signIn")}
+        </Link>
+      </>
+    );
+  } else if (!canSaveAlert(search)) {
+    body = <p>{t("save.needWhatOrWhere")}</p>;
+  } else if (await hasAlertForSearch(user.id, search)) {
+    body = (
+      <p>
+        {t("save.already")}{" "}
+        <Link href="/avvisi" className={link}>
+          {t("save.manage")}
+        </Link>
+      </p>
+    );
+  } else {
+    body = (
+      <form action={saveAlertAction} className="flex flex-col gap-3">
+        <input type="hidden" name="params" value={alertParams(search)} />
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-1 font-medium">{t("save.frequencyLegend")}</legend>
+          {ALERT_FREQUENCIES.map((f) => (
+            <label key={f} className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="frequency"
+                value={f}
+                defaultChecked={f === "daily"}
+                className="size-5"
+              />
+              {t(`frequencies.${f}`)}
+            </label>
+          ))}
+        </fieldset>
+        <button
+          type="submit"
+          className="self-start rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground"
+        >
+          {t("save.submit")}
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <section
+      aria-labelledby="avviso"
+      className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5"
+    >
+      <h2 id="avviso" className="text-xl font-semibold">
+        {t("save.title")}
+      </h2>
+      <p className="text-sm text-muted">{t("save.help")}</p>
+      {body}
+    </section>
   );
 }
 

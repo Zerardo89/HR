@@ -1,4 +1,4 @@
-# Versioni bloccate (aggiornato il 27/09/2026 — WP-008)
+# Versioni bloccate (aggiornato il 28/09/2026 — WP-020)
 
 Le versioni sono fissate in `package.json` + `pnpm-lock.yaml`. **Non aggiornarle dentro un WP qualsiasi**:
 gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazione ed e2e verdi.
@@ -29,6 +29,7 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | vitest | 5.0.2 (+ vite 8.3.1) | unitari: `pnpm test`; integrazione: `pnpm test:integration` |
 | @playwright/test | 1.63.0 | progetti `mobile` (Pixel 5) e `desktop` |
 | prettier | 3.9.9 | `pnpm format` |
+| pg-boss | 12.33.3 | code e cron nello stesso Postgres (schema `pgboss`, ADR-0003); API v12: `createQueue` prima di `send`/`work`, `schedule(nome, cron, dati, { tz: "Europe/Rome" })`, handler che riceve un **array** di job. Solo in `src/worker` (WP-020) |
 
 ## Migrazioni del database
 - `0000_extensions.sql` — **scritta a mano**: PostGIS, pg_trgm, unaccent, configurazione di ricerca `italian_unaccent`.
@@ -39,5 +40,10 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 - `0005_company_verification.sql` — generata: `companies.verification` (esito VIES, nessun dato personale) — WP-011.
 - `0006_mfa.sql` — generata: 2FA (segreto TOTP cifrato con la KEK, ultimo periodo usato, sessioni verificate, codici di recupero come MAC) — WP-011b.
 - `0007_company_sites_invites.sql` — generata: inviti ai colleghi (indice cieco dell'email, hash del token, scadenza) e rifiuto motivato delle sedi — WP-011c.
+- `0008_saved_searches_params.sql` e `0009_saved_searches_drop_old.sql` — generate in due passi (senza domande di
+  drizzle-kit sulle colonne rinominate): la ricerca salvata diventa `params` (come l'indirizzo di `/offerte`) +
+  `checked_until`; tolte le vecchie colonne `query`, `occupation_ids`, `municipality_code`, `radius_km` — WP-020.
+- Il worker crea da sé il proprio schema `pgboss` all'avvio (migrazioni di pg-boss): in produzione il suo utente DB
+  deve poterlo creare, oppure lo crea la pipeline di deploy (WP-010).
 - Nuove modifiche: cambia lo schema → `pnpm db:generate` → rivedi l'SQL → committa. La CI fallisce se lo schema cambia senza migrazione.
 - Le migrazioni che toccano colonne cifrate o `audit_log` le scrive/valida l'architetto (CLAUDE.md).

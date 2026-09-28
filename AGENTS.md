@@ -14,7 +14,8 @@ Sei lo **sviluppatore** del progetto. L'architetto (Claude) ha già deciso stack
 3. **Non modificare i test di accettazione** già scritti: cambia il codice finché passano.
 4. TypeScript strict, niente `any`. Validazione con Zod di ogni input.
 5. Logica pura nel `domain/` del modulo (niente DB, niente Next.js); accesso al DB solo in `server/`.
-   Un modulo usa gli altri **solo** tramite il loro `index.ts`.
+   Un modulo usa gli altri **solo** tramite il loro `index.ts` (o `domain/index.ts`, `jobs.ts`). Il worker
+   (`src/worker`) usa solo i `jobs.ts`: niente React né Next.js in quei file.
 6. Testi per l'utente **solo** in `messages/it.json` (chiavi in inglese, valori in italiano).
 7. **Mai** dati personali nei log (usa `src/lib/logger.ts`), negli URL o nei messaggi di errore.
 8. **Mai** colonne in chiaro per nome, cognome, email, telefono: si usano i campi `*_enc` tramite il modulo crypto.

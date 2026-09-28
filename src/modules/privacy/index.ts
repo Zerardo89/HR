@@ -18,3 +18,8 @@ export {
   sealApplicationMessage,
   type ApplicantView,
 } from "./server/application-pii";
+export {
+  NOTIFICATION_PURPOSES,
+  notificationEmail,
+  type NotificationPurpose,
+} from "./server/notify";

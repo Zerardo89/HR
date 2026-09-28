@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, gte, inArray, sql, type SQL } from "drizzle-orm";
+import { and, desc, eq, gt, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { companies, jobOffers, municipalities, occupations, provinces } from "@/lib/db/schema";
 import { findMunicipality, type MunicipalityLookup, type MunicipalityRef } from "@/modules/geo";
@@ -46,6 +46,8 @@ type CandidateFilters = {
   radiusKm: number;
   query: SearchQuery;
   now: Date;
+  /** Avvisi (WP-020): solo offerte pubblicate in (after, until], così nessuna finisce in due avvisi. */
+  publishedWindow?: { after: Date; until: Date };
 };
 
 export async function findCandidates(
@@ -114,6 +116,8 @@ export async function findCandidates(
           ? inArray(jobOffers.contractType, query.contractTypes)
           : undefined,
         query.schedules.length > 0 ? inArray(jobOffers.schedule, query.schedules) : undefined,
+        f.publishedWindow ? gt(jobOffers.publishedAt, f.publishedWindow.after) : undefined,
+        f.publishedWindow ? lte(jobOffers.publishedAt, f.publishedWindow.until) : undefined,
         query.publishedWithinDays
           ? gte(
               jobOffers.publishedAt,

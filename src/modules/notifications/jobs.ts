@@ -1,0 +1,33 @@
+import "server-only";
+import { lt } from "drizzle-orm";
+import { getKeyProvider } from "@/lib/crypto";
+import { getDb } from "@/lib/db";
+import { emailActionTokens } from "@/lib/db/schema";
+import { getServerEnv } from "@/lib/env";
+import { getMailer } from "@/lib/mail";
+import { getOccupationCatalog } from "@/modules/taxonomy/jobs";
+import { sendDueAlerts, type AlertRunSummary } from "./server/alerts";
+
+// Modulo `notifications` — API per i job del worker (WP-020): niente componenti né Next.js.
+
+/** Job `alerts.send`: avvisi delle ricerche salvate. */
+export async function sendJobAlerts(): Promise<AlertRunSummary> {
+  const catalog = await getOccupationCatalog();
+  return sendDueAlerts({
+    db: getDb(),
+    keys: getKeyProvider(),
+    mailer: getMailer(),
+    now: () => new Date(),
+    appUrl: getServerEnv().APP_URL,
+    occupations: catalog.prepared,
+  });
+}
+
+/** Pulizia giornaliera: token delle email scaduti (disiscrizione, conferme). */
+export async function cleanupEmailTokens(): Promise<{ emailTokensDeleted: number }> {
+  const deleted = await getDb()
+    .delete(emailActionTokens)
+    .where(lt(emailActionTokens.expiresAt, new Date()))
+    .returning({ tokenHash: emailActionTokens.tokenHash });
+  return { emailTokensDeleted: deleted.length };
+}

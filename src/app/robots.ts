@@ -15,6 +15,7 @@ export default function robots(): MetadataRoute.Robots {
         "/account",
         "/profilo",
         "/candidature",
+        "/avvisi",
         "/azienda",
         "/moderazione",
         "/accedi",
