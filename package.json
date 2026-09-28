@@ -20,6 +20,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:roles": "tsx scripts/db-roles.ts",
+    "privacy:reapply-erasures": "tsx scripts/reapply-erasures.ts",
     "worker": "tsx --conditions=react-server --env-file-if-exists=.env.local src/worker/index.ts",
     "keys:generate": "tsx scripts/generate-keys.ts",
     "test:integration": "vitest run --config vitest.integration.config.mts",

@@ -11,7 +11,7 @@ import {
 } from "@/lib/db/schema";
 import { logger } from "@/lib/logger";
 import type { Mailer } from "@/lib/mail";
-import { companyMemberEmails, notificationEmail } from "@/modules/privacy";
+import { companyMemberEmails, notificationEmail } from "@/modules/privacy/jobs";
 import {
   isNotifiedApplicationStatus,
   renderApplicationUpdate,

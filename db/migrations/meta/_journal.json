@@ -71,6 +71,34 @@
       "when": 1790555050974,
       "tag": "0009_saved_searches_drop_old",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790574623792,
+      "tag": "0010_offer_lifecycle",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1790590728524,
+      "tag": "0011_monthly_check",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1790592713045,
+      "tag": "0012_deletion_notice",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1790592714153,
+      "tag": "0013_audit_retention",
+      "breakpoints": true
     }
   ]
 }

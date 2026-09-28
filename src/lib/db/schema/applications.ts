@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { index, pgTable, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { companies } from "./companies";
 import { applicationStatus, contactRequestStatus } from "./enums";
@@ -23,10 +24,16 @@ export const applications = pgTable(
     closedAt: timestamp("closed_at", { withTimezone: true }),
     // R-PRIV-03: dopo questa data la candidatura sparisce dalla vista dell'azienda.
     companyVisibleUntil: timestamp("company_visible_until", { withTimezone: true }),
+    // WP-022: email "posizione chiusa" spedita al lavoratore (null = ancora da spedire, se chiusa).
+    closureNotifiedAt: timestamp("closure_notified_at", { withTimezone: true }),
   },
   (t) => [
     uniqueIndex("applications_offer_worker_uq").on(t.offerId, t.workerUserId),
     index("applications_worker_idx").on(t.workerUserId),
+    index("applications_closure_pending_idx")
+      .on(t.closedAt)
+      .where(sql`${t.status} = 'closed' and ${t.closureNotifiedAt} is null`),
+    index("applications_company_visible_idx").on(t.companyVisibleUntil),
   ],
 );
 

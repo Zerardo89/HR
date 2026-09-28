@@ -31,7 +31,7 @@ Requisito del fondatore: non poter accedere ai dati personali. La cifratura del 
 
 ## Conseguenze
 - ✅ Dump DB e backup non rivelano dati identificativi.
-- ✅ Diritto all'oblio anche nei backup.
+- ✅ Diritto all'oblio anche nei backup, **entro la loro rotazione** (≤ 6 mesi): vedi ADR-0014.
 - ⚠️ Non si può fare ricerca full-text sui campi cifrati (per questo i dati per la ricerca stanno in C1, non identificanti).
 - ⚠️ Perdere la KEK = perdere i dati: backup della KEK dal custode (busta sigillata / Shamir).
 

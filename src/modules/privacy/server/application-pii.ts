@@ -7,7 +7,14 @@ import {
   type AuditSink,
   type PiiLocation,
 } from "@/lib/crypto";
-import { applications, companyMembers, jobOffers, users, workerProfiles } from "@/lib/db/schema";
+import {
+  applications,
+  companies,
+  companyMembers,
+  jobOffers,
+  users,
+  workerProfiles,
+} from "@/lib/db/schema";
 import { visibleToCompany } from "@/modules/applications/domain";
 import { workerPiiSchema, type WorkerPii } from "@/modules/profiles/domain";
 import { dbAuditSink } from "./audit";
@@ -56,7 +63,8 @@ export async function sealApplicationMessage(
 
 /**
  * Autorizzazione dell'azienda: l'attore è un membro attivo (con ruolo azienda) dell'azienda che ha pubblicato
- * l'offerta, e la candidatura è ancora visibile. Restituisce i dati della candidatura, altrimenti `null`.
+ * l'offerta, l'azienda è verificata (una sospesa non legge più nulla, WP-024a) e la candidatura è ancora
+ * visibile. Restituisce i dati della candidatura, altrimenti `null`.
  */
 export async function companyRecipient(
   deps: Pick<PrivacyDeps, "db" | "now">,
@@ -78,11 +86,13 @@ export async function companyRecipient(
       and(eq(companyMembers.companyId, jobOffers.companyId), eq(companyMembers.userId, actorId)),
     )
     .innerJoin(users, eq(users.id, companyMembers.userId))
+    .innerJoin(companies, eq(companies.id, jobOffers.companyId))
     .where(
       and(
         eq(applications.id, applicationId),
         eq(users.status, "active"),
         eq(users.role, "company_member"),
+        eq(companies.status, "verified"),
       ),
     )
     .limit(1);
@@ -166,11 +176,13 @@ export async function companyNotificationEmails(
     .innerJoin(jobOffers, eq(jobOffers.id, applications.offerId))
     .innerJoin(companyMembers, eq(companyMembers.companyId, jobOffers.companyId))
     .innerJoin(users, eq(users.id, companyMembers.userId))
+    .innerJoin(companies, eq(companies.id, jobOffers.companyId))
     .where(
       and(
         eq(applications.id, applicationId),
         eq(users.status, "active"),
         eq(users.role, "company_member"),
+        eq(companies.status, "verified"),
       ),
     );
   const emails: string[] = [];

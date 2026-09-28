@@ -44,6 +44,8 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - `pnpm test:integration` = test sul DB reale (serve `DATABASE_URL` di un DB migrato)
 - `pnpm test:e2e` = Playwright (fa partire `pnpm start`: prima `pnpm build`)
 - `pnpm db:generate` / `pnpm db:migrate` = genera / applica le migrazioni
+- `pnpm db:roles` = ruoli ristretti `hr_app`/`hr_worker` (dopo ogni migrazione; `docs/runbook/BACKUP-E-RIPRISTINO.md`)
+- `pnpm privacy:reapply-erasures <registro>` = dopo un ripristino da backup ripete le cancellazioni (ADR-0014)
 - `pnpm worker` = worker pg-boss (job pianificati); `pnpm worker --once alerts.send` = esegue subito un job
 - `pnpm keys:generate` = crea KEK e chiave dell'indice cieco in `./secrets` (mai committare)
 - `pnpm format` = Prettier
@@ -65,8 +67,12 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 27/09/2026: PR #1 unita su `main`. WP-008 accesso completato, con cambio di libreria (ADR-0013: niente Better Auth).
 - 28/09/2026: PR #3 (Sprint 1-2) e #4 (WP-017) unite. WP-019 candidature fatto. Stato per sprint in
   `docs/work-packages/SPRINT-{1,2,3}.md`.
-- 28/09/2026: WP-020 worker pg-boss + avvisi + email di esito (020c).
-- Prossimi: WP-022 scadenza offerte, WP-021 mail mensile, WP-018 CV PDF,
-  WP-010 PWA/TWA (servono nome e server).
+- 28/09/2026: WP-020 worker pg-boss + avvisi + email di esito (020c). WP-022 ciclo di vita delle offerte.
+  WP-021 mail mensile. WP-023a centro privacy (ADR-0014: cancellazione e backup). WP-023b job di conservazione.
+  WP-024a segnalazioni DSA e decisioni motivate. WP-024b condizioni d'uso versionate (`content/legal/`) e punto
+  di contatto. WP-027 CSP, ruoli DB separati, backup e ripristino (runbook in `docs/runbook/`). Stato sprint 4 in
+  `SPRINT-4.md`.
+- Prossimi: revisione dei testi legali in bozza (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in
+  locale), WP-010 PWA/TWA (servono nome e server).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

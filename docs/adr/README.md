@@ -19,3 +19,4 @@ chiunque (anche ChatGPT o Gemini) può proporre un nuovo ADR in stato `Proposta`
 | [0011](ADR-0011-due-fasi-bacheca-intermediazione.md) | Lancio in due fasi: Bacheca → Intermediazione (feature flag) | Accettata |
 | [0012](ADR-0012-hosting-costo-zero.md) | Hosting a costo (quasi) zero: Cloudflare Tunnel + macchina spostabile | Accettata (sostituisce in parte 0006) |
 | [0013](ADR-0013-auth-in-casa.md) | Autenticazione scritta in casa: codice via email + sessioni nel database | Accettata (sostituisce in parte 0008) |
+| [0014](ADR-0014-cancellazione-e-backup.md) | Cancellazione dell'account: crypto-shredding subito, backup entro la rotazione | Accettata (precisa 0004) |

@@ -3,6 +3,7 @@ import "server-only";
 // Modulo `identity` — API pubblica (lato server): utenti, ruoli, accesso con codice via email, sessioni (ADR-0013).
 // Struttura: domain/ (puro) · server/ (DB, servizi) · ui/ (componenti) · index.ts
 export { getCurrentUser, requireUser } from "./server/current-user";
+export { clearSessionCookie } from "./server/cookies";
 export { deleteExpiredAuthRows, deleteUserSessions, type SessionUser } from "./server/sessions";
 export { runtimeDeps as identityRuntimeDeps } from "./server/runtime";
 export { getTotpEnrollment, type TotpEnrollmentView } from "./server/enrollment";

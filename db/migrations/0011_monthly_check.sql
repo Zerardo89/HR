@@ -1,0 +1,1 @@
+ALTER TYPE "public"."email_action" ADD VALUE 'monthly_check';

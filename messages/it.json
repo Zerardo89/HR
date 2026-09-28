@@ -80,7 +80,8 @@
     "security": "Sicurezza dell'account",
     "profileLink": "Il tuo profilo",
     "applicationsLink": "Le mie candidature",
-    "alertsLink": "I miei avvisi"
+    "alertsLink": "I miei avvisi",
+    "privacyLink": "Privacy e dati"
   },
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
@@ -91,8 +92,12 @@
     },
     "terms": {
       "title": "Condizioni d'uso",
-      "p1": "Il servizio è gratuito per chi cerca lavoro, sempre. Per le aziende è gratuito nella loro regione o entro 50 km dalle loro sedi.",
-      "p2": "Le condizioni d'uso complete saranno pubblicate qui prima del lancio."
+      "currentVersion": "Versione in vigore dal {date}.",
+      "oldVersion": "Versione del {date}: non è più in vigore.",
+      "readCurrent": "Leggi la versione in vigore",
+      "historyTitle": "Tutte le versioni",
+      "historyCurrent": "{date} (in vigore)",
+      "historyItem": "{date}"
     },
     "cookies": {
       "title": "Cookie",
@@ -101,13 +106,18 @@
     },
     "contacts": {
       "title": "Contatti",
-      "p1": "L'associazione che gestirà il servizio è in costituzione: indirizzo email e PEC saranno pubblicati qui.",
-      "p2": "Per le richieste sui tuoi dati personali potrai usare anche le funzioni del tuo account (scarica i dati, cancella l'account)."
-    },
-    "reports": {
-      "title": "Segnalazioni",
-      "p1": "Hai visto un annuncio sospetto, una richiesta di denaro o un'offerta discriminatoria? Qui potrai segnalarlo: ogni segnalazione riceverà una risposta motivata.",
-      "p2": "La funzione di segnalazione arriva insieme alle prime offerte."
+      "intro": "Punto di contatto unico per chi usa il servizio e per le autorità (Regolamento UE 2022/2065 sui servizi digitali, articoli 11 e 12).",
+      "emailLabel": "Email",
+      "pecLabel": "PEC",
+      "pending": "sarà pubblicata qui appena l'associazione sarà costituita",
+      "languagesLabel": "Lingue",
+      "languages": "italiano e inglese",
+      "human": "Ti risponde sempre una persona, non un programma automatico.",
+      "reports": "Per segnalare un'offerta o un'azienda usa il link «Segnala» in fondo all'offerta.",
+      "reportsLink": "Come segnalare",
+      "review": "Se una nostra decisione su un'offerta o su un account non ti convince, puoi chiederne il riesame scrivendo a questo indirizzo entro 6 mesi dalla decisione.",
+      "data": "Per i tuoi dati personali (scaricarli, cancellare l'account) puoi fare tutto in autonomia da «Privacy e dati».",
+      "dataLink": "Privacy e dati"
     },
     "about": {
       "title": "Chi siamo",
@@ -193,6 +203,66 @@
     "common": {
       "intro": "Ciao,",
       "signature": "{siteName} — {appUrl}"
+    },
+    "offerExpiring": {
+      "subject": "La tua offerta «{title}» scade il {date}",
+      "body": "L'offerta «{title}» scade il {date}. Se la posizione è ancora aperta, rinnovala; se l'hai già coperta, chiudila: i candidati riceveranno un avviso e nessuno resta senza risposta.",
+      "link": "Gestisci l'offerta: {link}"
+    },
+    "positionClosed": {
+      "subject": "La posizione «{title}» è chiusa",
+      "closed": "{company} ha chiuso l'offerta «{title}» a cui ti eri candidata/o.",
+      "expired": "L'offerta «{title}» di {company}, a cui ti eri candidata/o, è scaduta.",
+      "thanks": "Grazie per la candidatura. Altre offerte ti aspettano qui: {search}",
+      "link": "Le tue candidature: {link}",
+      "removed": "Abbiamo tolto dal sito l'offerta «{title}» di {company}, a cui ti eri candidata/o, perché non rispettava le regole. Se ti hanno chiesto soldi, dati bancari o documenti, non darli."
+    },
+    "monthlyCheck": {
+      "subjectMany": "Stai ancora cercando lavoro? {count} offerte per te vicino a {place}",
+      "subjectOne": "Stai ancora cercando lavoro? 1 offerta per te vicino a {place}",
+      "subjectNone": "Stai ancora cercando lavoro? Dicci come va",
+      "intro": "Ciao, è il controllo mensile che hai chiesto: nel profilo risulti «occupato, ma aperto a proposte».",
+      "offersTitle": "Le offerte più adatte a te pubblicate negli ultimi 30 giorni:",
+      "offerLine": "• {title} — {company}, {place}\n  {salary}\n  {link}",
+      "noOffers": "Questo mese non ci sono offerte nuove per le tue mansioni nella tua zona.",
+      "seeAll": "Vedi tutte le offerte ({count}): {link}",
+      "question": "Come va? Scegli una risposta (si apre una pagina per confermare):",
+      "seeking": "• Sì, sto cercando: {link}",
+      "open": "• No, resto occupato ma visibile: {link}",
+      "hide": "• Nascondimi per ora: {link}",
+      "delete": "• Cancella il mio profilo: {link}",
+      "noAnswer": "Se non rispondi per 6 mesi di fila mettiamo in pausa il profilo e queste email.",
+      "safety": "Ricorda: per candidarti non devi mai pagare nulla né dare IBAN o documenti.",
+      "footer": "Ricevi questa email perché l'hai scelta nel profilo. Per non riceverla più: {unsubscribe}",
+      "signature": "{siteName} — {appUrl}"
+    },
+    "monthlyPaused": {
+      "subject": "Abbiamo messo in pausa il tuo profilo",
+      "body": "Non abbiamo ricevuto risposta alle ultime 6 email mensili: abbiamo nascosto il tuo profilo e sospeso queste email. Quando vuoi, lo riattivi dal profilo: {link}"
+    },
+    "inactiveHidden": {
+      "subject": "Abbiamo nascosto il tuo profilo",
+      "body": "Non ti vediamo da 6 mesi: per proteggere i tuoi dati abbiamo nascosto il tuo profilo e sospeso le email. Se cerchi ancora lavoro, entra e cambia stato quando vuoi: {link}"
+    },
+    "deletionNotice": {
+      "subject": "Il {date} cancelleremo il tuo account",
+      "body": "Non entri nel tuo account da quasi 2 anni. Per non tenere i tuoi dati più del necessario, il {date} cancelleremo l'account e tutti i dati collegati. Se vuoi tenerlo basta entrare, anche una volta sola: {link}"
+    },
+    "reportReceived": {
+      "subject": "Abbiamo ricevuto la tua segnalazione",
+      "body": "Grazie: la tua segnalazione su {what} è arrivata. La esaminerà una persona del nostro staff e ti scriveremo l'esito."
+    },
+    "reportOutcome": {
+      "subject": "Esito della tua segnalazione",
+      "dismissed": "Abbiamo esaminato la tua segnalazione su {what}: non abbiamo trovato violazioni della legge o del regolamento degli annunci, quindi non abbiamo preso provvedimenti. Se hai nuovi elementi puoi segnalarlo di nuovo.",
+      "offerRemoved": "Abbiamo esaminato la tua segnalazione su {what} e abbiamo tolto l'annuncio dal sito.",
+      "companySuspended": "Abbiamo esaminato la tua segnalazione su {what} e abbiamo sospeso l'azienda: le sue offerte non sono più sul sito.",
+      "ground": "Motivo: {ground}.",
+      "contact": "Se non sei d'accordo, scrivici: {contact}"
+    },
+    "reportDecision": {
+      "offerSubject": "Abbiamo tolto la tua offerta «{title}»",
+      "companySubject": "Abbiamo sospeso l'account di {company}"
     }
   },
   "waitlist": {
@@ -427,7 +497,7 @@
     "noSites": "Per pubblicare un'offerta serve almeno una sede approvata. La sede legale arriva dalla verifica della Partita IVA; le altre sedi le aggiungi dalla pagina «Sedi» dell'area azienda.",
     "backToCompany": "Torna all'area azienda",
     "statusLabel": "Stato",
-    "notEditable": "Un'offerta pubblicata non si modifica: presto potrai chiuderla o rinnovarla da qui.",
+    "notEditable": "Un'offerta pubblicata non si modifica: puoi chiuderla o, vicino alla scadenza, rinnovarla.",
     "status": {
       "draft": "Bozza",
       "pending_review": "In moderazione",
@@ -439,7 +509,11 @@
     "outcome": {
       "draft": "Bozza salvata. Puoi completarla quando vuoi.",
       "pending_review": "Offerta inviata: la controlla un moderatore, di solito entro un giorno lavorativo. Poi sarà visibile a tutti.",
-      "published": "Offerta pubblicata: è visibile a tutti."
+      "published": "Offerta pubblicata: è visibile a tutti.",
+      "closed": "Offerta chiusa: non si vede più e i candidati riceveranno un avviso entro domattina.",
+      "renewed": "Offerta rinnovata: nuova scadenza il {date}.",
+      "not_allowed": "Operazione non possibile per questa offerta.",
+      "not_found": "Offerta non trovata."
     },
     "form": {
       "title": "Titolo dell'offerta",
@@ -554,7 +628,22 @@
       "other": "Non rispetta il regolamento degli annunci."
     },
     "viewPublic": "Vedi la pagina pubblica",
-    "applicationsLink": "Candidature ricevute"
+    "applicationsLink": "Candidature ricevute",
+    "lifecycle": {
+      "expiresOn": "Scade il {date}.",
+      "renewTitle": "Rinnova l'offerta",
+      "renewHelp": "La posizione è ancora aperta? Rinnovala: resta visibile dalla data di oggi.",
+      "renewDays": "Per quanti giorni",
+      "renewOption": "{days} giorni",
+      "renew": "Rinnova",
+      "renewableFrom": "Potrai rinnovarla dal {date} (negli ultimi {days} giorni prima della scadenza).",
+      "closeTitle": "Chiudi l'offerta",
+      "closeHelp": "Hai trovato chi cercavi o la posizione non è più disponibile? Chiudila: sparisce dalla ricerca e i candidati ricevono un avviso, così nessuno resta senza risposta.",
+      "close": "Chiudi l'offerta",
+      "expiredNote": "Scaduta il {date}. I candidati hanno ricevuto (o ricevono entro domattina) un avviso. Per cercare ancora, pubblica una nuova offerta.",
+      "closedNote": "Offerta chiusa. I candidati hanno ricevuto (o ricevono entro domattina) un avviso.",
+      "newOffer": "Pubblica una nuova offerta"
+    }
   },
   "moderation": {
     "metaTitle": "Moderazione",
@@ -598,7 +687,13 @@
       "site_approved": "Sede approvata.",
       "site_rejected": "Sede non approvata: l'azienda vede il motivo.",
       "site_not_found": "La sede non è più in attesa.",
-      "site_not_allowed": "Non hai i permessi per approvare le sedi."
+      "site_not_allowed": "Non hai i permessi per approvare le sedi.",
+      "report_removed": "Annuncio tolto: l'azienda ha ricevuto la motivazione.",
+      "report_suspended": "Azienda sospesa: ha ricevuto la motivazione.",
+      "report_dismissed": "Segnalazioni archiviate.",
+      "report_not_found": "Non ci sono più segnalazioni aperte su questo contenuto.",
+      "report_not_allowed": "Operazione non consentita.",
+      "report_invalid": "Per togliere o sospendere servono il fondamento e i fatti (almeno 20 caratteri, senza email né numeri di telefono)."
     },
     "sitesTitle": "Sedi da approvare ({count})",
     "sitesEmpty": "Nessuna sede in attesa.",
@@ -615,6 +710,34 @@
       "duplicate": "Sede già presente.",
       "unclear": "Indicazioni insufficienti.",
       "other": "Non rispetta le regole delle sedi."
+    },
+    "reports": {
+      "title": "Segnalazioni ({count})",
+      "empty": "Nessuna segnalazione aperta.",
+      "offer": "Annuncio",
+      "company": "Azienda",
+      "count": "{count, plural, =1 {1 segnalazione} other {# segnalazioni}}, la prima il {date}",
+      "targetStatus": "Stato attuale: {status}",
+      "companyInfo": "{legalName} · P.IVA {vat} · offerte pubblicate: {published}",
+      "reasonsLabel": "Motivi indicati",
+      "detailsLabel": "Descrizioni di chi ha segnalato",
+      "noDetails": "Nessuna descrizione.",
+      "ground": "Fondamento (lo legge l'azienda)",
+      "facts": "Fatti (li legge l'azienda: da 20 a 1000 caratteri, niente email né numeri di telefono)",
+      "removeOffer": "Togli l'annuncio",
+      "suspendCompany": "Sospendi l'azienda",
+      "dismiss": "Archivia: nessuna violazione",
+      "statuses": {
+        "draft": "bozza",
+        "pending_review": "in moderazione",
+        "published": "pubblicata",
+        "expired": "scaduta",
+        "closed": "chiusa",
+        "removed": "tolta",
+        "pending": "da verificare",
+        "verified": "verificata",
+        "suspended": "sospesa"
+      }
     }
   },
   "publicOffer": {
@@ -1016,6 +1139,147 @@
       "invalid": "Il link non è valido o è scaduto. Puoi gestire gli avvisi dal tuo account.",
       "done": "Fatto: non riceverai più avvisi. Se cambi idea, puoi crearne di nuovi dalla ricerca.",
       "manage": "Gestisci gli avvisi dal tuo account"
+    }
+  },
+  "monthly": {
+    "metaTitle": "Controllo mensile",
+    "questions": {
+      "seeking": "Confermi che stai cercando lavoro?",
+      "open": "Confermi che resti occupata/o ma visibile?",
+      "hide": "Vuoi nascondere il tuo profilo per ora?",
+      "delete": "Vuoi cancellare il tuo profilo?",
+      "stop": "Non vuoi più ricevere la mail mensile?"
+    },
+    "explain": {
+      "seeking": "Il tuo stato diventa «Cerco lavoro». Per ricevere le nuove offerte via email crea un avviso dalla ricerca.",
+      "open": "Il tuo stato resta «Occupato, ma aperto a proposte»: fra un mese ti scriviamo di nuovo.",
+      "hide": "Il tuo stato diventa «Non visibile». Puoi cambiarlo quando vuoi dal profilo.",
+      "delete": "Cancelliamo il profilo: mansioni, comune, esperienze, nome e telefono. Il tuo account resta e le candidature già inviate restano. Non si può annullare.",
+      "stop": "Non ti scriviamo più ogni mese. Il profilo resta com'è."
+    },
+    "confirm": {
+      "seeking": "Sì, sto cercando",
+      "open": "Sì, resto visibile",
+      "hide": "Nascondimi",
+      "delete": "Cancella il profilo",
+      "stop": "Non scrivermi più"
+    },
+    "done": {
+      "seeking": "Fatto: ora risulti «Cerco lavoro». In bocca al lupo!",
+      "open": "Fatto: ci sentiamo fra un mese.",
+      "hide": "Fatto: il tuo profilo non è visibile.",
+      "delete": "Fatto: il profilo è cancellato.",
+      "stop": "Fatto: non riceverai più la mail mensile."
+    },
+    "used": "Hai già risposto a questa email. Puoi cambiare stato quando vuoi dal profilo.",
+    "invalid": "Il link non è valido o è scaduto (vale 30 giorni). Puoi cambiare stato dal profilo.",
+    "choose": "Scegli una risposta:",
+    "profile": "Vai al profilo",
+    "search": "Cerca offerte"
+  },
+  "privacyCenter": {
+    "metaTitle": "Privacy e dati",
+    "title": "Privacy e dati",
+    "intro": "Qui eserciti i tuoi diritti da sola/o, subito: scaricare i tuoi dati, vedere i consensi, cancellare l'account.",
+    "exportTitle": "Scarica i tuoi dati",
+    "exportHelp": "Un file (JSON) con tutto ciò che ci hai dato e le candidature inviate, compreso chi ha letto i tuoi dati cifrati e perché.",
+    "exportLink": "Scarica i miei dati",
+    "consentsTitle": "I tuoi consensi",
+    "consentsEmpty": "Nessun consenso registrato.",
+    "consentGranted": "dato il {date} (versione {version})",
+    "consentRevoked": "revocato il {date}",
+    "consentTypes": {
+      "privacy_notice": "Presa visione dell'informativa privacy",
+      "terms": "Accettazione delle condizioni d'uso",
+      "monthly_check": "Mail mensile",
+      "job_alerts": "Avvisi via email",
+      "marketing": "Comunicazioni promozionali",
+      "l68_health": "Categoria protetta (L. 68/99)",
+      "waitlist_launch": "Lista d'attesa"
+    },
+    "consentsHelp": "Gli avvisi si gestiscono in «I miei avvisi», la mail mensile nel profilo.",
+    "deleteTitle": "Cancella l'account",
+    "deleteHelp": "Cancelliamo profilo, candidature, avvisi e accessi, e distruggiamo la chiave con cui erano cifrati i tuoi dati: diventano subito illeggibili. Nelle copie di sicurezza cifrate spariscono con la loro rotazione, al più entro 6 mesi. Non si può annullare. Se hai un'azienda, l'azienda e le sue offerte restano; se eri l'unico titolare con dei colleghi, la titolarità passa al collega registrato da più tempo.",
+    "deleteConfirmLabel": "Per confermare scrivi {word}",
+    "deleteButton": "Cancella il mio account",
+    "deleteError": "Per cancellare l'account scrivi la parola richiesta.",
+    "back": "Torna al tuo account",
+    "deletedTitle": "Account cancellato",
+    "deletedBody": "Il tuo account è cancellato e i tuoi dati non sono più leggibili. Se vuoi tornare, puoi registrarti di nuovo quando vuoi.",
+    "home": "Torna alla pagina iniziale"
+  },
+  "trust": {
+    "subjects": {
+      "offer": "l'annuncio «{title}» di {company}",
+      "company": "l'azienda {company}"
+    },
+    "reasons": {
+      "scam": "Sembra una truffa",
+      "discriminatory": "È discriminatoria (età, sesso, origine, aspetto…)",
+      "payment_requested": "Chiede soldi, acquisti o dati bancari",
+      "misleading": "Le informazioni sul lavoro sono false o ingannevoli",
+      "illegal": "Propone lavoro irregolare o illegale",
+      "other": "Altro"
+    },
+    "groundLabels": {
+      "discrimination": "Discriminazione",
+      "payment_request": "Richiesta di soldi ai lavoratori",
+      "scam": "Truffa",
+      "misleading": "Informazioni false o ingannevoli",
+      "illegal_work": "Lavoro irregolare",
+      "terms": "Altra violazione del regolamento"
+    },
+    "grounds": {
+      "discrimination": "divieto di discriminazione nell'accesso al lavoro (D.Lgs. 198/2006 art. 27, D.Lgs. 215/2003, D.Lgs. 216/2003, D.Lgs. 276/2003 art. 10) e Regolamento annunci",
+      "payment_request": "divieto di chiedere compensi o spese ai lavoratori (D.Lgs. 276/2003 art. 11) e Regolamento annunci",
+      "scam": "Regolamento annunci: offerte false o truffe",
+      "misleading": "Regolamento annunci: informazioni sul lavoro false, incomplete o ingannevoli",
+      "illegal_work": "divieto di lavoro irregolare e Regolamento annunci",
+      "terms": "Regolamento annunci (condizioni d'uso)"
+    },
+    "statement": {
+      "offerRemoved": "Decisione del {date}: abbiamo tolto dal sito l'offerta «{title}». Non è più visibile e non riceve candidature; le candidature ancora aperte sono state chiuse e i candidati sono stati avvisati.",
+      "companySuspended": "Decisione del {date}: abbiamo sospeso l'account dell'azienda {company}. Le sue offerte sono state tolte dal sito, non se ne possono pubblicare di nuove e le candidature ricevute non sono più consultabili.",
+      "facts": "Fatti che hanno portato alla decisione: {facts}",
+      "ground": "Fondamento: {ground}.",
+      "automation": "La verifica è partita da una o più segnalazioni degli utenti. Non abbiamo usato strumenti automatici per decidere: ha deciso una persona del nostro staff.",
+      "redress": "Se pensi che la decisione sia sbagliata, puoi chiederne il riesame entro 6 mesi scrivendoci dal punto di contatto: {contact}. Resta il tuo diritto di rivolgerti al giudice.",
+      "rules": "Il regolamento degli annunci: {rules}"
+    },
+    "form": {
+      "metaTitle": "Segnala un'offerta",
+      "title": "Segnala un'offerta",
+      "intro": "Hai visto un annuncio sospetto, una richiesta di denaro o un'offerta discriminatoria? Segnalacelo: lo esamina una persona del nostro staff e la decisione è sempre motivata.",
+      "howTo": "Per segnalare, apri l'offerta e tocca «Segnala» in fondo alla pagina: puoi farlo anche senza account.",
+      "offerNotFound": "Questa offerta non è più pubblicata: non serve segnalarla.",
+      "about": "Offerta: «{title}» di {company}",
+      "targetLegend": "Cosa vuoi segnalare?",
+      "targetOffer": "Questo annuncio",
+      "targetCompany": "L'azienda {company}",
+      "reasonLabel": "Motivo",
+      "detailsLabel": "Cosa non va? (facoltativo)",
+      "detailsHelp": "Non scrivere email, numeri di telefono o altri dati personali: il nostro staff vede già l'annuncio.",
+      "goodFaith": "Dichiaro in buona fede che le informazioni che invio sono corrette e complete.",
+      "signedIn": "Ti scriveremo l'esito all'email del tuo account.",
+      "anonymous": "Puoi segnalare anche senza account. Se vuoi ricevere l'esito via email, entra prima nel tuo account.",
+      "signIn": "Entra",
+      "submit": "Invia la segnalazione",
+      "pending": "Invio…",
+      "done": "Grazie: la segnalazione è arrivata. La esaminiamo il prima possibile.",
+      "safety": "Se hai già subito una truffa rivolgiti anche alla Polizia Postale o ai Carabinieri.",
+      "errors": {
+        "invalid": "Controlla i campi e riprova.",
+        "contact_data": "Togli email e numeri di telefono dalla descrizione.",
+        "good_faith": "Per inviare devi confermare la dichiarazione di buona fede.",
+        "rate_limited": "Hai inviato molte segnalazioni: riprova tra qualche minuto.",
+        "not_found": "Questa offerta non è più pubblicata."
+      }
+    },
+    "termsBanner": {
+      "label": "Condizioni d'uso aggiornate",
+      "text": "Abbiamo aggiornato le condizioni d'uso.",
+      "read": "Leggi le novità",
+      "accept": "Accetto"
     }
   }
 }

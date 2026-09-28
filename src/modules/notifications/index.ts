@@ -14,10 +14,12 @@ import {
 } from "./server/outcomes";
 import { outcomeRuntimeDeps, runtimeDeps } from "./server/runtime";
 import { checkUnsubscribeToken, unsubscribeWithToken } from "./server/unsubscribe";
+import { answerMonthlyCheck, checkMonthlyToken } from "./server/monthly";
 
 export type { SavedAlert };
 export {
   deleteAlertAction,
+  monthlyAnswerAction,
   saveAlertAction,
   setAlertFrequencyAction,
   unsubscribeAction,
@@ -56,4 +58,15 @@ export function sendCompanyVerifiedEmail(companyId: string): Promise<number> {
 
 export function sendApplicationUpdateEmail(applicationId: string): Promise<number> {
   return notifyApplicationUpdate(outcomeRuntimeDeps(), applicationId);
+}
+
+// ─── Mail mensile (WP-021) ─────────────────────────────────────────────────────────────────────────────
+
+export function checkMonthlyLink(token: unknown) {
+  return checkMonthlyToken(runtimeDeps(), token);
+}
+
+/** Per il POST "un clic" (RFC 8058) della route `/api/mensile/disiscrizione`. */
+export function stopMonthlyOneClick(token: unknown) {
+  return answerMonthlyCheck(runtimeDeps(), token, "stop");
 }

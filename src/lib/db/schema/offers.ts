@@ -66,6 +66,8 @@ export const jobOffers = pgTable(
     publishedAt: timestamp("published_at", { withTimezone: true }),
     validThrough: timestamp("valid_through", { withTimezone: true }),
     featuredUntil: timestamp("featured_until", { withTimezone: true }),
+    // WP-022: promemoria "la tua offerta sta per scadere" già spedito all'azienda (si azzera al rinnovo).
+    expiryNoticeAt: timestamp("expiry_notice_at", { withTimezone: true }),
     moderation: jsonb("moderation")
       .notNull()
       .default(sql`'{}'::jsonb`),

@@ -38,6 +38,7 @@ export function getOfferForEdit(userId: string, offerId: string): Promise<Editab
 }
 
 export { decideOfferAction } from "./server/moderation-actions";
+export { closeOfferAction, renewOfferAction } from "./server/lifecycle-actions";
 
 export function listOffersToModerate(): Promise<PendingOffer[]> {
   return listPendingOffers(getDb());

@@ -53,6 +53,12 @@ export default async function AccountPage() {
       >
         {t("security")}
       </Link>
+      <Link
+        href="/account/privacy"
+        className="self-start font-medium text-primary underline underline-offset-4"
+      >
+        {t("privacyLink")}
+      </Link>
       <SignOutButton />
     </main>
   );

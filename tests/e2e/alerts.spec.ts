@@ -1,8 +1,7 @@
-import { execFileSync } from "node:child_process";
 import { createHash, randomInt } from "node:crypto";
 import { expect, test, type APIRequestContext, type BrowserContext } from "@playwright/test";
 import { Pool } from "pg";
-import { MAILPIT, mailpitReachable, newTestEmail, signUp } from "./helpers";
+import { MAILPIT, mailpitReachable, newTestEmail, runWorkerJob, seedLodi, signUp } from "./helpers";
 
 // Test di accettazione WP-020: avviso creato dalla ricerca, job del worker, email con disiscrizione
 // "un clic" (RFC 8058) e pagina di conferma (R-MAIL-02).
@@ -31,16 +30,6 @@ async function userOf(context: BrowserContext): Promise<string> {
 /** Un'offerta nuova per la parola cercata e l'avviso "controllato" ieri: il giro di oggi la manda. */
 async function newOfferAndYesterday(userId: string, word: string): Promise<string> {
   return withDb(async (pool) => {
-    await pool.query(
-      `insert into regions (code, name) values ('03','Lombardia') on conflict do nothing`,
-    );
-    await pool.query(
-      `insert into provinces (code, name, abbreviation, region_code) values ('098','Lodi','LO','03') on conflict do nothing`,
-    );
-    await pool.query(
-      `insert into municipalities (istat_code, name, province_code, region_code, lat, lon)
-       values ('098031','Lodi','098','03',45.3097,9.5037) on conflict do nothing`,
-    );
     const occ = await pool.query<{ id: number }>(`select id from occupations order by id limit 1`);
     const company = await pool.query<{ id: string }>(
       `insert into companies (vat_number, legal_name, display_name, status, verified_at)
@@ -59,23 +48,6 @@ async function newOfferAndYesterday(userId: string, word: string): Promise<strin
       [userId],
     );
     return offer.rows[0]!.id;
-  });
-}
-
-/** Il giro degli avvisi, come lo fa il worker (`pnpm worker --once alerts.send`). */
-function runAlertsJob(appUrl: string): void {
-  execFileSync("pnpm", ["-s", "worker", "--once", "alerts.send"], {
-    env: {
-      ...process.env,
-      APP_URL: appUrl,
-      KEK_FILE: "./tests/fixtures/test-kek.b64",
-      BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
-      SMTP_HOST: "localhost",
-      SMTP_PORT: "1025",
-      MAIL_FROM: "HR test <noreply@localhost>",
-    },
-    stdio: "pipe",
-    timeout: 90_000,
   });
 }
 
@@ -130,6 +102,7 @@ test("avvisi: dalla ricerca all'email, disiscrizione con un clic e dalla pagina"
   const word = Array.from({ length: 9 }, () => String.fromCharCode(97 + randomInt(0, 26))).join("");
   const email = newTestEmail("avvisi");
 
+  await seedLodi();
   await signUp(page, request, email, "lavoratore");
   const createAlert = async () => {
     await page.goto(`/offerte?q=${word}&dove=lodi`);
@@ -148,7 +121,7 @@ test("avvisi: dalla ricerca all'email, disiscrizione con un clic e dalla pagina"
   // Giro del worker: email con l'offerta nuova e le intestazioni RFC 8058.
   const userId = await userOf(page.context());
   const offerId = await newOfferAndYesterday(userId, word);
-  runAlertsJob(appUrl);
+  runWorkerJob("alerts.send", appUrl);
   const first = await alertMailTo(request, email, offerId);
   expect(first.text).toContain(`${appUrl}/offerte/${offerId}`);
   expect(first.oneClick).toBe("List-Unsubscribe=One-Click");
@@ -175,7 +148,7 @@ test("avvisi: dalla ricerca all'email, disiscrizione con un clic e dalla pagina"
   // Di nuovo, con il pulsante della pagina di conferma.
   await createAlert();
   const secondOfferId = await newOfferAndYesterday(userId, word);
-  runAlertsJob(appUrl);
+  runWorkerJob("alerts.send", appUrl);
   const second = await alertMailTo(request, email, secondOfferId);
   await page.goto(/(\S+\/avvisi\/disiscrizione\?token=[\w-]+)/.exec(second.text)![1]!);
   await page.getByRole("button", { name: "Sì, non voglio più avvisi" }).click();

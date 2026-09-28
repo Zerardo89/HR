@@ -199,7 +199,7 @@ Se falso → richiede entitlement `national` (in "periodo fondatori" l'entitleme
 Funzione in `modules/matching/domain` + query in `server`; test con casi di confine (49,9 km / 50,1 km, comuni di confine regionale).
 
 ### 6.3 Mail ogni 30 giorni
-Cron giornaliero 09:00 `Europe/Rome` → seleziona `worker_profiles` con `state='open'`, `monthly_check_opt_in`, `next_check_at <= oggi` (a lotti) → calcola le 10 offerte migliori → crea 4 token monouso (hash nel DB) → invia via Brevo con `List-Unsubscribe` + `List-Unsubscribe-Post` → aggiorna `next_check_at += 30 giorni`, `unanswered_checks += 1`. Qualsiasi interazione azzera il contatore. A 6 → `hidden`.
+Cron giornaliero 09:00 `Europe/Rome` → seleziona `worker_profiles` con `state='open'`, `monthly_check_opt_in`, `next_check_at <= oggi` (a lotti) → calcola le 10 offerte migliori → crea un token per mail (hash nel DB, azione `monthly_check`: vale per una risposta, confermata in pagina, e per la disiscrizione — WP-021) → invia via Brevo con `List-Unsubscribe` + `List-Unsubscribe-Post` → aggiorna `next_check_at += 30 giorni`, `unanswered_checks += 1`. Qualsiasi interazione azzera il contatore. A 6 → `hidden`.
 
 ## 7. Ambienti
 | Ambiente | Dove | Dati | Scopo |

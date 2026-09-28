@@ -31,6 +31,8 @@ const serverEnvSchema = z.object({
     .string()
     .regex(/^[a-z0-9-]+$/)
     .default("x-forwarded-for"),
+  // Registro delle cancellazioni fuori dal DB (ADR-0014, WP-027): file su un volume del server, nei backup.
+  ERASURE_LEDGER_FILE: z.string().min(1).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

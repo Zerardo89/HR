@@ -1,5 +1,7 @@
+import { execFileSync } from "node:child_process";
 import { createHmac, randomUUID } from "node:crypto";
 import { expect, type APIRequestContext, type Page } from "@playwright/test";
+import { Pool } from "pg";
 
 // Aiuti condivisi dagli e2e: posta di prova (Mailpit) e app di autenticazione simulata (TOTP, RFC 6238).
 
@@ -69,11 +71,13 @@ export async function signUp(
   request: APIRequestContext,
   email: string,
   tipo: "lavoratore" | "azienda",
+  /** Email già lette per questo indirizzo (serve quando ci si registra di nuovo con la stessa email). */
+  seen: string[] = [],
 ) {
   await page.goto(`/accedi?tipo=${tipo}`);
   await page.getByLabel("La tua email").fill(email);
   await page.getByRole("button", { name: "Ricevi il codice" }).click();
-  await page.getByLabel("Codice di 6 cifre").fill(await emailCode(request, email));
+  await page.getByLabel("Codice di 6 cifre").fill(await emailCode(request, email, seen));
   await page.getByRole("button", { name: "Entra" }).click();
   await page.getByLabel("Ho almeno 18 anni").check();
   await page
@@ -94,4 +98,45 @@ export async function enableTwoFactor(page: Page): Promise<string> {
     page.getByRole("heading", { name: "Salva questi codici di recupero" }),
   ).toBeVisible();
   return key;
+}
+
+/** Un giro di un job del worker, come lo fa pg-boss (`pnpm worker --once <job>`), con la configurazione di prova. */
+export function runWorkerJob(job: string, appUrl: string): void {
+  execFileSync("pnpm", ["-s", "worker", "--once", job], {
+    env: {
+      ...process.env,
+      // Con E2E_WORKER_DATABASE_URL i job girano col ruolo ristretto `hr_worker` (WP-027).
+      DATABASE_URL: process.env.E2E_WORKER_DATABASE_URL ?? process.env.DATABASE_URL,
+      APP_URL: appUrl,
+      KEK_FILE: "./tests/fixtures/test-kek.b64",
+      BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
+      SMTP_HOST: "localhost",
+      SMTP_PORT: "1025",
+      MAIL_FROM: "HR test <noreply@localhost>",
+    },
+    stdio: "pipe",
+    timeout: 90_000,
+  });
+}
+
+/**
+ * Il comune di Lodi nel DB di prova. Chi lo cerca o lo scrive nel profilo lo prepara PRIMA: su un DB nuovo può
+ * non esserci ancora (nessun altro test l'ha inserito, o la pulizia del test di import l'ha tolto).
+ */
+export async function seedLodi(): Promise<void> {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
+  try {
+    await pool.query(
+      `insert into regions (code, name) values ('03','Lombardia') on conflict do nothing`,
+    );
+    await pool.query(
+      `insert into provinces (code, name, abbreviation, region_code) values ('098','Lodi','LO','03') on conflict do nothing`,
+    );
+    await pool.query(
+      `insert into municipalities (istat_code, name, province_code, region_code, lat, lon)
+       values ('098031','Lodi','098','03',45.3097,9.5037) on conflict do nothing`,
+    );
+  } finally {
+    await pool.end();
+  }
 }

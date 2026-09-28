@@ -9,3 +9,8 @@ export {
   type SearchDeps,
   type SearchPlace,
 } from "./server/search";
+export {
+  findOffersForProfile,
+  type ProfileOffer,
+  type ProfileOfferQuery,
+} from "./server/profile-offers";

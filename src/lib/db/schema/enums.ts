@@ -89,6 +89,11 @@ export const consentType = pgEnum("consent_type", [
   "l68_health",
   "waitlist_launch",
 ]);
+/**
+ * Azioni dalle email. `monthly_check` (WP-021): UN token per mail mensile, che autorizza la risposta scelta
+ * (cerco / resto aperto / nascondimi / cancella) e la disiscrizione; `monthly_seeking|open|hide|delete` sono
+ * del primo disegno (un token per pulsante) e restano inutilizzati. `unsubscribe`: avvisi (WP-020).
+ */
 export const emailAction = pgEnum("email_action", [
   "monthly_seeking",
   "monthly_open",
@@ -96,6 +101,7 @@ export const emailAction = pgEnum("email_action", [
   "monthly_delete",
   "waitlist_confirm",
   "unsubscribe",
+  "monthly_check",
 ]);
 
 export const reportTargetType = pgEnum("report_target_type", ["offer", "company"]);

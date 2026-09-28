@@ -11,8 +11,8 @@
 | 018 | ⏳ Da fare | CV in PDF generato dal profilo (senza foto). |
 | 019 | ✅ Fatto (Claude, 28/09) | Candidatura dalla pagina dell'offerta, "le mie candidature" con stato e ritiro, casella dell'azienda: dati identificativi decifrati **solo** per l'azienda destinataria, con audit; email all'azienda senza dati del candidato. |
 | 020 | ✅ Fatto (Claude, 28/09) | Worker pg-boss con job pianificati in ora italiana, pulizia giornaliera; avvisi per le ricerche salvate con disiscrizione in un clic (RFC 8058); **020c** email di esito (offerta, sede, azienda verificata, candidatura). |
-| 021 | ⏳ Da fare | Mail ogni 30 giorni per gli "aperti" + token + pagine di conferma + RFC 8058. |
-| 022 | ⏳ Da fare | Scadenza e chiusura delle offerte + notifica ai candidati. |
+| 021 | ✅ Fatto (Claude, 28/09) | Mail ogni 30 giorni per gli "aperti": offerte per il profilo (con trasferimento e Piano Nazionale), quattro risposte con pagina di conferma, pausa dopo 6 mail, disiscrizione in un clic. |
+| 022 | ✅ Fatto (Claude, 28/09) | Chiusura e rinnovo dall'area azienda, scadenza automatica, promemoria di scadenza, "posizione chiusa" ai candidati, finestra di 6 mesi e cancellazione dei messaggi (R-ANN-07, R-PRIV-03). |
 
 ---
 
@@ -57,7 +57,7 @@ pagina `/profilo`, link da `/account`
   simultanei ne salvano uno solo (indice unico + scrittura condizionata), con un solo avviso.
 - **Le mie candidature** (`/candidature`): offerta, azienda, comune, stato, "vista il…", ritiro finché lo stato non è
   finale. Stati (03-ARCHITETTURA §6.1): inviata → vista → in valutazione / "ti contatterà" → non selezionata / assunta;
-  ritirata; chiusa (la imposterà WP-022).
+  ritirata; chiusa (offerta chiusa o scaduta, WP-022).
 - **Casella dell'azienda**: l'elenco mostra **solo dati C1** (fascia di esperienza, provincia, date, stato), nessun
   nome. Nome, contatti, messaggio, esperienze e formazione si vedono **aprendo** la candidatura: `modules/privacy`
   verifica che l'utente sia membro attivo dell'azienda **che ha pubblicato l'offerta** e che la candidatura sia ancora
@@ -66,7 +66,7 @@ pagina `/profilo`, link da `/account`
   dati ricevuti (testo da far rivedere al professionista insieme alle altre bozze legali).
 - **Chi non vede nulla**: altre aziende, il lavoratore stesso dalla casella, membri non più attivi; candidature
   ritirate; candidature oltre la finestra di conservazione (`company_visible_until`, 6 mesi dopo la chiusura
-  dell'offerta, R-PRIV-03: la data la imposterà WP-022 alla chiusura). Account cancellato (chiave distrutta): la
+  dell'offerta, R-PRIV-03: la data la imposta WP-022 alla chiusura o scadenza). Account cancellato (chiave distrutta): la
   candidatura resta come riga, i dati non sono più leggibili.
 - **Decisioni dell'azienda**: in valutazione, "lo contatteremo", non selezionato, assunto. Gli stati finali non si
   cambiano più; decisione e ritiro sono scritture condizionate allo stato letto (niente sovrascritture incrociate).
@@ -139,4 +139,67 @@ pagina `/profilo`, link da `/account`
     "Novità sulla tua candidatura" dopo "Lo contatteremo").
 - Da fare: avvisi dal profilo e mail mensile (WP-021); job di conservazione (docs/04 §8, WP-022/023); in
   produzione: servizio del worker e utente DB che può creare lo schema `pgboss` (WP-010).
+
+## WP-022 — Scadenza, chiusura e rinnovo delle offerte ✅
+**Esecutore:** Claude · **Codice:** `src/modules/offers/{domain/lifecycle.ts,server/lifecycle*.ts,jobs.ts}`,
+`src/modules/applications/{server/closure.ts,jobs.ts}`, `src/modules/notifications/server/lifecycle-emails.ts`,
+job del worker, pagina `/azienda/offerte/[id]`, migrazione 0010
+
+- **Regola R-ANN-07**: scadenza al più a 60 giorni; passata la data l'offerta sparisce **subito** da ricerca, avvisi e
+  pagina pubblica (lo stato effettivo si calcola in lettura), anche prima del job; l'area azienda la mostra "Scaduta".
+- **Chiusura** (titolare o selezionatore, offerta pubblicata): sparisce, le candidature **aperte** (inviata, vista, in
+  valutazione, "ti contatterà") diventano "chiusa"; quelle già decise restano come sono. Per tutte parte la finestra
+  di **6 mesi** in cui l'azienda può ancora vederle (R-PRIV-03). Una transazione, audit `offer.close`.
+- **Rinnovo** solo negli **ultimi 7 giorni** prima della scadenza, per 15/30/45/60 giorni, con nuova data di
+  pubblicazione: rinnovare ogni giorno per restare in cima alla ricerca (la freschezza pesa nel punteggio) non si può.
+  Prima della finestra la pagina dice da quando si potrà. Un'offerta scaduta non si rinnova: se ne pubblica una nuova.
+  Audit `offer.renew`. (Bug trovato dall'e2e e corretto: la condizione del rinnovo confrontava la data letta, ma
+  Postgres ha i microsecondi e JavaScript i millisecondi; ora la condizione è "scadenza ancora nella finestra".)
+- **Job `offers.lifecycle`** (ogni giorno alle 7:30): le pubblicate oltre la scadenza diventano "scaduta" e le loro
+  candidature si chiudono; **promemoria all'azienda** 3 giorni prima della scadenza (una volta sola, si azzera al
+  rinnovo: "rinnova o chiudi, così nessuno resta senza risposta"); **"posizione chiusa"** ai candidati le cui
+  candidature si sono chiuse (dice se l'offerta è stata chiusa o è scaduta). Le email partono di mattina, non nella
+  richiesta dell'azienda (possono essere tante). Ogni email segnata subito dopo l'invio: niente doppioni se il
+  processo si ferma; SMTP giù → il job si ripete e rispedisce solo le mancanti. Indirizzi da `modules/privacy`
+  (scopi `notification.offer-expiry` e `notification.position-closed`, con audit).
+- **Job `retention.applications`** (ogni giorno alle 3:45, docs/04 §8): finita la finestra dell'azienda, il messaggio
+  cifrato della candidatura si cancella (non serve più a nessuno); il lavoratore continua a vedere la candidatura.
+- Test: 7 unitari (stato effettivo, finestra di rinnovo, durate, promemoria, chiusura) + 2 sulle email, 6 di
+  integrazione (chi può chiudere, candidature aperte e decise, finestra di 6 mesi, rinnovo con data scritta dal DB,
+  scadenza dal job, promemoria e "posizione chiusa" una volta sola, SMTP giù, conservazione), e2e: l'azienda chiude
+  → pagina pubblica "non più disponibile" → il candidato vede "Offerta chiusa" → job → email; rinnovo dalla pagina.
+- Da fare: "duplica come nuova offerta" per ripubblicare una scaduta; cancellazione delle candidature con l'account
+  (WP-023).
+
+## WP-021 — Mail mensile per gli "aperti" ✅
+**Esecutore:** Claude · **Codice:** `src/modules/notifications/{domain,server}/monthly.ts`,
+`src/modules/profiles/{domain,server}/monthly.ts` + `profiles/jobs.ts`, `src/modules/matching/server/profile-offers.ts`,
+pagina `/mensile`, route `/api/mensile/disiscrizione`, job `monthly.check`, migrazione 0011
+
+- **Chi la riceve** (01-PRODOTTO §6.1-6.2): profili "occupato ma aperto" con la mail scelta nel profilo, utenti attivi;
+  ogni 30 giorni dall'adesione (ogni profilo ha il suo giorno, gli invii si distribuiscono nel mese), alle 9 ora
+  italiana. Dopo un lungo fermo del worker non ne partono tante di fila (prossima data = 30 giorni da adesso).
+- **Offerte**: pubblicate negli ultimi 30 giorni, della stessa mansione del profilo o simile (stesso gruppo ISCO), nel
+  raggio del lavoratore; nelle regioni "disposto a trasferirmi" **solo** quelle di aziende con il Piano Nazionale
+  attivo (01-PRODOTTO §5.3, ADR-0009: è il valore a pagamento). Fino a 10 nella mail, poi "vedi tutte" (la ricerca con
+  mansione, comune e raggio del profilo). Ordine spiegabile: stessa mansione, nel raggio, più recente.
+- **Senza nome** del destinatario (minimizzazione: niente decifratura del profilo); l'indirizzo lo legge
+  `modules/privacy` (scopo `notification.monthly-check`, con audit). Niente pubblicità (art. 130).
+- **Quattro risposte** (cerco / resto aperto / nascondimi / cancella il profilo) e "non scrivermi più": ogni link apre
+  una **pagina di conferma** che da sola non cambia nulla (R-MAIL-02). **Un token per mail** (nel DB solo l'hash,
+  azione `monthly_check`, 30 giorni): autorizza una risposta (consumata nella stessa transazione: due clic non la
+  applicano due volte) e la disiscrizione anche dopo. "Cancella il profilo" elimina il profilo (dati cifrati compresi);
+  l'account e le candidature restano (la cancellazione dell'account arriva con WP-023).
+- **Pausa**: qualsiasi risposta o salvataggio del profilo azzera il conto; dopo **6 mail senza risposta** la settima
+  non parte: profilo nascosto, mail mensile spenta, un'ultima mail "ti abbiamo messo in pausa".
+- **Disiscrizione in un clic** (RFC 8058): `List-Unsubscribe` + `List-Unsubscribe-Post` → `POST
+  /api/mensile/disiscrizione` spegne la mail mensile (il profilo resta).
+- Prima si spedisce, poi si sposta la data: SMTP giù → la mail parte al giro dopo.
+- Test: 4 unitari (calendario, pausa) + 4 sulla mail (testo, senza offerte, pausa, scelte), 6 di integrazione (chi la
+  riceve, selezione delle offerte con raggio, mansioni simili, 30 giorni e Piano Nazionale, risposte e token, cancella
+  il profilo, pausa dopo 6, SMTP giù), 1 e2e × 2 dispositivi (profilo "aperto" con la mail → job vero → email senza
+  nome → conferma "resto visibile" → risposta già data → disiscrizione un clic → casella spenta nel profilo).
+- Da fare: il nome nell'oggetto ("Marco, stai cercando…", 01-PRODOTTO §6.2) solo se lo chiede il prodotto: richiede di
+  decifrare il profilo per ogni invio; l'accesso all'account come "interazione" che azzera il conto (tocca il modulo di
+  accesso).
 

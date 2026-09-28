@@ -16,6 +16,7 @@ export default function robots(): MetadataRoute.Robots {
         "/profilo",
         "/candidature",
         "/avvisi",
+        "/mensile",
         "/azienda",
         "/moderazione",
         "/accedi",

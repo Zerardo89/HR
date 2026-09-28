@@ -118,7 +118,8 @@ export type AlertSection = {
   total: number;
 };
 
-function salaryText(offer: SalaryFields): string {
+/** "Da 1400 € a 1600 € lordi al mese", oppure "Stipendio da concordare" (per email senza next-intl). */
+export function offerSalaryText(offer: SalaryFields): string {
   const t = messages.publicOffer;
   const translate = (key: string, values: Record<string, string> = {}) => {
     const [head, tail] = key.split(".") as [string, string | undefined];
@@ -150,7 +151,7 @@ export function renderAlertEmail(input: {
           title: o.title,
           company: o.companyName,
           place: `${o.municipality} (${o.provinceAbbr})`,
-          salary: salaryText(o),
+          salary: offerSalaryText(o),
           link: `${input.appUrl}/offerte/${o.id}`,
         }),
       );

@@ -22,6 +22,8 @@ export type JoinState =
       error: "invalid" | "rate_limited" | "send_failed";
       /** Ciò che l'utente aveva scritto: React svuota il form dopo l'invio. */
       values: JoinValues;
+      /** Cambia a ogni invio: il form si ricrea con i valori scritti (una `select` non si ripristina da sola). */
+      attempt: number;
     };
 
 export async function joinWaitlistAction(_prev: JoinState, form: FormData): Promise<JoinState> {
@@ -33,17 +35,18 @@ export async function joinWaitlistAction(_prev: JoinState, form: FormData): Prom
     province: form.get("province") ?? undefined,
     consent: form.get("consent"),
   });
-  if (!parsed.success) return { status: "error", error: "invalid", values };
+  const attempt = Date.now();
+  if (!parsed.success) return { status: "error", error: "invalid", values, attempt };
 
   const ip = clientIp(await headers());
-  if (ip && !ipLimiter().hit(ip, Date.now())) {
-    return { status: "error", error: "rate_limited", values };
+  if (ip && !ipLimiter().hit(ip, attempt)) {
+    return { status: "error", error: "rate_limited", values, attempt };
   }
 
   const result = await joinWaitlist(runtimeDeps(), parsed.data);
   return result.status === "sent"
     ? { status: "sent" }
-    : { status: "error", error: "send_failed", values };
+    : { status: "error", error: "send_failed", values, attempt };
 }
 
 export type ConfirmState = { status: "idle" | "confirmed" | "already_confirmed" | "invalid" };

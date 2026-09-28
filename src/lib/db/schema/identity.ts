@@ -40,6 +40,8 @@ export const users = pgTable("users", {
   totpLastStep: bigint("totp_last_step", { mode: "number" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastActiveAt: timestamp("last_active_at", { withTimezone: true }).notNull().defaultNow(),
+  // R-PRIV-03 (WP-023b): preavviso di cancellazione per inattività spedito (si azzera se l'utente torna).
+  deletionNoticeAt: timestamp("deletion_notice_at", { withTimezone: true }),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
