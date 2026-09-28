@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
+import { seedLodi } from "./helpers";
 
 // Test di accettazione WP-009: lista d'attesa con doppia conferma (link letto da Mailpit) e dati dell'ente.
 
@@ -51,6 +52,23 @@ test("iscrizione alla lista d'attesa e conferma dal link dell'email", async ({ p
   await expect(page.getByRole("heading", { name: "Conferma l'iscrizione" })).toBeVisible();
   await page.getByRole("button", { name: "Conferma" }).click();
   await expect(page.getByRole("status")).toContainText("Iscrizione confermata");
+});
+
+test("dopo un errore i campi scelti restano compilati, provincia compresa", async ({ page }) => {
+  test.skip(!process.env.DATABASE_URL && !process.env.CI, "Serve DATABASE_URL");
+  await seedLodi();
+  await page.goto("/");
+  const form = page.locator("#lista-attesa");
+  // Il browser la accetta, il server no (manca il dominio di primo livello).
+  await form.getByLabel("La tua email").fill("persona@esempio");
+  await form.getByLabel("Una persona che cerca lavoro").check();
+  await form.getByLabel("Provincia (facoltativa)").selectOption("098");
+  await form.getByLabel(/Voglio ricevere un'email al lancio/).check();
+  await form.getByRole("button", { name: "Avvisami" }).click();
+  await expect(form.getByRole("alert")).toContainText("serve un'email valida");
+  await expect(form.getByLabel("La tua email")).toHaveValue("persona@esempio");
+  await expect(form.getByLabel("Una persona che cerca lavoro")).toBeChecked();
+  await expect(form.getByLabel("Provincia (facoltativa)")).toHaveValue("098");
 });
 
 test("la pagina 'Chi siamo' e il piè di pagina riportano i dati dell'ente (R-LAV-04, R-CONS-04)", async ({

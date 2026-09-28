@@ -109,8 +109,8 @@ l'offerta non c'è più → l'azienda riceve la motivazione).
 - Email "offerta tolta" ai candidati (motivo `removed` di "posizione chiusa") con la messa in guardia su soldi,
   dati bancari e documenti.
 - Il modulo di segnalazione si ricrea a ogni errore con i valori scritti (prima il motivo scelto si perdeva: una
-  `select` non torna al valore precedente dopo il reset del form di React). **Da correggere allo stesso modo**:
-  la provincia nel modulo della lista d'attesa (WP-009).
+  `select` non torna al valore precedente dopo il reset del form di React). Stessa correzione nel modulo della
+  lista d'attesa (WP-009), dove si perdeva la provincia: nuovo e2e che fallisce col codice vecchio.
 - `/segnalazioni` non è più una pagina "bozza": il test e2e delle pagine legali (WP-009) non la elenca più.
 - **E2e più robusti su DB nuovo** (come in CI): avvisi, centro privacy e mail mensile cercavano o scrivevano
   "Lodi" prima di inserirlo nel DB; funzionavano solo se un altro test l'aveva già messo. Ora `seedLodi()` in

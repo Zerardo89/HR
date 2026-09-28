@@ -31,6 +31,7 @@ export function WaitlistForm({ provinces }: { provinces: ProvinceOption[] }) {
 
   return (
     <form
+      key={state.status === "error" ? state.attempt : "new"}
       action={action}
       className="flex flex-col gap-4"
       aria-describedby={error ? errorId : undefined}
