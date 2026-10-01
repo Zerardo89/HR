@@ -43,7 +43,7 @@ export default defineConfig({
           BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
           SMTP_HOST: "localhost",
           SMTP_PORT: "1025",
-          MAIL_FROM: "Tasky test <noreply@localhost>",
+          MAIL_FROM: "Jobinetic test <noreply@localhost>",
           // assetlinks.json dell'app Android (WP-010): pacchetto e impronta finti.
           ANDROID_PACKAGE_NAME: "cloud.inspectio.e2e",
           ANDROID_CERT_SHA256: Array(32).fill("AB").join(":"),

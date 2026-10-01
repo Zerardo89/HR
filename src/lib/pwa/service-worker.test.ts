@@ -9,7 +9,7 @@ import {
 // Test di accettazione WP-010: service worker senza cache e pagine offline.
 
 const texts = {
-  siteName: "Tasky",
+  siteName: "Esempio",
   offline: { title: "Sei offline", text: "Controlla <la rete> & riprova", retry: "Riprova" },
   unavailable: { title: "Servizio non raggiungibile", text: "Riprova più tardi", retry: "Riprova" },
   colors: { background: "#fff", foreground: "#000", primary: "#3f6b52", primaryForeground: "#fff" },

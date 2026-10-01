@@ -1,7 +1,10 @@
 # WP-010a — revisione di ChatGPT (Codex CLI, 01/10/2026)
 
-> Prompt: `docs/prompts/chatgpt-revisione.md` sul diff di `wp/010-pwa-tasky`. Risposta originale sotto; la gestione
+> Prompt: `docs/prompts/chatgpt-revisione.md` sul diff del ramo del WP-010a. Risposta originale sotto; la gestione
 > dell'architetto è in fondo.
+>
+> Nota: dopo la revisione il nome provvisorio è passato da "Tasky" a "Jobinetic" (marchio UE "Tasky" di terzi, vedi
+> `docs/09-DOMANDE-APERTE.md` Q1).
 
 ## 1. Bloccanti
 

@@ -32,16 +32,16 @@ describe("parseServerEnv", () => {
     expect(
       parseServerEnv({
         ...valid,
-        ANDROID_PACKAGE_NAME: "cloud.inspectio.tasky",
+        ANDROID_PACKAGE_NAME: "cloud.inspectio.esempio",
         ANDROID_CERT_SHA256: fp,
       }).ANDROID_CERT_SHA256,
     ).toBe(fp);
     expect(() =>
-      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "cloud.inspectio.tasky" }),
+      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "cloud.inspectio.esempio" }),
     ).toThrow(/ANDROID_CERT_SHA256/);
     expect(() => parseServerEnv({ ...valid, ANDROID_CERT_SHA256: fp })).toThrow(/insieme/);
     expect(() =>
-      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "tasky", ANDROID_CERT_SHA256: fp }),
+      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "esempio", ANDROID_CERT_SHA256: fp }),
     ).toThrow(/ANDROID_PACKAGE_NAME/);
   });
 

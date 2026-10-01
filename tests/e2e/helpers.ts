@@ -112,7 +112,7 @@ export function runWorkerJob(job: string, appUrl: string): void {
       BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
       SMTP_HOST: "localhost",
       SMTP_PORT: "1025",
-      MAIL_FROM: "Tasky test <noreply@localhost>",
+      MAIL_FROM: "Jobinetic test <noreply@localhost>",
     },
     stdio: "pipe",
     timeout: 90_000,

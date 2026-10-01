@@ -73,8 +73,9 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
   di contatto. WP-027 CSP, ruoli DB separati, backup e ripristino (runbook in `docs/runbook/`). Stato sprint 4 in
   `SPRINT-4.md`.
 - 01/10/2026: lavoro in locale sul PC Windows del fondatore (Docker, Codex CLI, Gemini CLI). Nome dell'app:
-  **Tasky**. WP-010a fatto: nome, manifest, icone provvisorie, service worker senza cache con pagine "offline" e
-  "non raggiungibile", `assetlinks.json` da variabili d'ambiente.
+  **Jobinetic**, provvisorio finché non si comprano i domini (ricerca marchi in `docs/09-DOMANDE-APERTE.md` Q1; mai
+  scrivere il nome fuori da `meta.siteName`). WP-010a fatto: nome, manifest, icone provvisorie, service worker senza
+  cache con pagine "offline" e "non raggiungibile", `assetlinks.json` da variabili d'ambiente.
 - Prossimi: WP-010b codice invito in anteprima, WP-010c stack di produzione (cloudflared, PostGIS multi-arch),
   WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione dei testi legali in bozza
   (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in locale).

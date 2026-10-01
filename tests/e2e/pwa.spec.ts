@@ -1,6 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
+import it from "../../messages/it.json";
 
 // Test di accettazione WP-010: sito installabile come app (PWA), pagina offline, assetlinks per la TWA.
+// Il nome dell'app viene da messages/it.json: può ancora cambiare (docs/09-DOMANDE-APERTE.md, Q1).
+const SITE_NAME = it.meta.siteName;
 
 /** Larghezza e altezza di un PNG (intestazione IHDR). */
 function pngSize(body: Buffer): string {
@@ -24,13 +27,13 @@ test("installabile: manifest con nome, avvio senza barra e icone delle misure di
 
   const manifest = await (await request.get(href!)).json();
   expect(manifest).toMatchObject({
-    short_name: "Tasky",
+    short_name: SITE_NAME,
     start_url: "/",
     scope: "/",
     display: "standalone",
     lang: "it",
   });
-  expect(manifest.name).toContain("Tasky");
+  expect(manifest.name).toContain(SITE_NAME);
 
   const icons: { src: string; sizes: string; purpose: string }[] = manifest.icons;
   expect(icons.map((i) => `${i.sizes} ${i.purpose}`).sort()).toEqual([
@@ -46,12 +49,12 @@ test("installabile: manifest con nome, avvio senza barra e icone delle misure di
   }
 });
 
-test("il nome Tasky è nel titolo e nell'intestazione, con l'icona nella scheda", async ({
+test("il nome dell'app è nel titolo e nell'intestazione, con l'icona nella scheda", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/^Tasky/);
-  await expect(page.getByRole("link", { name: "Tasky" })).toBeVisible();
+  await expect(page).toHaveTitle(new RegExp(`^${SITE_NAME}`));
+  await expect(page.getByRole("link", { name: SITE_NAME })).toBeVisible();
   const icon = await page.locator('link[rel="icon"]').first().getAttribute("href");
   expect(icon).toMatch(/^\/icon/);
 });

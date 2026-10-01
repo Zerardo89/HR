@@ -30,22 +30,25 @@ describe("impronte SHA-256 dei certificati", () => {
 describe("app Android non configurata", () => {
   it("senza pacchetto o senza impronte non c'è il file (404)", () => {
     expect(androidAssetLinks({})).toBeNull();
-    expect(androidAssetLinks({ ANDROID_PACKAGE_NAME: "cloud.inspectio.tasky" })).toBeNull();
+    expect(androidAssetLinks({ ANDROID_PACKAGE_NAME: "cloud.inspectio.esempio" })).toBeNull();
     expect(androidAssetLinks({ ANDROID_CERT_SHA256: FP })).toBeNull();
     expect(
-      androidAssetLinks({ ANDROID_PACKAGE_NAME: "cloud.inspectio.tasky", ANDROID_CERT_SHA256: FP }),
+      androidAssetLinks({
+        ANDROID_PACKAGE_NAME: "cloud.inspectio.esempio",
+        ANDROID_CERT_SHA256: FP,
+      }),
     ).toHaveLength(1);
   });
 });
 
 describe("assetlinks.json", () => {
   it("delega all'app tutti gli indirizzi del sito", () => {
-    expect(assetLinks("cloud.inspectio.tasky", [FP])).toEqual([
+    expect(assetLinks("cloud.inspectio.esempio", [FP])).toEqual([
       {
         relation: ["delegate_permission/common.handle_all_urls"],
         target: {
           namespace: "android_app",
-          package_name: "cloud.inspectio.tasky",
+          package_name: "cloud.inspectio.esempio",
           sha256_cert_fingerprints: [FP],
         },
       },
@@ -53,9 +56,9 @@ describe("assetlinks.json", () => {
   });
 
   it("nome del pacchetto in formato Android (almeno due parti, minuscole)", () => {
-    expect(ANDROID_PACKAGE_RE.test("cloud.inspectio.tasky")).toBe(true);
-    expect(ANDROID_PACKAGE_RE.test("tasky")).toBe(false);
+    expect(ANDROID_PACKAGE_RE.test("cloud.inspectio.esempio")).toBe(true);
+    expect(ANDROID_PACKAGE_RE.test("esempio")).toBe(false);
     expect(ANDROID_PACKAGE_RE.test("Cloud.Inspectio")).toBe(false);
-    expect(ANDROID_PACKAGE_RE.test("cloud..tasky")).toBe(false);
+    expect(ANDROID_PACKAGE_RE.test("cloud..esempio")).toBe(false);
   });
 });
