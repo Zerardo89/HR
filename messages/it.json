@@ -1,7 +1,7 @@
 {
   "meta": {
-    "siteName": "HR",
-    "title": "HR — Il lavoro vicino a casa",
+    "siteName": "Jobinetic",
+    "title": "{siteName} — Il lavoro vicino a casa",
     "description": "Offerte di lavoro vicino a casa, con lo stipendio sempre indicato. Gratis per chi cerca lavoro, gratis per le aziende della tua zona."
   },
   "common": {
@@ -10,6 +10,14 @@
     "signIn": "Accedi o registrati",
     "mainNav": "Menu principale",
     "searchJobs": "Cerca lavoro"
+  },
+  "pwa": {
+    "shortDescription": "Il lavoro vicino a casa, con lo stipendio sempre indicato.",
+    "offlineTitle": "Sei offline",
+    "offlineText": "Il telefono non è collegato a internet. Controlla il Wi-Fi o i dati mobili e riprova.",
+    "unavailableTitle": "Servizio non raggiungibile",
+    "unavailableText": "In questo momento {siteName} non risponde. Riprova tra qualche minuto.",
+    "retry": "Riprova"
   },
   "home": {
     "title": "Il lavoro vicino a casa",
@@ -49,6 +57,11 @@
     "privacyLink": "Informativa sulla privacy",
     "termsLink": "Condizioni d'uso",
     "createAccount": "Crea l'account",
+    "preview": {
+      "notice": "Siamo in anteprima: stiamo provando il servizio con dati di prova. Possono registrarsi solo i tester con il codice invito. Tutti gli account e i dati creati in anteprima verranno cancellati il 27 ottobre 2026, prima del lancio.",
+      "inviteLabel": "Codice invito",
+      "inviteHint": "Lo trovi nel messaggio di invito per i tester."
+    },
     "pending": "Attendi…",
     "unavailableTitle": "Account non disponibile",
     "unavailable": "Questo account è sospeso. Scrivici se pensi che sia un errore.",
@@ -61,7 +74,8 @@
       "rate_limited": "Troppi tentativi. Riprova tra qualche minuto.",
       "send_failed": "Non siamo riusciti a inviare l'email. Riprova tra poco.",
       "signup_expired": "È passato troppo tempo. Ricomincia dall'email: ti mandiamo un nuovo codice.",
-      "signup_incomplete": "Scegli perché sei qui e spunta le due caselle per continuare."
+      "signup_incomplete": "Scegli perché sei qui e spunta le due caselle per continuare.",
+      "invite_invalid": "Il codice invito non è giusto. Copialo dal messaggio di invito per i tester."
     }
   },
   "account": {

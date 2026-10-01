@@ -1,4 +1,4 @@
-# Versioni bloccate (aggiornato il 28/09/2026 — WP-020)
+# Versioni bloccate (aggiornato il 01/10/2026 — WP-010c)
 
 Le versioni sono fissate in `package.json` + `pnpm-lock.yaml`. **Non aggiornarle dentro un WP qualsiasi**:
 gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazione ed e2e verdi.
@@ -10,6 +10,13 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | pnpm | 10.33.0 (`packageManager`) | |
 | PostgreSQL + PostGIS | 17 + 3.5 (`postgis/postgis:17-3.5`) | in locale va bene anche 16 + 3.4 |
 | Mailpit | v1.31 | solo sviluppo |
+
+## Immagini di produzione (server di casa, WP-010c)
+| Immagine | Versione | Note |
+|----------|----------|------|
+| Sito e strumenti | `node:24-bookworm-slim` (`Dockerfile`, target `app` e `tools`) | amd64 e arm64 |
+| Database | `postgres:17-bookworm` + `postgresql-17-postgis-3` del repository PostgreSQL (`docker/postgres`) | oggi PostGIS **3.6**: in sviluppo e CI 3.5, nessuna differenza per le funzioni usate; con restic per i backup |
+| Tunnel | `cloudflare/cloudflared:2026.9.3` | multi-architettura; token da file (`--token-file`) |
 
 ## Dipendenze principali
 | Pacchetto | Versione | Differenze da ricordare (per i modelli locali) |

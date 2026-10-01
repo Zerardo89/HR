@@ -1,0 +1,5 @@
+# Script e file che girano dentro Linux (contenitori, server): sempre a capo "LF", anche su Windows (WP-010c).
+# Con "CRLF" lo script di avvio dei contenitori non parte.
+*.sh text eol=lf
+Dockerfile text eol=lf
+docker/** text eol=lf

@@ -26,6 +26,68 @@ describe("parseServerEnv", () => {
     );
   });
 
+  it("app Android (WP-010): pacchetto e impronte tutti e due o nessuno", () => {
+    const fp = Array(32).fill("AB").join(":");
+    expect(parseServerEnv(valid).ANDROID_PACKAGE_NAME).toBeUndefined();
+    expect(
+      parseServerEnv({
+        ...valid,
+        ANDROID_PACKAGE_NAME: "cloud.inspectio.esempio",
+        ANDROID_CERT_SHA256: fp,
+      }).ANDROID_CERT_SHA256,
+    ).toBe(fp);
+    expect(() =>
+      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "cloud.inspectio.esempio" }),
+    ).toThrow(/ANDROID_CERT_SHA256/);
+    expect(() => parseServerEnv({ ...valid, ANDROID_CERT_SHA256: fp })).toThrow(/insieme/);
+    expect(() =>
+      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "esempio", ANDROID_CERT_SHA256: fp }),
+    ).toThrow(/ANDROID_PACKAGE_NAME/);
+  });
+
+  it("anteprima (WP-010b): con PREVIEW_MODE=true servono codici invito validi", () => {
+    expect(() => parseServerEnv({ ...valid, PREVIEW_MODE: "true" })).toThrow(
+      /PREVIEW_INVITE_CODES/,
+    );
+    expect(() =>
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "CORTO" }),
+    ).toThrow(/PREVIEW_INVITE_CODES/);
+    expect(
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "TSTR-2026-ABCD" })
+        .PREVIEW_INVITE_CODES,
+    ).toBe("TSTR-2026-ABCD");
+    // Fuori dall'anteprima i codici non servono.
+    expect(parseServerEnv(valid).PREVIEW_INVITE_CODES).toBeUndefined();
+  });
+
+  it("i codici invito non compaiono mai nei messaggi d'errore", () => {
+    try {
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "SEGRETO€" });
+      expect.unreachable();
+    } catch (e) {
+      expect((e as Error).message).not.toContain("SEGRETO");
+    }
+  });
+
+  it("una variabile vuota (`NOME=` nel file .env) vale come non impostata (WP-010c)", () => {
+    const env = parseServerEnv({
+      ...valid,
+      ANDROID_PACKAGE_NAME: "",
+      ANDROID_CERT_SHA256: "",
+      PREVIEW_INVITE_CODES: "",
+      SMTP_USER: "",
+      LOG_LEVEL: "",
+    });
+    expect(env.ANDROID_PACKAGE_NAME).toBeUndefined();
+    expect(env.SMTP_USER).toBeUndefined();
+    expect(env.LOG_LEVEL).toBe("info");
+    // Obbligatorie vuote = mancanti.
+    expect(() => parseServerEnv({ ...valid, KEK_FILE: "" })).toThrow(/KEK_FILE/);
+    expect(() =>
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "" }),
+    ).toThrow(/PREVIEW_INVITE_CODES/);
+  });
+
   it("segnala le variabili mancanti senza stampare i valori delle altre", () => {
     const missing: Record<string, string | undefined> = { ...valid, KEK_FILE: undefined };
     try {

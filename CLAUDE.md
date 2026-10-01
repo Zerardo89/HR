@@ -72,7 +72,15 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
   WP-024a segnalazioni DSA e decisioni motivate. WP-024b condizioni d'uso versionate (`content/legal/`) e punto
   di contatto. WP-027 CSP, ruoli DB separati, backup e ripristino (runbook in `docs/runbook/`). Stato sprint 4 in
   `SPRINT-4.md`.
-- Prossimi: revisione dei testi legali in bozza (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in
-  locale), WP-010 PWA/TWA (servono nome e server).
+- 01/10/2026: lavoro in locale sul PC Windows del fondatore (Docker, Codex CLI, Gemini CLI). Nome dell'app:
+  **Jobinetic**, provvisorio finché non si comprano i domini (ricerca marchi in `docs/09-DOMANDE-APERTE.md` Q1; mai
+  scrivere il nome fuori da `meta.siteName`). WP-010a fatto: nome, manifest, icone provvisorie, service worker senza
+  cache con pagine "offline" e "non raggiungibile", `assetlinks.json` da variabili d'ambiente. WP-010b fatto:
+  in anteprima ci si registra solo con il codice invito dei tester (`PREVIEW_INVITE_CODES`). WP-010c fatto:
+  contenitori del server di casa (`docker-compose.prod.yml`, guida `docs/runbook/SERVER-DI-CASA.md`); il server arriva
+  verso il 05-06/10, poi account Play, Cloudflare, Brevo e tester.
+- Prossimi:
+  WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione dei testi legali in bozza
+  (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in locale).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

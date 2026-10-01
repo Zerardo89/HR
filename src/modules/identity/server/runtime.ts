@@ -2,18 +2,24 @@ import "server-only";
 import { getKeyProvider } from "@/lib/crypto";
 import { getDb } from "@/lib/db";
 import { getServerEnv } from "@/lib/env";
+import { flags } from "@/lib/flags";
 import { getMailer } from "@/lib/mail";
-import { MemoryLimiter, IP_LIMITS } from "../domain";
+import { MemoryLimiter, IP_LIMITS, parseInviteCodes } from "../domain";
 import type { IdentityDeps } from "./deps";
 
 /** Dipendenze reali (DB, chiavi, SMTP) per le Server Actions e le pagine. */
 export function runtimeDeps(): IdentityDeps {
+  const env = getServerEnv();
   return {
     db: getDb(),
     keys: getKeyProvider(),
     mailer: getMailer(),
     now: () => new Date(),
-    appUrl: getServerEnv().APP_URL,
+    appUrl: env.APP_URL,
+    // In anteprima senza codici configurati il sito non parte (env.ts): qui l'elenco c'è sempre.
+    previewInviteCodes: flags.previewMode
+      ? parseInviteCodes(env.PREVIEW_INVITE_CODES ?? "")
+      : undefined,
   };
 }
 
