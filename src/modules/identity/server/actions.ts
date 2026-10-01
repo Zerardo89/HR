@@ -36,7 +36,14 @@ export type SignInState =
         "invalid_code" | "wrong_code" | "no_attempts" | "expired" | "rate_limited" | "send_failed";
       attemptsLeft?: number;
     }
-  | { step: "signup"; email: string; role?: SelfSignupRole; error?: "signup_incomplete" }
+  | {
+      step: "signup";
+      email: string;
+      role?: SelfSignupRole;
+      /** Le due caselle erano spuntate: dopo un errore sul codice invito restano spuntate. */
+      accepted?: boolean;
+      error?: "signup_incomplete" | "invite_invalid" | "rate_limited";
+    }
   | { step: "unavailable" };
 
 const AFTER_SIGN_IN = "/account";
@@ -125,6 +132,7 @@ async function signUp(form: FormData): Promise<SignInState> {
     role: form.get("role"),
     adult: form.get("adult"),
     legal: form.get("legal"),
+    inviteCode: form.get("inviteCode") ?? undefined,
   });
   if (!parsed.success) {
     const email = emailInput.safeParse(form.get("email"));
@@ -138,14 +146,26 @@ async function signUp(form: FormData): Promise<SignInState> {
     };
   }
 
+  const deps = runtimeDeps();
+  const { email, role } = parsed.data;
+  // Anteprima (WP-010b): i tentativi sul codice invito contano nel limite per IP dei codici.
+  if (deps.previewInviteCodes) {
+    const ip = clientIp(await headers());
+    if (ip && !ipLimiters().codeChecks.hit(ip, Date.now())) {
+      return { step: "signup", email, role, accepted: true, error: "rate_limited" };
+    }
+  }
+
   const ticket = await readSignupTicket();
   const result = ticket
-    ? await completeSignup(runtimeDeps(), parsed.data, ticket)
+    ? await completeSignup(deps, parsed.data, ticket)
     : ({ status: "expired" } as const);
   if (result.status === "expired") {
     await clearSignupTicket();
-    return { step: "email", email: parsed.data.email, error: "signup_expired" };
+    return { step: "email", email, error: "signup_expired" };
   }
+  if (result.status === "invite_required")
+    return { step: "signup", email, role, accepted: true, error: "invite_invalid" };
   if (result.status === "account_unavailable") return { step: "unavailable" };
 
   await clearSignupTicket();

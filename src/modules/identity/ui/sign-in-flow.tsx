@@ -16,12 +16,20 @@ const linkButton = "text-base font-medium text-primary underline underline-offse
  * "Accedi o registrati" in tre passi (ADR-0013): email → codice → (solo la prima volta) account.
  * L'email resta nello stato del componente e nel corpo delle richieste, mai nell'URL.
  */
-export function SignInFlow({ initialRole }: { initialRole?: SelfSignupRole }) {
+export function SignInFlow({
+  initialRole,
+  preview = false,
+}: {
+  initialRole?: SelfSignupRole;
+  /** Anteprima (WP-010b): avviso sui dati di prova e codice invito per registrarsi. */
+  preview?: boolean;
+}) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState<SignInState, FormData>(signInAction, {
     step: "email",
   });
   const errorId = useId();
+  const inviteHintId = useId();
 
   // Al cambio di passo il focus va sul titolo: chi usa un lettore di schermo sente dove si trova.
   const heading = useRef<HTMLHeadingElement>(null);
@@ -126,6 +134,28 @@ export function SignInFlow({ initialRole }: { initialRole?: SelfSignupRole }) {
         </h2>
         <p>{t("signupIntro", { email: state.email })}</p>
         <input type="hidden" name="email" value={state.email} />
+        {preview && (
+          <div className="flex flex-col gap-3 rounded-lg border border-accent bg-surface px-3 py-3">
+            <p>{t("preview.notice")}</p>
+            <label className="flex flex-col gap-2 text-base font-medium">
+              {t("preview.inviteLabel")}
+              <input
+                type="text"
+                name="inviteCode"
+                required
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                maxLength={64}
+                aria-describedby={`${describedBy ?? ""} ${inviteHintId}`.trim()}
+                className={input}
+              />
+            </label>
+            <p id={inviteHintId} className="text-base text-muted">
+              {t("preview.inviteHint")}
+            </p>
+          </div>
+        )}
         <fieldset className="flex flex-col gap-3" aria-describedby={describedBy}>
           <legend className="mb-2 text-base font-medium">{t("roleLegend")}</legend>
           {(["worker", "company_member"] as const).map((value) => (
@@ -146,12 +176,24 @@ export function SignInFlow({ initialRole }: { initialRole?: SelfSignupRole }) {
           ))}
         </fieldset>
         <label className="flex items-start gap-3">
-          <input type="checkbox" name="adult" required className="mt-1 size-5 shrink-0" />
+          <input
+            type="checkbox"
+            name="adult"
+            required
+            defaultChecked={state.accepted}
+            className="mt-1 size-5 shrink-0"
+          />
           {t("adultLabel")}
         </label>
         <div className="flex flex-col gap-2">
           <label className="flex items-start gap-3">
-            <input type="checkbox" name="legal" required className="mt-1 size-5 shrink-0" />
+            <input
+              type="checkbox"
+              name="legal"
+              required
+              defaultChecked={state.accepted}
+              className="mt-1 size-5 shrink-0"
+            />
             {t("legalLabel")}
           </label>
           <p className="flex flex-wrap gap-x-4 pl-8 text-base">

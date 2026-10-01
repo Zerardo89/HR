@@ -17,7 +17,7 @@
 | 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
 | 008 | ✅ Fatto (Claude, 27/09) | **Cambio di libreria:** Better Auth salva l'email in chiaro → accesso scritto in casa ([ADR-0013](../adr/ADR-0013-auth-in-casa.md)). Codice a 6 cifre via email, sessioni nel DB, un solo percorso "Accedi o registrati", pagine `/accedi` e `/account`, bozze `/privacy` e `/condizioni`. Test: 13 unitari, 15 di integrazione (anche "nessuna email in chiaro in nessuna colonna"), e2e registrazione + accesso con Mailpit. Restano per altri WP: codice invito in anteprima (WP-010), pulizia giornaliera nel worker (WP-020), 2FA aziende (WP-011), cancellazione account (WP-023). |
 | 009 | ✅ Fatto (Claude, 27/09) | Intestazione e piè di pagina con i dati dell'ente (segnaposto "in costituzione" in `src/lib/organization.ts`, R-LAV-04, R-CONS-04), `/chi-siamo`; landing con **lista d'attesa a doppia conferma** (email cifrata + indice cieco, link che apre una pagina con pulsante, R-MAIL-02; consensi con versione; non confermati cancellati dopo 7 giorni); bozze di privacy, cookie, condizioni, contatti, segnalazioni. **Lighthouse mobile: 98 / 100 / 100 / 100.** Test: 4 unitari, 7 di integrazione, 3 e2e. Restano: testi legali di Gemini (G-03), grafica ComfyUI, shadcn/ui quando serve. |
-| 010 | 🟡 010a fatto (Claude, 01/10) | ✅ **010a** nome **Jobinetic** (provvisorio), manifest, icone provvisorie, service worker senza cache, `assetlinks.json` (dettagli sotto). ⏳ **010b** codice invito in anteprima. ⏳ **010c** stack di produzione (ADR-0012: cloudflared, PostGIS multi-arch, backup). ⏳ **010d** TWA con Bubblewrap e Play Console: servono account Play, DNS di `inspectio.cloud` su Cloudflare, pacchetto `cloud.inspectio.jobinetic` se il nome resta (Q2). |
+| 010 | 🟡 010a-b fatti (Claude, 01/10) | ✅ **010a** nome **Jobinetic** (provvisorio), manifest, icone provvisorie, service worker senza cache, `assetlinks.json` (dettagli sotto). ✅ **010b** codice invito in anteprima. ⏳ **010c** stack di produzione (ADR-0012: cloudflared, PostGIS multi-arch, backup). ⏳ **010d** TWA con Bubblewrap e Play Console: servono account Play, DNS di `inspectio.cloud` su Cloudflare, pacchetto `cloud.inspectio.jobinetic` se il nome resta (Q2). |
 
 ---
 
@@ -242,3 +242,23 @@ worker), tolto `src/app/favicon.ico`; configurazione `.env.example`, `playwright
   pagina offline) + 1 asserzione CSP; 8 e2e × 2 dispositivi (manifest e icone delle misure dichiarate, nome e icona
   nella scheda, offline e ripresa, 530 di Cloudflare, gli stessi due casi toccando un link dentro l'app, nessuna
   cache, assetlinks senza redirect).
+
+### WP-010b — Anteprima con codice invito ✅ (Claude, 01/10)
+**Codice:** `src/modules/identity/{domain/policy.ts,domain/inputs.ts,server/invite.ts,server/sign-in.ts,server/actions.ts,
+server/runtime.ts,server/deps.ts,ui/sign-in-flow.tsx}`, pagina `/accedi`, `src/lib/env.ts`, `scripts/preview-invite-code.ts`,
+`messages/it.json` (`auth.preview`), `.env.example`
+
+- Con `PREVIEW_MODE=true` **ci si registra solo con il codice invito dei tester**; chi ha già un account entra come
+  sempre (anche gli admin nominati da script). Il controllo è nel servizio (`completeSignup`), non solo nella pagina.
+- Codici in `PREVIEW_INVITE_CODES` (separati da virgole, almeno 10 lettere o cifre; `pnpm preview:invite-code` ne
+  genera uno da ~60 bit). In anteprima senza codici validi **il sito non parte**. Per chiudere le registrazioni basta
+  cambiare il codice (quelli vecchi smettono subito di valere al riavvio).
+- Si scrive come capita (minuscole, spazi, trattini); confronto a tempo costante tra hash, su tutti i codici.
+  Il controllo viene prima del biglietto di registrazione, che resta valido per riprovare; i tentativi contano nel
+  limite per IP dei codici. Il codice non finisce mai nel DB né nei log, e nemmeno negli errori di configurazione.
+- Nel modulo di registrazione: **avviso dell'anteprima** (dati di prova, possono registrarsi solo i tester, tutto
+  cancellato il 27/10/2026 prima del lancio) e campo «Codice invito». Dopo un errore sul codice ruolo e caselle restano.
+- Test (scritti prima): 6 unitari (formato, normalizzazione, controllo), 3 sulla configurazione, 5 di integrazione
+  (senza codice o sbagliato: niente account e biglietto ancora valido; maiuscole/spazi; più codici; chi ha già
+  l'account entra; fuori dall'anteprima nessuna regressione). Prova a mano nel browser con Mailpit.
+- Restano per il 27/10 (WP-030): azzeramento del DB tranne `waitlist` e `PREVIEW_MODE=false`.

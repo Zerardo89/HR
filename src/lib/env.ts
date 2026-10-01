@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { parseBoolean } from "@/lib/flags";
 import { ANDROID_PACKAGE_RE, parseFingerprints } from "@/lib/pwa/asset-links";
 
 /**
@@ -49,10 +50,29 @@ const serverEnvSchema = z
         }
       }, "impronte SHA-256 non valide (formato AA:BB:…, 32 byte, separate da virgole)")
       .optional(),
+    // Anteprima (WP-010b): letto anche da `lib/flags`; qui serve solo per il controllo qui sotto.
+    PREVIEW_MODE: z.string().optional(),
+    // Codici invito dei tester, separati da virgole (genera con `pnpm preview:invite-code`). Stesse regole di
+    // `parseInviteCodes` in `modules/identity/domain`: almeno 10 lettere o cifre, trattini e spazi ammessi.
+    PREVIEW_INVITE_CODES: z
+      .string()
+      .refine(
+        (v) =>
+          v
+            .split(",")
+            .every((c) => /^[A-Z0-9]{10,64}$/.test(c.toUpperCase().replace(/[\s-]/g, ""))),
+        "codici invito non validi (almeno 10 lettere o cifre ciascuno, separati da virgole)",
+      )
+      .optional(),
   })
   .refine((env) => !env.ANDROID_PACKAGE_NAME === !env.ANDROID_CERT_SHA256, {
     path: ["ANDROID_CERT_SHA256"],
     message: "ANDROID_PACKAGE_NAME e ANDROID_CERT_SHA256 vanno impostate insieme",
+  })
+  .refine((env) => !parseBoolean(env.PREVIEW_MODE) || Boolean(env.PREVIEW_INVITE_CODES), {
+    path: ["PREVIEW_INVITE_CODES"],
+    message:
+      "obbligatoria con PREVIEW_MODE=true (in anteprima ci si registra solo con il codice invito)",
   });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

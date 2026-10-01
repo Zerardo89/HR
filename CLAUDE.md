@@ -75,8 +75,9 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - 01/10/2026: lavoro in locale sul PC Windows del fondatore (Docker, Codex CLI, Gemini CLI). Nome dell'app:
   **Jobinetic**, provvisorio finché non si comprano i domini (ricerca marchi in `docs/09-DOMANDE-APERTE.md` Q1; mai
   scrivere il nome fuori da `meta.siteName`). WP-010a fatto: nome, manifest, icone provvisorie, service worker senza
-  cache con pagine "offline" e "non raggiungibile", `assetlinks.json` da variabili d'ambiente.
-- Prossimi: WP-010b codice invito in anteprima, WP-010c stack di produzione (cloudflared, PostGIS multi-arch),
+  cache con pagine "offline" e "non raggiungibile", `assetlinks.json` da variabili d'ambiente. WP-010b fatto:
+  in anteprima ci si registra solo con il codice invito dei tester (`PREVIEW_INVITE_CODES`).
+- Prossimi: WP-010c stack di produzione (cloudflared, PostGIS multi-arch),
   WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione dei testi legali in bozza
   (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in locale).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.

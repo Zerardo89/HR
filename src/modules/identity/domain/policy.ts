@@ -101,6 +101,30 @@ export function signupCookieName(secure: boolean): string {
   return secure ? "__Host-registrazione" : "registrazione";
 }
 
+// ─── Anteprima con codice invito (WP-010b) ──────────────────────────────────────────────────────────
+
+/**
+ * In anteprima (`PREVIEW_MODE`, fino al 27/10) ci si registra solo con il codice dei tester: almeno 10 lettere o
+ * cifre (oltre 45 bit con l'alfabeto dei codici generati), così non si indovina neanche con tanti tentativi.
+ */
+export const INVITE_CODE_MIN_LENGTH = 10;
+
+/** Come lo scrivono le persone: minuscole, spazi e trattini ammessi. */
+export function normalizeInviteCode(input: string): string {
+  return input.toUpperCase().replace(/[\s-]/g, "");
+}
+
+/** "TSTR-2026-ABCD, …" (configurazione) → codici normalizzati. Lancia un errore se uno non è valido. */
+export function parseInviteCodes(value: string): string[] {
+  const codes = value.split(",").map(normalizeInviteCode);
+  for (const code of codes) {
+    if (!new RegExp(`^[A-Z0-9]{${INVITE_CODE_MIN_LENGTH},64}$`).test(code)) {
+      throw new Error("codice invito non valido");
+    }
+  }
+  return codes;
+}
+
 /** Versioni dei testi legali accettati alla registrazione (restano "bozza" fino alla revisione del professionista). */
 export const LEGAL_VERSIONS = {
   privacyNotice: "bozza-2026-09-27",

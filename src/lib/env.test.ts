@@ -45,6 +45,30 @@ describe("parseServerEnv", () => {
     ).toThrow(/ANDROID_PACKAGE_NAME/);
   });
 
+  it("anteprima (WP-010b): con PREVIEW_MODE=true servono codici invito validi", () => {
+    expect(() => parseServerEnv({ ...valid, PREVIEW_MODE: "true" })).toThrow(
+      /PREVIEW_INVITE_CODES/,
+    );
+    expect(() =>
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "CORTO" }),
+    ).toThrow(/PREVIEW_INVITE_CODES/);
+    expect(
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "TSTR-2026-ABCD" })
+        .PREVIEW_INVITE_CODES,
+    ).toBe("TSTR-2026-ABCD");
+    // Fuori dall'anteprima i codici non servono.
+    expect(parseServerEnv(valid).PREVIEW_INVITE_CODES).toBeUndefined();
+  });
+
+  it("i codici invito non compaiono mai nei messaggi d'errore", () => {
+    try {
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "SEGRETO€" });
+      expect.unreachable();
+    } catch (e) {
+      expect((e as Error).message).not.toContain("SEGRETO");
+    }
+  });
+
   it("segnala le variabili mancanti senza stampare i valori delle altre", () => {
     const missing: Record<string, string | undefined> = { ...valid, KEK_FILE: undefined };
     try {
