@@ -2,6 +2,7 @@
  * Regole dell'accesso (ADR-0013). Funzioni pure: nessun DB, nessuna API di Node.
  * I numeri qui sono vincolanti: i test di accettazione di WP-008 li verificano.
  */
+import type { MemoryLimiter } from "./memory-limiter";
 
 export const USER_ROLES = ["worker", "company_member", "moderator", "admin"] as const;
 export type UserRole = (typeof USER_ROLES)[number];
@@ -123,6 +124,21 @@ export function parseInviteCodes(value: string): string[] {
     }
   }
   return codes;
+}
+
+/** Chiave del limite per i tentativi senza IP (intestazione mancante): finiscono tutti nello stesso conteggio. */
+export const UNKNOWN_IP_KEY = "ip-sconosciuto";
+
+/**
+ * Un tentativo sul codice invito, nel limite per IP dei codici (`IP_LIMITS.codeChecks`). Togliere l'intestazione
+ * con l'IP non aggira il limite: senza IP si finisce nel conteggio comune.
+ */
+export function inviteAttemptAllowed(
+  limiter: MemoryLimiter,
+  ip: string | null,
+  nowMs: number,
+): boolean {
+  return limiter.hit(ip ?? UNKNOWN_IP_KEY, nowMs);
 }
 
 /** Versioni dei testi legali accettati alla registrazione (restano "bozza" fino alla revisione del professionista). */

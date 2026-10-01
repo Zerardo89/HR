@@ -12,7 +12,8 @@ export const signupInput = z.object({
   role: z.enum(SELF_SIGNUP_ROLES),
   adult: checked, // R-LAV-09: solo la dichiarazione, mai la data di nascita
   legal: checked, // presa visione dell'informativa + accettazione delle condizioni d'uso
-  inviteCode: z.string().max(64).optional(), // solo in anteprima (WP-010b)
+  // Solo in anteprima (WP-010b). Spazi e trattini contano: un codice di 64 caratteri scritto a gruppi ci sta.
+  inviteCode: z.string().max(128).optional(),
 });
 
 export type SignupInput = z.infer<typeof signupInput>;

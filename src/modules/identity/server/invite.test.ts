@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { normalizeInviteCode, parseInviteCodes } from "../domain";
+import {
+  inviteAttemptAllowed,
+  IP_LIMITS,
+  MemoryLimiter,
+  normalizeInviteCode,
+  parseInviteCodes,
+  signupInput,
+} from "../domain";
 import { inviteCodeAccepted } from "./invite";
 
 // Test di accettazione WP-010b: codici invito dell'anteprima. NON modificarli per farli passare.
@@ -40,5 +47,35 @@ describe("codici invito: controllo", () => {
 
   it("con un elenco vuoto non entra nessuno", () => {
     expect(inviteCodeAccepted("TSTR-2026-ABCD", [])).toBe(false);
+  });
+
+  it("un codice lungo (64 caratteri) scritto a gruppi con i trattini entra nel modulo e vale", () => {
+    const long = "A".repeat(64);
+    const grouped = long.match(/.{4}/g)!.join("-"); // 79 caratteri
+    const form = { email: "a@esempio.it", role: "worker", adult: "on", legal: "on" };
+    expect(signupInput.safeParse({ ...form, inviteCode: grouped }).success).toBe(true);
+    expect(inviteCodeAccepted(grouped, parseInviteCodes(long))).toBe(true);
+  });
+});
+
+describe("codici invito: limite dei tentativi (revisione ChatGPT WP-010b)", () => {
+  const now = Date.parse("2026-10-05T08:00:00Z");
+
+  it("per IP: dopo 30 tentativi in 15 minuti il successivo è rifiutato", () => {
+    const limiter = new MemoryLimiter(IP_LIMITS.codeChecks);
+    for (let i = 0; i < IP_LIMITS.codeChecks.max; i++) {
+      expect(inviteAttemptAllowed(limiter, "203.0.113.7", now)).toBe(true);
+    }
+    expect(inviteAttemptAllowed(limiter, "203.0.113.7", now)).toBe(false);
+    expect(inviteAttemptAllowed(limiter, "203.0.113.8", now)).toBe(true);
+    expect(inviteAttemptAllowed(limiter, "203.0.113.7", now + 15 * 60_000)).toBe(true);
+  });
+
+  it("senza IP (intestazione mancante) il limite non si aggira: conteggio comune", () => {
+    const limiter = new MemoryLimiter(IP_LIMITS.codeChecks);
+    for (let i = 0; i < IP_LIMITS.codeChecks.max; i++) {
+      expect(inviteAttemptAllowed(limiter, null, now)).toBe(true);
+    }
+    expect(inviteAttemptAllowed(limiter, null, now)).toBe(false);
   });
 });

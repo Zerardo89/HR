@@ -2,7 +2,13 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { emailInput, normalizeOtpInput, signupInput, type SelfSignupRole } from "../domain";
+import {
+  emailInput,
+  inviteAttemptAllowed,
+  normalizeOtpInput,
+  signupInput,
+  type SelfSignupRole,
+} from "../domain";
 import {
   clearSessionCookie,
   clearSignupTicket,
@@ -149,11 +155,11 @@ async function signUp(form: FormData): Promise<SignInState> {
   const deps = runtimeDeps();
   const { email, role } = parsed.data;
   // Anteprima (WP-010b): i tentativi sul codice invito contano nel limite per IP dei codici.
-  if (deps.previewInviteCodes) {
-    const ip = clientIp(await headers());
-    if (ip && !ipLimiters().codeChecks.hit(ip, Date.now())) {
-      return { step: "signup", email, role, accepted: true, error: "rate_limited" };
-    }
+  if (
+    deps.previewInviteCodes &&
+    !inviteAttemptAllowed(ipLimiters().codeChecks, clientIp(await headers()), Date.now())
+  ) {
+    return { step: "signup", email, role, accepted: true, error: "rate_limited" };
   }
 
   const ticket = await readSignupTicket();

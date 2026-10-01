@@ -258,7 +258,8 @@ server/runtime.ts,server/deps.ts,ui/sign-in-flow.tsx}`, pagina `/accedi`, `src/l
   limite per IP dei codici. Il codice non finisce mai nel DB né nei log, e nemmeno negli errori di configurazione.
 - Nel modulo di registrazione: **avviso dell'anteprima** (dati di prova, possono registrarsi solo i tester, tutto
   cancellato il 27/10/2026 prima del lancio) e campo «Codice invito». Dopo un errore sul codice ruolo e caselle restano.
-- Test (scritti prima): 6 unitari (formato, normalizzazione, controllo), 3 sulla configurazione, 5 di integrazione
+- Test (scritti prima): 9 unitari (formato, normalizzazione, controllo, codice lungo, limite dei tentativi anche senza IP),
+  2 sulla configurazione, 5 di integrazione
   (senza codice o sbagliato: niente account e biglietto ancora valido; maiuscole/spazi; più codici; chi ha già
   l'account entra; fuori dall'anteprima nessuna regressione). Prova a mano nel browser con Mailpit.
 - Restano per il 27/10 (WP-030): azzeramento del DB tranne `waitlist` e `PREVIEW_MODE=false`.

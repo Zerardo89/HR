@@ -146,7 +146,7 @@ export function SignInFlow({
                 autoComplete="off"
                 autoCapitalize="characters"
                 spellCheck={false}
-                maxLength={64}
+                maxLength={128}
                 aria-describedby={`${describedBy ?? ""} ${inviteHintId}`.trim()}
                 className={input}
               />
