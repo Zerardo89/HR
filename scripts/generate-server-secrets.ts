@@ -24,13 +24,17 @@ const PASTED = ["cloudflared_token", "smtp_password", "r2_access_key_id", "r2_se
 mkdirSync(dir, { recursive: true, mode: 0o700 });
 
 for (const name of GENERATED) {
-  const path = join(dir, name);
-  if (existsSync(path)) {
+  // "wx": il file si crea solo se non esiste, anche se due esecuzioni partono insieme.
+  try {
+    writeFileSync(join(dir, name), `${randomBytes(24).toString("hex")}\n`, {
+      mode: 0o444,
+      flag: "wx",
+    });
+    console.log(`  creata: ${name}`);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
     console.log(`  già presente, non la tocco: ${name}`);
-    continue;
   }
-  writeFileSync(path, `${randomBytes(24).toString("hex")}\n`, { mode: 0o444 });
-  console.log(`  creata: ${name}`);
 }
 
 const missing = [...PASTED, "kek.b64", "blind-index.b64"].filter((n) => !existsSync(join(dir, n)));

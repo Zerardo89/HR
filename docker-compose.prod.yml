@@ -3,7 +3,8 @@
 # Guida passo passo: docs/runbook/SERVER-DI-CASA.md
 #
 #   docker compose -f docker-compose.prod.yml up -d --build      # avvio e aggiornamento
-#   docker compose -f docker-compose.prod.yml --profile ops run --rm backup   # backup (lo lancia il timer del server)
+#   docker compose -f docker-compose.prod.yml --profile ops run --rm backup   # backup notturno (cron del server)
+#   docker compose -f docker-compose.prod.yml --profile ops run --rm backup bash /backup-registro.sh   # ogni ora
 name: hr
 
 x-env-app: &app-env
@@ -118,13 +119,15 @@ services:
       DB_ROLE: owner
       RESTIC_PASSWORD_FILE: /run/secrets/restic_password
       ERASURE_LEDGER_FILE: /var/lib/hr/cancellazioni.jsonl
-    entrypoint: ["/entrypoint.sh"]
+    # Con "sh" davanti non serve il permesso di esecuzione sul file montato (su Linux lo chiederebbe).
+    entrypoint: ["sh", "/entrypoint.sh"]
     command: ["bash", "/backup.sh"]
     secrets: [db_owner_password, restic_password, r2_access_key_id, r2_secret_access_key]
     volumes:
       - registro:/var/lib/hr:ro
       - ./docker/entrypoint.sh:/entrypoint.sh:ro
       - ./scripts/ops/backup.sh:/backup.sh:ro
+      - ./scripts/ops/backup-registro.sh:/backup-registro.sh:ro
     depends_on:
       db: { condition: service_healthy }
     networks: [interna, uscita]

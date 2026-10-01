@@ -283,5 +283,8 @@ server/runtime.ts,server/deps.ts,ui/sign-in-flow.tsx}`, pagina `/accedi`, `src/l
 - `.gitattributes`: script e file dei contenitori sempre con a capo LF (con CRLF da Windows non partono).
 - **Provato sul PC di sviluppo** (Docker Desktop): costruzione, avvio, migrazioni e ruoli, sito sano come `hr_app`,
   pagine e icone, worker con gli 8 job, PostGIS 3.6, nessuna porta pubblicata, sola lettura, import delle mansioni e
-  nomina admin da `tools`, backup restic su un archivio di prova. La CI ripete costruzione e prova di avvio.
+  nomina admin da `tools`, backup restic su un archivio di prova; **ripristino completo provato** con i comandi della
+  guida (DB cancellato e ripristinato, registro delle cancellazioni ripetuto). La CI ripete costruzione e prova di avvio.
+- Revisione di ChatGPT: `reviews/WP-010c-chatgpt.md` (backup su Linux, registro ogni ora, comandi con `sudo`,
+  email dell'admin chiesta dopo l'avvio, aggiornamento delle immagini).
 - Da fare con il server (fondatore + Claude): passi della guida, account Cloudflare, Brevo e R2, prova di ripristino.

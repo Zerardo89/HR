@@ -144,6 +144,12 @@ jobs:
           test "$(docker inspect -f '{{.State.Health.Status}}' hr-app-1)" = healthy
           test "$(docker inspect -f '{{.State.ExitCode}}' hr-migrate-1)" = 0
           test "$(docker inspect -f '{{.State.Running}}' hr-worker-1)" = true
+      # Su Linux i file montati non sono eseguibili: il servizio di backup deve partire lo stesso.
+      - name: Servizi a richiesta (tools, backup) partono
+        run: |
+          docker compose -f docker-compose.prod.yml --profile ops run --rm tools node_modules/.bin/tsx --version
+          docker compose -f docker-compose.prod.yml --profile ops run --rm backup bash /backup-registro.sh
+          docker compose -f docker-compose.prod.yml --profile ops run --rm backup pg_dump --version
       - name: Log in caso di errore
         if: failure()
         run: docker compose -f docker-compose.prod.yml logs --no-color --tail 80
