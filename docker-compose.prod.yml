@@ -1,0 +1,154 @@
+# Produzione sul server di casa (WP-010c, ADR-0012): database, migrazioni, sito, worker, Cloudflare Tunnel.
+# Nessuna porta aperta sul server: il sito esce su internet solo dal tunnel (connessione in uscita verso Cloudflare).
+# Guida passo passo: docs/runbook/SERVER-DI-CASA.md
+#
+#   docker compose -f docker-compose.prod.yml up -d --build      # avvio e aggiornamento
+#   docker compose -f docker-compose.prod.yml --profile ops run --rm backup   # backup (lo lancia il timer del server)
+name: hr
+
+x-env-app: &app-env
+  KEK_FILE: /run/secrets/kek
+  BLIND_INDEX_KEY_FILE: /run/secrets/blind_index
+  ERASURE_LEDGER_FILE: /var/lib/hr/cancellazioni.jsonl
+
+services:
+  db:
+    build: docker/postgres
+    image: hr-postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hr
+      POSTGRES_DB: hr
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_owner_password
+    secrets: [db_owner_password]
+    volumes: [db-data:/var/lib/postgresql/data]
+    shm_size: 256mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hr -d hr"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [interna]
+
+  # A ogni avvio: migrazioni e ruoli ristretti (idempotenti), poi termina. Sito e worker partono dopo.
+  migrate:
+    build: { context: ., target: tools }
+    image: hr-tools
+    env_file: .env.production
+    environment:
+      DB_ROLE: owner
+    command:
+      - sh
+      - -c
+      - node_modules/.bin/tsx scripts/db-migrate.ts && node_modules/.bin/tsx scripts/db-roles.ts
+    secrets: [db_owner_password, db_app_password, db_worker_password]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+    networks: [interna]
+
+  app:
+    build:
+      context: .
+      target: app
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    image: hr-app
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      <<: *app-env
+      DB_ROLE: app
+    secrets: [db_app_password, kek, blind_index, smtp_password]
+    volumes: [registro:/var/lib/hr]
+    read_only: true
+    tmpfs: [/tmp, /app/.next/cache]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [interna, uscita]
+
+  worker:
+    image: hr-tools
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      <<: *app-env
+      DB_ROLE: worker
+    secrets: [db_worker_password, kek, blind_index, smtp_password]
+    volumes: [registro:/var/lib/hr]
+    read_only: true
+    tmpfs: [/tmp]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [interna, uscita]
+
+  # Il token si crea in Cloudflare (Zero Trust → Networks → Tunnels); l'indirizzo pubblico punta a http://app:3000.
+  cloudflared:
+    image: cloudflare/cloudflared:2026.9.3
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "run", "--token-file", "/run/secrets/cloudflared_token"]
+    secrets: [cloudflared_token]
+    depends_on: [app]
+    networks: [uscita]
+
+  # Comandi di gestione, uno alla volta (non parte da solo). Esempi nella guida:
+  #   docker compose -f docker-compose.prod.yml --profile ops run --rm tools node_modules/.bin/tsx scripts/taxonomy-import.ts
+  tools:
+    image: hr-tools
+    profiles: [ops]
+    env_file: .env.production
+    environment:
+      <<: *app-env
+      DB_ROLE: owner
+    command: ["node_modules/.bin/tsx", "--version"]
+    secrets: [db_owner_password, kek, blind_index]
+    volumes:
+      - registro:/var/lib/hr
+      - ./data:/app/data:ro
+    depends_on:
+      db: { condition: service_healthy }
+    networks: [interna]
+
+  # Backup cifrato fuori sede (scripts/ops/backup.sh, runbook BACKUP-E-RIPRISTINO.md): non parte da solo.
+  backup:
+    image: hr-postgres:17
+    profiles: [ops]
+    env_file: .env.production
+    environment:
+      DB_ROLE: owner
+      RESTIC_PASSWORD_FILE: /run/secrets/restic_password
+      ERASURE_LEDGER_FILE: /var/lib/hr/cancellazioni.jsonl
+    entrypoint: ["/entrypoint.sh"]
+    command: ["bash", "/backup.sh"]
+    secrets: [db_owner_password, restic_password, r2_access_key_id, r2_secret_access_key]
+    volumes:
+      - registro:/var/lib/hr:ro
+      - ./docker/entrypoint.sh:/entrypoint.sh:ro
+      - ./scripts/ops/backup.sh:/backup.sh:ro
+    depends_on:
+      db: { condition: service_healthy }
+    networks: [interna, uscita]
+
+networks:
+  # Il database non ha accesso a internet e non è raggiungibile da fuori.
+  interna:
+    internal: true
+  uscita: {}
+
+volumes:
+  db-data:
+  registro:
+
+# File creati da `scripts/generate-server-secrets.ts` (password) e `pnpm keys:generate` (chiavi), o incollati a mano
+# (token di Cloudflare, password SMTP di Brevo, chiavi di R2). La cartella ./secrets non va mai nel repository.
+secrets:
+  db_owner_password: { file: ./secrets/db_owner_password }
+  db_app_password: { file: ./secrets/db_app_password }
+  db_worker_password: { file: ./secrets/db_worker_password }
+  kek: { file: ./secrets/kek.b64 }
+  blind_index: { file: ./secrets/blind-index.b64 }
+  smtp_password: { file: ./secrets/smtp_password }
+  cloudflared_token: { file: ./secrets/cloudflared_token }
+  restic_password: { file: ./secrets/restic_password }
+  r2_access_key_id: { file: ./secrets/r2_access_key_id }
+  r2_secret_access_key: { file: ./secrets/r2_secret_access_key }

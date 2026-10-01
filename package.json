@@ -24,6 +24,7 @@
     "privacy:reapply-erasures": "tsx scripts/reapply-erasures.ts",
     "worker": "tsx --conditions=react-server --env-file-if-exists=.env.local src/worker/index.ts",
     "keys:generate": "tsx scripts/generate-keys.ts",
+    "secrets:generate": "tsx scripts/generate-server-secrets.ts",
     "preview:invite-code": "tsx scripts/preview-invite-code.ts",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "geo:build": "tsx scripts/geo-build.ts",

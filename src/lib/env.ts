@@ -80,7 +80,9 @@ export type ServerEnv = z.infer<typeof serverEnvSchema>;
 let cached: ServerEnv | undefined;
 
 export function parseServerEnv(source: Record<string, string | undefined>): ServerEnv {
-  const result = serverEnvSchema.safeParse(source);
+  // `NOME=` senza valore (file .env, Docker) vale come variabile non impostata.
+  const defined = Object.fromEntries(Object.entries(source).filter(([, value]) => value !== ""));
+  const result = serverEnvSchema.safeParse(defined);
   if (!result.success) {
     // Solo i NOMI delle variabili nel messaggio, mai i valori.
     const problems = result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");

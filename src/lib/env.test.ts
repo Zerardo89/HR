@@ -69,6 +69,25 @@ describe("parseServerEnv", () => {
     }
   });
 
+  it("una variabile vuota (`NOME=` nel file .env) vale come non impostata (WP-010c)", () => {
+    const env = parseServerEnv({
+      ...valid,
+      ANDROID_PACKAGE_NAME: "",
+      ANDROID_CERT_SHA256: "",
+      PREVIEW_INVITE_CODES: "",
+      SMTP_USER: "",
+      LOG_LEVEL: "",
+    });
+    expect(env.ANDROID_PACKAGE_NAME).toBeUndefined();
+    expect(env.SMTP_USER).toBeUndefined();
+    expect(env.LOG_LEVEL).toBe("info");
+    // Obbligatorie vuote = mancanti.
+    expect(() => parseServerEnv({ ...valid, KEK_FILE: "" })).toThrow(/KEK_FILE/);
+    expect(() =>
+      parseServerEnv({ ...valid, PREVIEW_MODE: "true", PREVIEW_INVITE_CODES: "" }),
+    ).toThrow(/PREVIEW_INVITE_CODES/);
+  });
+
   it("segnala le variabili mancanti senza stampare i valori delle altre", () => {
     const missing: Record<string, string | undefined> = { ...valid, KEK_FILE: undefined };
     try {

@@ -17,7 +17,7 @@
 | 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
 | 008 | ✅ Fatto (Claude, 27/09) | **Cambio di libreria:** Better Auth salva l'email in chiaro → accesso scritto in casa ([ADR-0013](../adr/ADR-0013-auth-in-casa.md)). Codice a 6 cifre via email, sessioni nel DB, un solo percorso "Accedi o registrati", pagine `/accedi` e `/account`, bozze `/privacy` e `/condizioni`. Test: 13 unitari, 15 di integrazione (anche "nessuna email in chiaro in nessuna colonna"), e2e registrazione + accesso con Mailpit. Restano per altri WP: codice invito in anteprima (WP-010), pulizia giornaliera nel worker (WP-020), 2FA aziende (WP-011), cancellazione account (WP-023). |
 | 009 | ✅ Fatto (Claude, 27/09) | Intestazione e piè di pagina con i dati dell'ente (segnaposto "in costituzione" in `src/lib/organization.ts`, R-LAV-04, R-CONS-04), `/chi-siamo`; landing con **lista d'attesa a doppia conferma** (email cifrata + indice cieco, link che apre una pagina con pulsante, R-MAIL-02; consensi con versione; non confermati cancellati dopo 7 giorni); bozze di privacy, cookie, condizioni, contatti, segnalazioni. **Lighthouse mobile: 98 / 100 / 100 / 100.** Test: 4 unitari, 7 di integrazione, 3 e2e. Restano: testi legali di Gemini (G-03), grafica ComfyUI, shadcn/ui quando serve. |
-| 010 | 🟡 010a-b fatti (Claude, 01/10) | ✅ **010a** nome **Jobinetic** (provvisorio), manifest, icone provvisorie, service worker senza cache, `assetlinks.json` (dettagli sotto). ✅ **010b** codice invito in anteprima. ⏳ **010c** stack di produzione (ADR-0012: cloudflared, PostGIS multi-arch, backup). ⏳ **010d** TWA con Bubblewrap e Play Console: servono account Play, DNS di `inspectio.cloud` su Cloudflare, pacchetto `cloud.inspectio.jobinetic` se il nome resta (Q2). |
+| 010 | 🟡 010a-c fatti (Claude, 01/10) | ✅ **010a** nome **Jobinetic** (provvisorio), manifest, icone provvisorie, service worker senza cache, `assetlinks.json` (dettagli sotto). ✅ **010b** codice invito in anteprima. ✅ **010c** stack del server di casa (ADR-0012), guida `docs/runbook/SERVER-DI-CASA.md`. ⏳ **010d** TWA con Bubblewrap e Play Console: servono account Play, DNS di `inspectio.cloud` su Cloudflare, pacchetto `cloud.inspectio.jobinetic` se il nome resta (Q2). |
 
 ---
 
@@ -263,3 +263,25 @@ server/runtime.ts,server/deps.ts,ui/sign-in-flow.tsx}`, pagina `/accedi`, `src/l
   (senza codice o sbagliato: niente account e biglietto ancora valido; maiuscole/spazi; più codici; chi ha già
   l'account entra; fuori dall'anteprima nessuna regressione). Prova a mano nel browser con Mailpit.
 - Restano per il 27/10 (WP-030): azzeramento del DB tranne `waitlist` e `PREVIEW_MODE=false`.
+
+### WP-010c — Stack del server di casa ✅ (Claude, 01/10)
+**Codice:** `Dockerfile` (target `app` e `tools`), `docker/postgres/Dockerfile`, `docker/entrypoint.sh`, `docker-compose.prod.yml`,
+`.dockerignore`, `.gitattributes`, `.env.production.example`, `scripts/generate-server-secrets.ts`, `src/lib/env.ts`, CI (job
+`docker`), guida [SERVER-DI-CASA.md](../runbook/SERVER-DI-CASA.md), `VERSIONS.md`
+
+- **Cinque contenitori** (ADR-0012): `db` (Postgres 17 + PostGIS 3 dal repository PostgreSQL: amd64 e arm64), `migrate`
+  (migrazioni e ruoli a ogni avvio, poi si ferma), `app` (output standalone, utente `node`, file in sola lettura,
+  controllo di salute su `/api/health`), `worker`, `cloudflared` (2026.9.3, token da file). Più `tools` e `backup`
+  a richiesta (profilo `ops`).
+- **Nessuna porta aperta**: il DB sta su una rete interna senza internet; sito e worker escono solo per posta, VIES e
+  tunnel. Il sito si collega come `hr_app`, il worker come `hr_worker`, le migrazioni come proprietario (WP-027).
+- **Password solo nei Docker secrets** (`./secrets`): `docker/entrypoint.sh` compone `DATABASE_URL` e le altre
+  variabili con password; `scripts/generate-server-secrets.ts` crea le password (esadecimali) senza mai sovrascriverle.
+- **Registro delle cancellazioni** su un volume condiviso da sito e worker; **backup** con lo script di WP-027 verso
+  Cloudflare R2 (restic nell'immagine del DB).
+- `NOME=` vuoto nella configurazione vale come non impostato (prima bloccava l'avvio sulle variabili facoltative).
+- `.gitattributes`: script e file dei contenitori sempre con a capo LF (con CRLF da Windows non partono).
+- **Provato sul PC di sviluppo** (Docker Desktop): costruzione, avvio, migrazioni e ruoli, sito sano come `hr_app`,
+  pagine e icone, worker con gli 8 job, PostGIS 3.6, nessuna porta pubblicata, sola lettura, import delle mansioni e
+  nomina admin da `tools`, backup restic su un archivio di prova. La CI ripete costruzione e prova di avvio.
+- Da fare con il server (fondatore + Claude): passi della guida, account Cloudflare, Brevo e R2, prova di ripristino.
