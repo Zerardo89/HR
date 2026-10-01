@@ -17,7 +17,7 @@
 | 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
 | 008 | ✅ Fatto (Claude, 27/09) | **Cambio di libreria:** Better Auth salva l'email in chiaro → accesso scritto in casa ([ADR-0013](../adr/ADR-0013-auth-in-casa.md)). Codice a 6 cifre via email, sessioni nel DB, un solo percorso "Accedi o registrati", pagine `/accedi` e `/account`, bozze `/privacy` e `/condizioni`. Test: 13 unitari, 15 di integrazione (anche "nessuna email in chiaro in nessuna colonna"), e2e registrazione + accesso con Mailpit. Restano per altri WP: codice invito in anteprima (WP-010), pulizia giornaliera nel worker (WP-020), 2FA aziende (WP-011), cancellazione account (WP-023). |
 | 009 | ✅ Fatto (Claude, 27/09) | Intestazione e piè di pagina con i dati dell'ente (segnaposto "in costituzione" in `src/lib/organization.ts`, R-LAV-04, R-CONS-04), `/chi-siamo`; landing con **lista d'attesa a doppia conferma** (email cifrata + indice cieco, link che apre una pagina con pulsante, R-MAIL-02; consensi con versione; non confermati cancellati dopo 7 giorni); bozze di privacy, cookie, condizioni, contatti, segnalazioni. **Lighthouse mobile: 98 / 100 / 100 / 100.** Test: 4 unitari, 7 di integrazione, 3 e2e. Restano: testi legali di Gemini (G-03), grafica ComfyUI, shadcn/ui quando serve. |
-| 010 | ⏳ Da fare | Serve: account Play, VPS, dominio, nome del pacchetto (Q1-Q2). |
+| 010 | 🟡 010a-c fatti (Claude, 01/10) | ✅ **010a** nome **Jobinetic** (provvisorio), manifest, icone provvisorie, service worker senza cache, `assetlinks.json` (dettagli sotto). ✅ **010b** codice invito in anteprima. ✅ **010c** stack del server di casa (ADR-0012), guida `docs/runbook/SERVER-DI-CASA.md`. ⏳ **010d** TWA con Bubblewrap e Play Console: servono account Play, DNS di `inspectio.cloud` su Cloudflare, pacchetto `cloud.inspectio.jobinetic` se il nome resta (Q2). |
 
 ---
 
@@ -209,3 +209,82 @@ Specifica in [ADR-0004](../adr/ADR-0004-cifratura-applicativa.md). `src/lib/cryp
 > Il 27/10 si azzera il DB **tranne la tabella `waitlist`**, si imposta `PREVIEW_MODE=false` e si inseriscono le aziende reali.
 > Dopo il lancio `beta.` diventa lo staging vero e proprio.
 > Quindi in questo WP il deploy va su `lavoro.` in modalità anteprima (niente basic auth: servono `assetlinks.json` e l'accesso dei tester).
+>
+> **Aggiornamento 01/10/2026:** con ADR-0012 e il nome scelto il dominio di produzione sarà `<nome>.inspectio.cloud`
+> (oggi `jobinetic.inspectio.cloud`, non `lavoro.`); lo staging dopo il lancio sarà `<nome>-beta.inspectio.cloud`. Il resto non cambia.
+
+### WP-010a — Nome, PWA e assetlinks ✅ (Claude, 01/10)
+**Codice:** `messages/it.json` (`meta`, `pwa`), `src/lib/brand.ts`, `src/app/manifest.ts`, `src/app/{icon,apple-icon}.tsx`,
+`src/app/icons/[file]/route.tsx`, `src/app/_components/{app-icon,service-worker-registration}.tsx`,
+`src/lib/pwa/{service-worker,asset-links}.ts`, `src/app/sw.js/route.ts`, `src/app/.well-known/assetlinks.json/route.ts`,
+`src/lib/{env,security-headers}.ts`, `src/proxy.ts`, `src/app/layout.tsx` (titolo, colori, registrazione del service
+worker), tolto `src/app/favicon.ico`; configurazione `.env.example`, `playwright.config.ts`; test
+`src/lib/{env,security-headers}.test.ts`, `src/lib/pwa/*.test.ts`, `tests/e2e/{pwa.spec,helpers}.ts`; documenti
+`CLAUDE.md`, `docs/09-DOMANDE-APERTE.md`, questo file. Revisione di ChatGPT: `reviews/WP-010a-chatgpt.md`.
+
+- **Nome Jobinetic** (provvisorio, docs/09 Q1) in un solo punto (`meta.siteName`; anche il titolo e i test lo leggono da lì): intestazione, titoli, email, emittente della 2FA (gli account
+  già aggiunti all'app di autenticazione continuano a funzionare: cambia solo l'etichetta dei nuovi).
+- **Manifest** `/manifest.webmanifest`: `start_url` e `scope` `/`, `display: standalone`, `lang: it`, colori del
+  marchio, icone 192/512 e 512 *maskable*. **Icone provvisorie** generate dal codice (una "J" col punto, senza font),
+  finché non arriva l'icona di ComfyUI (V-02); tolto il `favicon.ico` predefinito di Next.js.
+- **Service worker** `/sw.js` (registrato solo in produzione): **nessuna cache** (pagine e dati personali non restano
+  sul telefono); tocca solo le navigazioni GET. Senza rete → «Sei offline»; risposte 502-504/52x/530 (Cloudflare
+  quando il computer di casa è spento, ADR-0012) → «Servizio non raggiungibile». Le due pagine sono dentro lo script,
+  con una CSP propria senza script; «Riprova» è un link. Testi in `messages/it.json`.
+- **CSP:** `worker-src 'self'` (con `strict-dynamic` lo `'self'` di script-src non vale per i worker). Il proxy
+  non tocca `/sw.js` e `/.well-known/`.
+- **`/.well-known/assetlinks.json`** da `ANDROID_PACKAGE_NAME` e `ANDROID_CERT_SHA256` (impronte separate da
+  virgole); all'avvio il sito non parte se ce n'è una sola, se un'impronta non è valida o se c'è una voce vuota.
+  Senza le due variabili risponde 404. Letto a ogni richiesta: stessa immagine con o senza app.
+- **Mittente delle email:** il nome visibile viene da `MAIL_FROM` (configurazione): in produzione (010c) va impostato
+  al nome dell'app (`Jobinetic <…>`).
+- Test: 5 unitari (assetlinks, anche "non configurata") + 1 (variabili Android insieme) + 6 (service worker e
+  pagina offline) + 1 asserzione CSP; 8 e2e × 2 dispositivi (manifest e icone delle misure dichiarate, nome e icona
+  nella scheda, offline e ripresa, 530 di Cloudflare, gli stessi due casi toccando un link dentro l'app, nessuna
+  cache, assetlinks senza redirect).
+
+### WP-010b — Anteprima con codice invito ✅ (Claude, 01/10)
+**Codice:** `src/modules/identity/{domain/policy.ts,domain/inputs.ts,server/invite.ts,server/sign-in.ts,server/actions.ts,
+server/runtime.ts,server/deps.ts,ui/sign-in-flow.tsx}`, pagina `/accedi`, `src/lib/env.ts`, `scripts/preview-invite-code.ts`,
+`messages/it.json` (`auth.preview`), `.env.example`
+
+- Con `PREVIEW_MODE=true` **ci si registra solo con il codice invito dei tester**; chi ha già un account entra come
+  sempre (anche gli admin nominati da script). Il controllo è nel servizio (`completeSignup`), non solo nella pagina.
+- Codici in `PREVIEW_INVITE_CODES` (separati da virgole, almeno 10 lettere o cifre; `pnpm preview:invite-code` ne
+  genera uno da ~60 bit). In anteprima senza codici validi **il sito non parte**. Per chiudere le registrazioni basta
+  cambiare il codice (quelli vecchi smettono subito di valere al riavvio).
+- Si scrive come capita (minuscole, spazi, trattini); confronto a tempo costante tra hash, su tutti i codici.
+  Il controllo viene prima del biglietto di registrazione, che resta valido per riprovare; i tentativi contano nel
+  limite per IP dei codici. Il codice non finisce mai nel DB né nei log, e nemmeno negli errori di configurazione.
+- Nel modulo di registrazione: **avviso dell'anteprima** (dati di prova, possono registrarsi solo i tester, tutto
+  cancellato il 27/10/2026 prima del lancio) e campo «Codice invito». Dopo un errore sul codice ruolo e caselle restano.
+- Test (scritti prima): 9 unitari (formato, normalizzazione, controllo, codice lungo, limite dei tentativi anche senza IP),
+  2 sulla configurazione, 5 di integrazione
+  (senza codice o sbagliato: niente account e biglietto ancora valido; maiuscole/spazi; più codici; chi ha già
+  l'account entra; fuori dall'anteprima nessuna regressione). Prova a mano nel browser con Mailpit.
+- Restano per il 27/10 (WP-030): azzeramento del DB tranne `waitlist` e `PREVIEW_MODE=false`.
+
+### WP-010c — Stack del server di casa ✅ (Claude, 01/10)
+**Codice:** `Dockerfile` (target `app` e `tools`), `docker/postgres/Dockerfile`, `docker/entrypoint.sh`, `docker-compose.prod.yml`,
+`.dockerignore`, `.gitattributes`, `.env.production.example`, `scripts/generate-server-secrets.ts`, `src/lib/env.ts`, CI (job
+`docker`), guida [SERVER-DI-CASA.md](../runbook/SERVER-DI-CASA.md), `VERSIONS.md`
+
+- **Cinque contenitori** (ADR-0012): `db` (Postgres 17 + PostGIS 3 dal repository PostgreSQL: amd64 e arm64), `migrate`
+  (migrazioni e ruoli a ogni avvio, poi si ferma), `app` (output standalone, utente `node`, file in sola lettura,
+  controllo di salute su `/api/health`), `worker`, `cloudflared` (2026.9.3, token da file). Più `tools` e `backup`
+  a richiesta (profilo `ops`).
+- **Nessuna porta aperta**: il DB sta su una rete interna senza internet; sito e worker escono solo per posta, VIES e
+  tunnel. Il sito si collega come `hr_app`, il worker come `hr_worker`, le migrazioni come proprietario (WP-027).
+- **Password solo nei Docker secrets** (`./secrets`): `docker/entrypoint.sh` compone `DATABASE_URL` e le altre
+  variabili con password; `scripts/generate-server-secrets.ts` crea le password (esadecimali) senza mai sovrascriverle.
+- **Registro delle cancellazioni** su un volume condiviso da sito e worker; **backup** con lo script di WP-027 verso
+  Cloudflare R2 (restic nell'immagine del DB).
+- `NOME=` vuoto nella configurazione vale come non impostato (prima bloccava l'avvio sulle variabili facoltative).
+- `.gitattributes`: script e file dei contenitori sempre con a capo LF (con CRLF da Windows non partono).
+- **Provato sul PC di sviluppo** (Docker Desktop): costruzione, avvio, migrazioni e ruoli, sito sano come `hr_app`,
+  pagine e icone, worker con gli 8 job, PostGIS 3.6, nessuna porta pubblicata, sola lettura, import delle mansioni e
+  nomina admin da `tools`, backup restic su un archivio di prova; **ripristino completo provato** con i comandi della
+  guida (DB cancellato e ripristinato, registro delle cancellazioni ripetuto). La CI ripete costruzione e prova di avvio.
+- Revisione di ChatGPT: `reviews/WP-010c-chatgpt.md` (backup su Linux, registro ogni ora, comandi con `sudo`,
+  email dell'admin chiesta dopo l'avvio, aggiornamento delle immagini).
+- Da fare con il server (fondatore + Claude): passi della guida, account Cloudflare, Brevo e R2, prova di ripristino.
