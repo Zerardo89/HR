@@ -28,11 +28,14 @@ Scartati: *Mestieri* (rete nazionale di agenzie per il lavoro già esistente), *
 *Cerchia* (banca dati aziende), *Campanile* (catena alberghiera + sa di "campanilismo"), *Compaesani* (suona escludente),
 *Lavoro per Te* (agenzia regionale Emilia-Romagna).
 **Consiglio dell'architetto:** 1) Prossimo, 2) Raggio, 3) Dintorni.
-> Risposta:
+> Risposta (01/10/2026): **Tasky**. Indirizzo proposto (ADR-0012 §5): `tasky.inspectio.cloud`, poi
+> `tasky-beta.inspectio.cloud` per lo staging. Prima del caricamento su Play: ricerca marchi su UIBM/TMview.
 
 **Q2 — Nome del pacchetto Android** (immutabile). È la "targa" tecnica dell'app su Google Play (es. `it.prossimo.lavoro`):
 gli utenti la vedono solo nell'indirizzo della pagina Play Store, ma **non si può più cambiare** dopo il primo caricamento.
 *Decisione:* la sceglie l'architetto dal dominio, appena sono decisi nome e dominio. Non serve una risposta.
+> Decisione (01/10/2026): **`cloud.inspectio.tasky`** (ADR-0012 §8). Diventa definitivo al primo caricamento su Play
+> (WP-010d); fino ad allora si cambia solo in `ANDROID_PACKAGE_NAME`.
 
 **Q3 — Area pilota.** In quale provincia/regione vivi e dove hai più contatti? L'app funziona in tutta Italia, ma la comunicazione e l'onboarding delle aziende partono da **una** provincia.
 > Risposta:

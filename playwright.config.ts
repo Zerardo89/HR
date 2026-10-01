@@ -43,7 +43,10 @@ export default defineConfig({
           BLIND_INDEX_KEY_FILE: "./tests/fixtures/test-blind-index.b64",
           SMTP_HOST: "localhost",
           SMTP_PORT: "1025",
-          MAIL_FROM: "HR test <noreply@localhost>",
+          MAIL_FROM: "Tasky test <noreply@localhost>",
+          // assetlinks.json dell'app Android (WP-010): pacchetto e impronta finti.
+          ANDROID_PACKAGE_NAME: "cloud.inspectio.e2e",
+          ANDROID_CERT_SHA256: Array(32).fill("AB").join(":"),
           // Negli e2e VIES non si chiama mai: porta chiusa → azienda "in verifica" (percorso di riserva).
           VIES_API_URL: "http://127.0.0.1:9",
           // Tutti i test arrivano da 127.0.0.1: il limite per IP (testato a parte) li bloccherebbe a vicenda.

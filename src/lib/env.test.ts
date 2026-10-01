@@ -26,6 +26,25 @@ describe("parseServerEnv", () => {
     );
   });
 
+  it("app Android (WP-010): pacchetto e impronte tutti e due o nessuno", () => {
+    const fp = Array(32).fill("AB").join(":");
+    expect(parseServerEnv(valid).ANDROID_PACKAGE_NAME).toBeUndefined();
+    expect(
+      parseServerEnv({
+        ...valid,
+        ANDROID_PACKAGE_NAME: "cloud.inspectio.tasky",
+        ANDROID_CERT_SHA256: fp,
+      }).ANDROID_CERT_SHA256,
+    ).toBe(fp);
+    expect(() =>
+      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "cloud.inspectio.tasky" }),
+    ).toThrow(/ANDROID_CERT_SHA256/);
+    expect(() => parseServerEnv({ ...valid, ANDROID_CERT_SHA256: fp })).toThrow(/insieme/);
+    expect(() =>
+      parseServerEnv({ ...valid, ANDROID_PACKAGE_NAME: "tasky", ANDROID_CERT_SHA256: fp }),
+    ).toThrow(/ANDROID_PACKAGE_NAME/);
+  });
+
   it("segnala le variabili mancanti senza stampare i valori delle altre", () => {
     const missing: Record<string, string | undefined> = { ...valid, KEK_FILE: undefined };
     try {

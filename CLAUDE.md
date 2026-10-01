@@ -72,7 +72,11 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
   WP-024a segnalazioni DSA e decisioni motivate. WP-024b condizioni d'uso versionate (`content/legal/`) e punto
   di contatto. WP-027 CSP, ruoli DB separati, backup e ripristino (runbook in `docs/runbook/`). Stato sprint 4 in
   `SPRINT-4.md`.
-- Prossimi: revisione dei testi legali in bozza (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in
-  locale), WP-010 PWA/TWA (servono nome e server).
+- 01/10/2026: lavoro in locale sul PC Windows del fondatore (Docker, Codex CLI, Gemini CLI). Nome dell'app:
+  **Tasky**. WP-010a fatto: nome, manifest, icone provvisorie, service worker senza cache con pagine "offline" e
+  "non raggiungibile", `assetlinks.json` da variabili d'ambiente.
+- Prossimi: WP-010b codice invito in anteprima, WP-010c stack di produzione (cloudflared, PostGIS multi-arch),
+  WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione dei testi legali in bozza
+  (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in locale).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

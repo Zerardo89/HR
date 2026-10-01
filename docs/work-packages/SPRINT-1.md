@@ -17,7 +17,7 @@
 | 007 | ✅ Fatto (Claude) | 23 test: manomissioni, AAD, rotazione KEK, audit "fail closed", crypto-shredding. `pnpm keys:generate`. |
 | 008 | ✅ Fatto (Claude, 27/09) | **Cambio di libreria:** Better Auth salva l'email in chiaro → accesso scritto in casa ([ADR-0013](../adr/ADR-0013-auth-in-casa.md)). Codice a 6 cifre via email, sessioni nel DB, un solo percorso "Accedi o registrati", pagine `/accedi` e `/account`, bozze `/privacy` e `/condizioni`. Test: 13 unitari, 15 di integrazione (anche "nessuna email in chiaro in nessuna colonna"), e2e registrazione + accesso con Mailpit. Restano per altri WP: codice invito in anteprima (WP-010), pulizia giornaliera nel worker (WP-020), 2FA aziende (WP-011), cancellazione account (WP-023). |
 | 009 | ✅ Fatto (Claude, 27/09) | Intestazione e piè di pagina con i dati dell'ente (segnaposto "in costituzione" in `src/lib/organization.ts`, R-LAV-04, R-CONS-04), `/chi-siamo`; landing con **lista d'attesa a doppia conferma** (email cifrata + indice cieco, link che apre una pagina con pulsante, R-MAIL-02; consensi con versione; non confermati cancellati dopo 7 giorni); bozze di privacy, cookie, condizioni, contatti, segnalazioni. **Lighthouse mobile: 98 / 100 / 100 / 100.** Test: 4 unitari, 7 di integrazione, 3 e2e. Restano: testi legali di Gemini (G-03), grafica ComfyUI, shadcn/ui quando serve. |
-| 010 | ⏳ Da fare | Serve: account Play, VPS, dominio, nome del pacchetto (Q1-Q2). |
+| 010 | 🟡 010a fatto (Claude, 01/10) | ✅ **010a** nome **Tasky**, manifest, icone provvisorie, service worker senza cache, `assetlinks.json` (dettagli sotto). ⏳ **010b** codice invito in anteprima. ⏳ **010c** stack di produzione (ADR-0012: cloudflared, PostGIS multi-arch, backup). ⏳ **010d** TWA con Bubblewrap e Play Console: servono account Play, DNS di `inspectio.cloud` su Cloudflare, pacchetto `cloud.inspectio.tasky` (Q2). |
 
 ---
 
@@ -209,3 +209,36 @@ Specifica in [ADR-0004](../adr/ADR-0004-cifratura-applicativa.md). `src/lib/cryp
 > Il 27/10 si azzera il DB **tranne la tabella `waitlist`**, si imposta `PREVIEW_MODE=false` e si inseriscono le aziende reali.
 > Dopo il lancio `beta.` diventa lo staging vero e proprio.
 > Quindi in questo WP il deploy va su `lavoro.` in modalità anteprima (niente basic auth: servono `assetlinks.json` e l'accesso dei tester).
+>
+> **Aggiornamento 01/10/2026:** con ADR-0012 e il nome scelto il dominio di produzione è `tasky.inspectio.cloud`
+> (non `lavoro.`); lo staging dopo il lancio sarà `tasky-beta.inspectio.cloud`. Il resto della decisione non cambia.
+
+### WP-010a — Nome, PWA e assetlinks ✅ (Claude, 01/10)
+**Codice:** `messages/it.json` (`meta`, `pwa`), `src/lib/brand.ts`, `src/app/manifest.ts`, `src/app/{icon,apple-icon}.tsx`,
+`src/app/icons/[file]/route.tsx`, `src/app/_components/{app-icon,service-worker-registration}.tsx`,
+`src/lib/pwa/{service-worker,asset-links}.ts`, `src/app/sw.js/route.ts`, `src/app/.well-known/assetlinks.json/route.ts`,
+`src/lib/{env,security-headers}.ts`, `src/proxy.ts`, `src/app/layout.tsx` (titolo, colori, registrazione del service
+worker), tolto `src/app/favicon.ico`; configurazione `.env.example`, `playwright.config.ts`; test
+`src/lib/{env,security-headers}.test.ts`, `src/lib/pwa/*.test.ts`, `tests/e2e/{pwa.spec,helpers}.ts`; documenti
+`CLAUDE.md`, `docs/09-DOMANDE-APERTE.md`, questo file. Revisione di ChatGPT: `reviews/WP-010a-chatgpt.md`.
+
+- **Nome Tasky** in un solo punto (`meta.siteName`): intestazione, titoli, email, emittente della 2FA (gli account
+  già aggiunti all'app di autenticazione continuano a funzionare: cambia solo l'etichetta dei nuovi).
+- **Manifest** `/manifest.webmanifest`: `start_url` e `scope` `/`, `display: standalone`, `lang: it`, colori del
+  marchio, icone 192/512 e 512 *maskable*. **Icone provvisorie** generate dal codice (una "T" col punto, senza font),
+  finché non arriva l'icona di ComfyUI (V-02); tolto il `favicon.ico` predefinito di Next.js.
+- **Service worker** `/sw.js` (registrato solo in produzione): **nessuna cache** (pagine e dati personali non restano
+  sul telefono); tocca solo le navigazioni GET. Senza rete → «Sei offline»; risposte 502-504/52x/530 (Cloudflare
+  quando il computer di casa è spento, ADR-0012) → «Servizio non raggiungibile». Le due pagine sono dentro lo script,
+  con una CSP propria senza script; «Riprova» è un link. Testi in `messages/it.json`.
+- **CSP:** `worker-src 'self'` (con `strict-dynamic` lo `'self'` di script-src non vale per i worker). Il proxy
+  non tocca `/sw.js` e `/.well-known/`.
+- **`/.well-known/assetlinks.json`** da `ANDROID_PACKAGE_NAME` e `ANDROID_CERT_SHA256` (impronte separate da
+  virgole); all'avvio il sito non parte se ce n'è una sola, se un'impronta non è valida o se c'è una voce vuota.
+  Senza le due variabili risponde 404. Letto a ogni richiesta: stessa immagine con o senza app.
+- **Mittente delle email:** il nome visibile viene da `MAIL_FROM` (configurazione): in produzione (010c) va impostato
+  a `Tasky <…>`.
+- Test: 5 unitari (assetlinks, anche "non configurata") + 1 (variabili Android insieme) + 6 (service worker e
+  pagina offline) + 1 asserzione CSP; 8 e2e × 2 dispositivi (manifest e icone delle misure dichiarate, nome e icona
+  nella scheda, offline e ripresa, 530 di Cloudflare, gli stessi due casi toccando un link dentro l'app, nessuna
+  cache, assetlinks senza redirect).

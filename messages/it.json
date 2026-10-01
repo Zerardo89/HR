@@ -1,7 +1,7 @@
 {
   "meta": {
-    "siteName": "HR",
-    "title": "HR — Il lavoro vicino a casa",
+    "siteName": "Tasky",
+    "title": "{siteName} — Il lavoro vicino a casa",
     "description": "Offerte di lavoro vicino a casa, con lo stipendio sempre indicato. Gratis per chi cerca lavoro, gratis per le aziende della tua zona."
   },
   "common": {
@@ -10,6 +10,14 @@
     "signIn": "Accedi o registrati",
     "mainNav": "Menu principale",
     "searchJobs": "Cerca lavoro"
+  },
+  "pwa": {
+    "shortDescription": "Il lavoro vicino a casa, con lo stipendio sempre indicato.",
+    "offlineTitle": "Sei offline",
+    "offlineText": "Il telefono non è collegato a internet. Controlla il Wi-Fi o i dati mobili e riprova.",
+    "unavailableTitle": "Servizio non raggiungibile",
+    "unavailableText": "In questo momento {siteName} non risponde. Riprova tra qualche minuto.",
+    "retry": "Riprova"
   },
   "home": {
     "title": "Il lavoro vicino a casa",

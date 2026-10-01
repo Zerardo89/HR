@@ -38,6 +38,8 @@ export function contentSecurityPolicy(
     "img-src 'self' blob: data:",
     "font-src 'self'",
     "connect-src 'self'",
+    // Service worker della PWA (WP-010): con `strict-dynamic` lo `'self'` di script-src non vale per i worker.
+    "worker-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
