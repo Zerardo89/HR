@@ -78,9 +78,10 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
   cache con pagine "offline" e "non raggiungibile", `assetlinks.json` da variabili d'ambiente. WP-010b fatto:
   in anteprima ci si registra solo con il codice invito dei tester (`PREVIEW_INVITE_CODES`). WP-010c fatto:
   contenitori del server di casa (`docker-compose.prod.yml`, guida `docs/runbook/SERVER-DI-CASA.md`); il server arriva
-  verso il 05-06/10, poi account Play, Cloudflare, Brevo e tester.
+  verso il 05-06/10, poi account Play, Cloudflare, Brevo e tester. WP-024c (in parte): informativa privacy completa
+  e versionata (`content/legal/privacy.ts`, testo di Gemini validato da Claude).
 - Prossimi:
-  WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione dei testi legali in bozza
+  WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione di condizioni, cookie e contatti
   (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in locale).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

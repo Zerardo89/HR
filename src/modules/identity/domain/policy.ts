@@ -143,7 +143,7 @@ export function inviteAttemptAllowed(
 
 /** Versioni dei testi legali accettati alla registrazione (restano "bozza" fino alla revisione del professionista). */
 export const LEGAL_VERSIONS = {
-  privacyNotice: "bozza-2026-09-27",
+  privacyNotice: "bozza-2026-10-01",
   terms: "bozza-2026-09-28",
 } as const;
 

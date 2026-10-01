@@ -4,12 +4,12 @@
 > backup provati.* Calendario in [../06-ROADMAP.md](../06-ROADMAP.md) §3 (settimana 4).
 > "Mai tagliare" (06-ROADMAP): centro privacy/cancellazione (WP-023), backup (WP-027).
 
-## Stato (aggiornato lunedì 28/09/2026)
+## Stato (aggiornato giovedì 01/10/2026)
 
 | WP | Stato | Note |
 |----|-------|------|
 | 023 | ✅ Fatto (Claude, 28/09) | ✅ **023a** centro privacy `/account/privacy`: esporta i miei dati (JSON), consensi, cancellazione dell'account con crypto-shredding (ADR-0014). ✅ **023b** job di conservazione (inattività 6/23/24 mesi, log di sicurezza 12 mesi, lista d'attesa). |
-| 024 | ✅ Fatto (Claude, 28/09) | ✅ **024a** segnalazioni (art. 16) e decisioni motivate (art. 17); un'azienda sospesa non legge più i dati dei candidati. ✅ **024b** condizioni d'uso versionate con regolamento annunci e moderazione (art. 14), nuova accettazione dopo un aggiornamento, punto di contatto (art. 11-12). Testi in **BOZZA**: revisione di Gemini e del professionista. |
+| 024 | ✅ Fatto (Claude, 28/09) | ✅ **024a** segnalazioni (art. 16) e decisioni motivate (art. 17); un'azienda sospesa non legge più i dati dei candidati. ✅ **024b** condizioni d'uso versionate con regolamento annunci e moderazione (art. 14), nuova accettazione dopo un aggiornamento, punto di contatto (art. 11-12). Testi in **BOZZA**: revisione di Gemini e del professionista. 🟡 **024c** informativa privacy completa e versionata (01/10); restano la revisione di condizioni, cookie e contatti. |
 | 025 | ⏳ Da fare | Pubblicità: slot, sponsor, CMP, AdSense (flag). |
 | 026 | ⏳ Da fare | Stripe (flag) + webhook + portale. |
 | 027 | 🟡 027a-c fatti (Claude, 28/09) | ✅ CSP con nonce e header di sicurezza; ✅ ruoli DB separati (`hr_app`, `hr_worker`), e2e in CI con i ruoli ristretti; ✅ backup, prova di ripristino e ripetizione delle cancellazioni (ADR-0014), runbook. ⏳ sul server (WP-010): cron dei backup, restic, Caddy con HSTS e limite di frequenza generale. |
@@ -173,3 +173,23 @@ server/ledger.ts,server/erasure.ts}`, `scripts/reapply-erasures.ts`, `scripts/op
   gli e2e falliscono se la CSP blocca gli script.
 - Da fare sul server (WP-010): cron dei backup alle 01:30 e del registro ogni ora, repository restic fuori sede,
   prima prova di ripristino in produzione, Caddy (HSTS, limite generale).
+
+## WP-024c — Informativa sulla privacy completa e versionata 🟡 (Claude + Gemini, 01/10)
+**Esecutori:** Gemini il testo (G-03), Claude fatti, codice e validazione · **Regole:** art. 13 GDPR, R-PRIV-01…12,
+docs/04 §1 (sola formula sulla cifratura) · **Codice:** `content/legal/privacy.ts`, `src/modules/trust/domain/{legal-versions,
+privacy-notice,terms}.ts`, `src/app/_components/versioned-legal-page.tsx`, pagine `/privacy` e `/condizioni`,
+`LEGAL_VERSIONS.privacyNotice`, `messages/it.json` (`legal.versions`)
+
+- **Informativa completa** (`bozza-2026-10-01`), 13 sezioni: titolare, dati, finalità e basi giuridiche, sicurezza,
+  destinatari (azienda titolare autonomo; Cloudflare, Brevo, R2, VIES), trasferimenti (Cloudflare con DPF), conservazione,
+  decisioni automatizzate, diritti, cookie, minori, anteprima, modifiche. Scritta da Gemini su un elenco di fatti
+  verificati sul codice; corretta da Claude in 8 punti (uno falso: «le aziende ti trovano»). Dettagli e testo
+  originale in `reviews/WP-024c-gemini.md`.
+- **Versionata come le condizioni d'uso**: un solo meccanismo (`versionedLegalDocument`) e una sola pagina
+  (`VersionedLegalPage`) per i due documenti; la versione provvisoria del 27/09 resta consultabile identica.
+  L'informativa non si "riaccetta" (è informazione, non consenso): alla registrazione si salva la presa visione con
+  la versione, come prima.
+- Test: 6 unitari (versioni immutabili con impronta, sezioni, frase approvata, fatti del codice, niente link esterni,
+  niente promesse esagerate), 1 e2e × 2 dispositivi.
+- Da fare: revisione di condizioni d'uso, cookie e contatti (Gemini → Claude); **avviso nel sito** quando l'informativa
+  cambia dopo il lancio; punti aperti per il professionista (DPO, accordi art. 28, art. 111-bis sui testi liberi).

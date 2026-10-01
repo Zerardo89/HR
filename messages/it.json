@@ -100,12 +100,12 @@
   "legal": {
     "draftNotice": "BOZZA — testo in preparazione, in attesa della revisione di un professionista.",
     "privacy": {
-      "title": "Informativa sulla privacy",
-      "p1": "I tuoi dati personali sono cifrati nel database. Nemmeno chi gestisce la piattaforma li vede durante il lavoro quotidiano: l'app li decifra solo quando servono a te o all'azienda a cui hai scelto di candidarti, e ogni accesso viene registrato.",
-      "p2": "L'informativa completa (chi tratta i dati, per quali scopi, per quanto tempo e quali sono i tuoi diritti) sarà pubblicata qui prima del lancio del 1° novembre 2026."
+      "title": "Informativa sulla privacy"
     },
     "terms": {
-      "title": "Condizioni d'uso",
+      "title": "Condizioni d'uso"
+    },
+    "versions": {
       "currentVersion": "Versione in vigore dal {date}.",
       "oldVersion": "Versione del {date}: non è più in vigore.",
       "readCurrent": "Leggi la versione in vigore",
