@@ -29,8 +29,16 @@ export {
 } from "./statement";
 export {
   CURRENT_TERMS,
+  termsDocument,
   termsHistory,
   termsOutdated,
   termsVersion,
   type TermsVersion,
 } from "./terms";
+export { CURRENT_PRIVACY_NOTICE, privacyNoticeDocument } from "./privacy-notice";
+export {
+  versionedLegalDocument,
+  type LegalDocumentVersion,
+  type LegalVersionText,
+  type VersionedLegalDocument,
+} from "./legal-versions";

@@ -40,8 +40,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Solo le pagine: niente file statici, immagini e API (gli header fissi li mette next.config.ts ovunque).
+  // Solo le pagine: niente file statici, immagini, API, service worker e `.well-known` (WP-010); gli header fissi
+  // li mette next.config.ts ovunque.
   matcher: [
-    "/((?!_next/static|_next/image|api/|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|ico|webp|txt|xml|webmanifest)$).*)",
+    "/((?!_next/static|_next/image|api/|favicon.ico|sw\\.js$|\\.well-known/|.*\\.(?:png|jpg|jpeg|svg|ico|webp|txt|xml|webmanifest)$).*)",
   ],
 };

@@ -1,4 +1,4 @@
-# Versioni bloccate (aggiornato il 28/09/2026 — WP-020)
+# Versioni bloccate (aggiornato il 01/10/2026 — WP-010c)
 
 Le versioni sono fissate in `package.json` + `pnpm-lock.yaml`. **Non aggiornarle dentro un WP qualsiasi**:
 gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazione ed e2e verdi.
@@ -11,25 +11,32 @@ gli aggiornamenti si fanno in WP dedicati, con `pnpm check`, test di integrazion
 | PostgreSQL + PostGIS | 17 + 3.5 (`postgis/postgis:17-3.5`) | in locale va bene anche 16 + 3.4 |
 | Mailpit | v1.31 | solo sviluppo |
 
+## Immagini di produzione (server di casa, WP-010c)
+| Immagine | Versione | Note |
+|----------|----------|------|
+| Sito e strumenti | `node:24-bookworm-slim` (`Dockerfile`, target `app` e `tools`) | amd64 e arm64 |
+| Database | `postgres:17-bookworm` + `postgresql-17-postgis-3` del repository PostgreSQL (`docker/postgres`) | oggi PostGIS **3.6**: in sviluppo e CI 3.5, nessuna differenza per le funzioni usate; con restic per i backup |
+| Tunnel | `cloudflare/cloudflared:2026.9.3` | multi-architettura; token da file (`--token-file`) |
+
 ## Dipendenze principali
 | Pacchetto | Versione | Differenze da ricordare (per i modelli locali) |
 |-----------|----------|-----------------------------------------------|
-| next | 16.3.6 | `params`, `searchParams`, `cookies()`, `headers()` sono **asincroni**; l'intercettazione delle richieste è in `proxy.ts` (non `middleware.ts`); i tipi `PageProps`/`LayoutProps` sono globali generati da `next typegen`. **Documentazione della versione installata: `node_modules/next/dist/docs/`** — leggila prima di scrivere codice Next. |
+| next | 16.3.8 | `params`, `searchParams`, `cookies()`, `headers()` sono **asincroni**; l'intercettazione delle richieste è in `proxy.ts` (non `middleware.ts`); i tipi `PageProps`/`LayoutProps` sono globali generati da `next typegen`. **Documentazione della versione installata: `node_modules/next/dist/docs/`** — leggila prima di scrivere codice Next. |
 | react / react-dom | 19.3.0 | Server Components di default; `"use client"` solo se servono stato/eventi |
 | typescript | 5.9.3 | **Non** passare a TS 6/7: typescript-eslint supporta TS < 6.1 |
 | tailwindcss | 4.3.3 | configurazione in CSS (`@theme` in `src/app/globals.css`), niente `tailwind.config.js` |
-| next-intl | 4.14.7 | una sola lingua (`it`), senza routing per lingua; `getTranslations()` lato server |
+| next-intl | 4.14.9 | una sola lingua (`it`), senza routing per lingua; `getTranslations()` lato server |
 | zod | 4.6.5 | API v4: `z.url()`, `z.email()` sono funzioni di primo livello |
 | drizzle-orm / drizzle-kit | 0.45.3 / 0.31.11 | schema in `src/lib/db/schema/`; migrazioni in `db/migrations/` (vedi sotto) |
-| pg | 8.23.0 | |
-| pino | 10.3.1 | usa sempre `src/lib/logger.ts` (redazione dei dati personali) |
+| pg | 8.23.1 | |
+| pino | 10.4.0 | usa sempre `src/lib/logger.ts` (redazione dei dati personali) |
 | qrcode | 1.5.4 | QR code della 2FA (`src/modules/identity/server/enrollment.ts`), generato sul server |
-| nodemailer | 10.0.10 | solo tramite `src/lib/mail` (`getMailer()`); tipi inclusi nel pacchetto |
+| nodemailer | 10.0.14 | solo tramite `src/lib/mail` (`getMailer()`); tipi inclusi nel pacchetto |
 | eslint | 9.39.5 | configurazione flat `eslint.config.mjs`; confini tra moduli con `import/no-restricted-paths` |
-| vitest | 5.0.2 (+ vite 8.3.1) | unitari: `pnpm test`; integrazione: `pnpm test:integration` |
+| vitest | 5.0.3 (+ vite 8.3.2) | unitari: `pnpm test`; integrazione: `pnpm test:integration` |
 | @playwright/test | 1.63.0 | progetti `mobile` (Pixel 5) e `desktop` |
 | prettier | 3.9.9 | `pnpm format` |
-| pg-boss | 12.33.3 | code e cron nello stesso Postgres (schema `pgboss`, ADR-0003); API v12: `createQueue` prima di `send`/`work`, `schedule(nome, cron, dati, { tz: "Europe/Rome" })`, handler che riceve un **array** di job. Solo in `src/worker` (WP-020) |
+| pg-boss | 12.36.0 | code e cron nello stesso Postgres (schema `pgboss`, ADR-0003); API v12: `createQueue` prima di `send`/`work`, `schedule(nome, cron, dati, { tz: "Europe/Rome" })`, handler che riceve un **array** di job. Solo in `src/worker` (WP-020) |
 
 ## Migrazioni del database
 - `0000_extensions.sql` — **scritta a mano**: PostGIS, pg_trgm, unaccent, configurazione di ricerca `italian_unaccent`.
