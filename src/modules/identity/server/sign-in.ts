@@ -14,6 +14,7 @@ import {
   type UserRole,
 } from "../domain";
 import type { IdentityDeps } from "./deps";
+import { inviteCodeAccepted } from "./invite";
 import { renderOtpEmail } from "./otp-email";
 import { createSession, type NewSession } from "./sessions";
 import { hashToken, newOtpCode, newToken, safeEqual } from "./tokens";
@@ -151,7 +152,11 @@ export async function verifyLoginCode(
   return signIn(deps, user, ip);
 }
 
-export type SignupResult = SignedIn | { status: "expired" } | { status: "account_unavailable" };
+export type SignupResult =
+  | SignedIn
+  | { status: "expired" }
+  | { status: "account_unavailable" }
+  | { status: "invite_required" };
 
 /**
  * Crea l'account dopo il codice giusto. Il biglietto vale una volta sola e solo per l'email che ha
@@ -162,6 +167,11 @@ export async function completeSignup(
   input: SignupInput,
   ticket: string,
 ): Promise<SignupResult> {
+  // Anteprima (WP-010b): il controllo viene prima del biglietto, che così resta valido per riprovare.
+  if (deps.previewInviteCodes && !inviteCodeAccepted(input.inviteCode, deps.previewInviteCodes)) {
+    return { status: "invite_required" };
+  }
+
   const now = deps.now();
   const emailBidx = await deps.keys.blindIndex(input.email, "email");
 

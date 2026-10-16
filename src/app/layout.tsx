@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { ServiceWorkerRegistration } from "@/app/_components/service-worker-registration";
 import { SiteFooter } from "@/app/_components/site-footer";
 import { SiteHeader } from "@/app/_components/site-header";
+import { BRAND_COLORS } from "@/lib/brand";
 import { flags } from "@/lib/flags";
 import { TermsUpdateBanner } from "@/modules/trust";
 import "./globals.css";
@@ -13,7 +15,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
   return {
-    title: { default: t("title"), template: `%s · ${t("siteName")}` },
+    title: { default: t("title", { siteName: t("siteName") }), template: `%s · ${t("siteName")}` },
     description: t("description"),
     // In anteprima il sito non deve comparire su Google (WP-010).
     robots: flags.previewMode ? { index: false, follow: false } : undefined,
@@ -24,8 +26,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#3f6b52" },
-    { media: "(prefers-color-scheme: dark)", color: "#141816" },
+    { media: "(prefers-color-scheme: light)", color: BRAND_COLORS.primary },
+    { media: "(prefers-color-scheme: dark)", color: BRAND_COLORS.darkBackground },
   ],
 };
 
@@ -54,6 +56,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <TermsUpdateBanner />
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
         <SiteFooter />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   );

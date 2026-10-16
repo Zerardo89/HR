@@ -1,2 +1,24 @@
+# Fuori dalle immagini (WP-010c): segreti, configurazioni locali, dipendenze e output già costruiti, materiale di lavoro.
+.git
+.github
+.claude
+node_modules
+.next
+secrets
+backups
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+docs
+reviews
+coverage
+playwright-report
+test-results
+data/*.csv
+!data/occupations.csv
+Dockerfile
+docker-compose*.yml
 # Dati personali di recupero (codici 2FA dell'amministratore): mai nelle immagini
 dati di recupero*.txt

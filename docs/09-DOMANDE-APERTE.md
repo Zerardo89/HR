@@ -28,11 +28,26 @@ Scartati: *Mestieri* (rete nazionale di agenzie per il lavoro già esistente), *
 *Cerchia* (banca dati aziende), *Campanile* (catena alberghiera + sa di "campanilismo"), *Compaesani* (suona escludente),
 *Lavoro per Te* (agenzia regionale Emilia-Romagna).
 **Consiglio dell'architetto:** 1) Prossimo, 2) Raggio, 3) Dintorni.
-> Risposta:
+> Risposta (01/10/2026): **Jobinetic** (*job* + *kinetic*), **provvisorio** finché il fondatore non compra i domini:
+> fino ad allora può cambiare. Il nome è in un solo punto (`meta.siteName` in `messages/it.json`).
+> Indirizzo proposto (ADR-0012 §5): `jobinetic.inspectio.cloud`, poi `jobinetic-beta.inspectio.cloud` per lo staging.
+>
+> Ricerca del 01/10/2026 (TMview: marchi UE, internazionali e di ogni paese UE + GB, CH, NO; domini su 12 estensioni;
+> ricerca web; Play Store). Scartati:
+> - **Tasky**: marchio UE n. 019044406 di JOBSPOT (Grecia) per intermediazione tra professionisti e clienti e
+>   piattaforme online (classi 35 e 42), valido fino al 2034.
+> - **Jobflip**: app "JobFlip" su Google Play, agenzie in India e USA.
+> - **Jobkite**: piattaforma di lavoro jobkite.nl e marchio UE "Kite jobs" di StepStone (classi 9, 35, 38, 41, 42).
+>
+> **Jobinetic** non ha marchi uguali o simili in Europa, domini registrati, app né aziende con lo stesso nome.
+> Lezione: i nomi "Job + parola comune" sono deboli (conta la seconda parola); meglio un nome inventato.
+> Prima di depositare il marchio serve la conferma del professionista.
 
 **Q2 — Nome del pacchetto Android** (immutabile). È la "targa" tecnica dell'app su Google Play (es. `it.prossimo.lavoro`):
 gli utenti la vedono solo nell'indirizzo della pagina Play Store, ma **non si può più cambiare** dopo il primo caricamento.
 *Decisione:* la sceglie l'architetto dal dominio, appena sono decisi nome e dominio. Non serve una risposta.
+> Decisione (01/10/2026): **`cloud.inspectio.jobinetic`** (ADR-0012 §8), se il nome resta. Diventa definitivo al primo
+> caricamento su Play (WP-010d); fino ad allora si cambia solo in `ANDROID_PACKAGE_NAME`.
 
 **Q3 — Area pilota.** In quale provincia/regione vivi e dove hai più contatti? L'app funziona in tutta Italia, ma la comunicazione e l'onboarding delle aziende partono da **una** provincia.
 > Risposta:

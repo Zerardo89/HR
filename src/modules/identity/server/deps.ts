@@ -9,4 +9,6 @@ export type IdentityDeps = {
   mailer: Mailer;
   now: () => Date;
   appUrl: string;
+  /** Anteprima (WP-010b): se presente, per registrarsi serve uno di questi codici. */
+  previewInviteCodes?: readonly string[];
 };

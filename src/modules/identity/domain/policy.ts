@@ -2,6 +2,7 @@
  * Regole dell'accesso (ADR-0013). Funzioni pure: nessun DB, nessuna API di Node.
  * I numeri qui sono vincolanti: i test di accettazione di WP-008 li verificano.
  */
+import type { MemoryLimiter } from "./memory-limiter";
 
 export const USER_ROLES = ["worker", "company_member", "moderator", "admin"] as const;
 export type UserRole = (typeof USER_ROLES)[number];
@@ -101,9 +102,48 @@ export function signupCookieName(secure: boolean): string {
   return secure ? "__Host-registrazione" : "registrazione";
 }
 
+// ─── Anteprima con codice invito (WP-010b) ──────────────────────────────────────────────────────────
+
+/**
+ * In anteprima (`PREVIEW_MODE`, fino al 27/10) ci si registra solo con il codice dei tester: almeno 10 lettere o
+ * cifre (oltre 45 bit con l'alfabeto dei codici generati), così non si indovina neanche con tanti tentativi.
+ */
+export const INVITE_CODE_MIN_LENGTH = 10;
+
+/** Come lo scrivono le persone: minuscole, spazi e trattini ammessi. */
+export function normalizeInviteCode(input: string): string {
+  return input.toUpperCase().replace(/[\s-]/g, "");
+}
+
+/** "TSTR-2026-ABCD, …" (configurazione) → codici normalizzati. Lancia un errore se uno non è valido. */
+export function parseInviteCodes(value: string): string[] {
+  const codes = value.split(",").map(normalizeInviteCode);
+  for (const code of codes) {
+    if (!new RegExp(`^[A-Z0-9]{${INVITE_CODE_MIN_LENGTH},64}$`).test(code)) {
+      throw new Error("codice invito non valido");
+    }
+  }
+  return codes;
+}
+
+/** Chiave del limite per i tentativi senza IP (intestazione mancante): finiscono tutti nello stesso conteggio. */
+export const UNKNOWN_IP_KEY = "ip-sconosciuto";
+
+/**
+ * Un tentativo sul codice invito, nel limite per IP dei codici (`IP_LIMITS.codeChecks`). Togliere l'intestazione
+ * con l'IP non aggira il limite: senza IP si finisce nel conteggio comune.
+ */
+export function inviteAttemptAllowed(
+  limiter: MemoryLimiter,
+  ip: string | null,
+  nowMs: number,
+): boolean {
+  return limiter.hit(ip ?? UNKNOWN_IP_KEY, nowMs);
+}
+
 /** Versioni dei testi legali accettati alla registrazione (restano "bozza" fino alla revisione del professionista). */
 export const LEGAL_VERSIONS = {
-  privacyNotice: "bozza-2026-09-27",
+  privacyNotice: "bozza-2026-10-01",
   terms: "bozza-2026-09-28",
 } as const;
 

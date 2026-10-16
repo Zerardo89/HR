@@ -22,6 +22,8 @@ describe("Content-Security-Policy", () => {
     expect(d["form-action"]).toBe("'self'");
     expect(d["default-src"]).toBe("'self'");
     expect("upgrade-insecure-requests" in d).toBe(true);
+    // WP-010: il service worker si registra solo dal nostro sito.
+    expect(d["worker-src"]).toBe("'self'");
   });
 
   it("in sviluppo `unsafe-eval` per React; in http niente upgrade (romperebbe localhost)", () => {
