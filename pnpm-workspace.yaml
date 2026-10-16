@@ -5,3 +5,8 @@ ignoredBuiltDependencies:
   - unrs-resolver
   - "@parcel/watcher"
   - "@swc/core"
+
+# @swc/core 1.16.13 introduce un controllo dei permessi della cache che blocca Next.js su Windows.
+# Fissiamo la 1.16.2; rimuovere questo override quando una versione successiva risolve il problema.
+overrides:
+  "@swc/core": 1.16.2

@@ -20,3 +20,5 @@ data/*.csv
 !data/occupations.csv
 Dockerfile
 docker-compose*.yml
+# Dati personali di recupero (codici 2FA dell'amministratore): mai nelle immagini
+dati di recupero*.txt
