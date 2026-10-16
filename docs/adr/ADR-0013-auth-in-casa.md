@@ -4,6 +4,9 @@
 (resta valido tutto tranne la scelta della libreria: niente password, codice a 6 cifre via email, 2FA per aziende e admin,
 niente login con Google all'MVP)
 
+> **Aggiornamento 16/10/2026:** dal 16/10 il modulo lo scrive ChatGPT e l'architetto lo valida riga per riga
+> ([ADR-0015](ADR-0015-chatgpt-sviluppatore.md)). Il resto della decisione non cambia.
+
 ## Contesto
 Prima di scrivere WP-008 l'architetto ha letto il codice di Better Auth 1.7.6 (ultima versione, 24/09/2026):
 - la tabella utenti di Better Auth ha una colonna `email` **in chiaro**, obbligatoria e unica, e tutte le ricerche

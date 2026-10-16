@@ -1,7 +1,8 @@
-# AGENTS.md — istruzioni per il modello di sviluppo (Codex CLI con Ollama)
+# AGENTS.md — istruzioni per lo sviluppatore (ChatGPT con Codex CLI)
 
-Sei lo **sviluppatore** del progetto. L'architetto (Claude) ha già deciso stack e struttura: tu implementi
-**un work package alla volta**, esattamente come specificato in `docs/work-packages/WP-xxx.md`.
+Sei lo **sviluppatore** del progetto e scrivi tutto il codice, compresi i moduli critici (ADR-0015). L'architetto
+(Claude) ha già deciso stack e struttura e valida ogni consegna: tu implementi **un work package alla volta**,
+esattamente come specificato in `docs/work-packages/WP-xxx.md` o nella specifica che ti viene passata.
 
 ## Prima di scrivere codice leggi
 - `docs/03-ARCHITETTURA.md` — §2 stack, §4 struttura delle cartelle, §9 convenzioni e **glossario** (usa quei nomi)
@@ -11,7 +12,9 @@ Sei lo **sviluppatore** del progetto. L'architetto (Claude) ha già deciso stack
 ## Regole
 1. Modifica **solo** i file elencati nel WP. Se ti serve toccarne altri, fermati e spiega perché.
 2. **Non aggiungere dipendenze** oltre a quelle ammesse dal WP. Non aggiornare versioni.
-3. **Non modificare i test di accettazione** già scritti: cambia il codice finché passano.
+3. **Test di accettazione in due passaggi.** Se la specifica ti chiede i test, scrivi **solo i test**, con esattamente
+   i casi elencati, e fermati. Quando l'architetto li ha congelati, implementa **senza modificarli**: cambia il codice
+   finché passano. Se un test congelato ti sembra sbagliato, fermati e spiega perché.
 4. TypeScript strict, niente `any`. Validazione con Zod di ogni input.
 5. Logica pura nel `domain/` del modulo (niente DB, niente Next.js); accesso al DB solo in `server/`.
    Un modulo usa gli altri **solo** tramite il loro `index.ts` (o `domain/index.ts`, `jobs.ts`). Il worker
@@ -22,9 +25,11 @@ Sei lo **sviluppatore** del progetto. L'architetto (Claude) ha già deciso stack
 8. **Mai** colonne in chiaro per nome, cognome, email, telefono: si usano i campi `*_enc` tramite il modulo crypto.
 9. Non creare campi per: data di nascita, età, sesso, stato civile, nazionalità, foto, religione, salute, retribuzione precedente.
 10. Autorizzazione verificata lato server in ogni Server Action e route: `requireUser(ruoli)` da `@/modules/identity`.
-    Non modificare `src/modules/identity/server/**`, `src/modules/privacy/**`, `src/proxy.ts` e `src/lib/crypto/**`
-    (li scrive l'architetto). I dati personali cifrati si leggono solo con l'API di `@/modules/privacy`: `decryptPii`
-    fuori da lì è bloccato dal lint.
+    **Moduli critici** (`src/lib/crypto/**`, `src/modules/identity/server/**`, `src/modules/privacy/**`, `src/proxy.ts`,
+    migrazioni su colonne cifrate o `audit_log`): li modifichi **solo** se il WP li elenca. Non cambiare algoritmi,
+    formato dei dati cifrati, AAD o gestione delle chiavi (ADR-0004) senza un ADR; confronti di segreti a tempo
+    costante; mai dati personali in chiaro. Non modificare le regole di lint che proteggono questi moduli. I dati
+    personali cifrati si leggono solo con l'API di `@/modules/privacy`: `decryptPii` fuori da lì è bloccato dal lint.
 11. File sotto le 300 righe; nomi in inglese.
 12. Prima di dichiarare finito: `pnpm check` deve essere verde. Poi scrivi un riepilogo: fatto / non fatto / dubbi.
 
