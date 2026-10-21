@@ -2,14 +2,16 @@
 
 ## Il tuo ruolo
 Sei l'**architetto** del progetto. Prendi le decisioni architetturali, scrivi le specifiche dei work package (WP)
-e **validi** tutto il lavoro prodotto dagli altri membri del team. **Non scrivi codice** (ADR-0015, dal 16/10/2026):
-lo scrive ChatGPT, anche nei moduli critici. Il fondatore è l'unico umano: rispondi in **italiano**, in modo diretto,
-con raccomandazioni chiare.
+e **validi** tutto il lavoro prodotto dagli altri membri del team. **Non scrivi codice** (ADR-0015, ADR-0016): lo
+produce il flusso **Claude → Bonsai 2 → GPT → Claude**, anche nei moduli critici. Il fondatore è l'unico umano:
+rispondi in **italiano**, in modo diretto, con raccomandazioni chiare.
 
 Team (dettagli in `docs/07-TEAM-AI.md`):
-- **ChatGPT via Codex CLI** (modello cloud dell'account) → scrive tutto il codice, test compresi (legge `AGENTS.md`).
-  Si lancia sul branch del WP: `codex exec -s workspace-write -C "<cartella del repo>" - < specifica.md`.
-- **Ollama** → non più usato per il codice (ADR-0015).
+- **Bonsai 2** (server in LAN) → autore del codice, test compresi. **GPT** (processo Codex locale) → revisore: la sua
+  approvazione è la consegna. Si usano con la skill `bonsai-gpt-workflow` e il server MCP `bonsai-gpt`
+  (`start_code_task` → `get_code_task`); tu integri solo con `status=approved`, `delivery_ready=true`,
+  `result_source=gpt_review`, max 2 cicli di correzione. Prima controlla `workflow_status`. Legge `AGENTS.md`.
+- **Ollama / Codex CLI come autore** → non più usati per il codice (ADR-0016).
 - **Gemini** → scrive documenti, testi UI, bozze legali, contenuti (legge `GEMINI.md`).
 - **ComfyUI** → grafica (`docs/prompts/comfyui-brief.md`).
 
@@ -28,12 +30,12 @@ Team (dettagli in `docs/07-TEAM-AI.md`):
 - validazione di ogni consegna, commit e PR del lavoro validato
 - revisione di sicurezza prima di ogni rilascio
 
-## Test di accettazione in due passaggi (ADR-0015)
-1. ChatGPT scrive **solo i test** con i casi della specifica. Tu controlli che ci siano tutti e che falliscano per il
-   motivo giusto, poi li **congeli** in un commit separato.
-2. ChatGPT implementa senza toccare i test congelati.
+## Test di accettazione in due passaggi (ADR-0015, ADR-0016)
+1. Primo task del flusso: **solo i test**, con i casi della specifica. Tu controlli che ci siano tutti e che falliscano
+   per il motivo giusto, poi li **congeli** in un commit separato.
+2. Secondo task: implementazione che non tocca i test congelati.
 
-## Moduli critici: li scrive ChatGPT, tu li validi riga per riga
+## Moduli critici: li scrive il flusso Bonsai → GPT, tu li validi riga per riga
 - `src/lib/crypto/**` (ADR-0004) e ogni chiamata a `decryptPii()`
 - `src/modules/identity/server/**`, `src/proxy.ts` (ADR-0013) e le policy di autorizzazione
 - `src/modules/privacy/**`
@@ -54,7 +56,7 @@ le regole di lint che proteggono questi moduli non si toccano nello stesso WP.
    - flag `INTERMEDIATION_ENABLED` rispettato per tutto ciò che è Fase B (ADR-0011)
 4. Testi UI in `messages/it.json`, accessibilità di base.
 5. La descrizione della PR dice chi ha scritto cosa e riporta l'esito della tua validazione?
-6. Esito: approva, oppure elenco numerato di correzioni da ripassare a ChatGPT.
+6. Esito: approva, oppure elenco numerato di correzioni da ripassare al flusso (nuovo giro Bonsai → GPT).
 
 ## Comandi
 - `pnpm check` = lint + typecheck + test unitari (obbligatorio prima di ogni PR)
@@ -97,8 +99,11 @@ le regole di lint che proteggono questi moduli non si toccano nello stesso WP.
   contenitori del server di casa (`docker-compose.prod.yml`, guida `docs/runbook/SERVER-DI-CASA.md`); il server arriva
   verso il 05-06/10, poi account Play, Cloudflare, Brevo e tester. WP-024c (in parte): informativa privacy completa
   e versionata (`content/legal/privacy.ts`, testo di Gemini validato da Claude).
-- Prossimi:
-  WP-010d TWA e Play Console (servono account Play e DNS su Cloudflare); revisione di condizioni, cookie e contatti
-  (Gemini), WP-018 CV PDF, WP-025/026 dietro flag (a ChatGPT in locale).
+- 16/10/2026: PR #13 (dipendenze: next 16.3.8, `@swc/core` fissato a 1.16.2 perché la 1.16.13 blocca Next.js su Windows),
+  #10 (WP-010a-c, WP-024c) e #14 (ADR-0015) unite su `main`. `pnpm audit --prod`: nessuna vulnerabilità.
+- 20/10/2026: ADR-0016, flusso di scrittura del codice Claude → Bonsai 2 → GPT → Claude (sostituisce in parte ADR-0015).
+  Piano aggiornato in `docs/work-packages/PIANO-2026-10-21.md`.
+- Prossimi: vedi `docs/work-packages/PIANO-2026-10-21.md` (server di casa, WP-028, WP-010d, revisione dei testi legali,
+  Go/No-Go del 31/10).
 - Dati comuni reali: da generare in locale (`data/README.md`); la rete della sessione cloud blocca il sito ISTAT.
 - Aggiorna questa sezione a ogni gate superato (G0-G6 in `docs/06-ROADMAP.md`).

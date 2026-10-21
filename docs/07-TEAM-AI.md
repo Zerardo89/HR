@@ -2,17 +2,20 @@
 
 ## 1. Ruoli (chi decide cosa)
 
-> **Aggiornamento 16/10/2026 ([ADR-0015](adr/ADR-0015-chatgpt-sviluppatore.md)):** il codice lo scrive ChatGPT, anche nei
-> moduli critici; Claude specifica e valida. Dove questo documento parla di Ollama come sviluppatore, di ChatGPT come
-> revisore o di test scritti da Claude, vale l'ADR-0015: test in due passaggi (ChatGPT li scrive, Claude li congela,
-> ChatGPT implementa) ed esito della validazione nella descrizione della PR.
+> **Aggiornamento 20/10/2026 ([ADR-0016](adr/ADR-0016-flusso-bonsai-gpt.md), che sostituisce in parte
+> [ADR-0015](adr/ADR-0015-chatgpt-sviluppatore.md)):** il codice lo scrive **Bonsai 2**, lo rivede **GPT** (la sua approvazione
+> è la consegna), **Claude** specifica, integra il risultato approvato e valida. Dove questo documento parla di Ollama come
+> sviluppatore, di ChatGPT come revisore o di test scritti da Claude, vale l'ADR-0016: test in due passaggi (il flusso li scrive,
+> Claude li congela, il flusso implementa) ed esito della validazione nella descrizione della PR. Le sezioni 2.1 e 2.2 qui sotto
+> descrivono il flusso precedente.
 
 | Membro | Ruolo | Decide | Non fa mai |
 |--------|-------|--------|------------|
 | **Tu** | Fondatore, product owner, unico umano con accesso alla produzione | Priorità, perimetro, rapporti con legale/aziende/tester, merge finale | Incollare dati reali nelle IA |
 | **Claude (Claude Code)** | **Architetto e validatore** | Architettura, ADR, specifiche dei WP con i casi dei test di accettazione, congelamento dei test, validazione (riga per riga sui moduli critici), approvazione dei merge, revisione di sicurezza | Scrivere codice (ADR-0015) |
-| **ChatGPT (via Codex CLI)** | **Sviluppatore** (unico, dal 16/10/2026) | Come implementare dentro i confini del WP, compresi crypto, accesso, privacy, proxy, test e migrazioni | Cambiare architettura, aggiungere dipendenze non previste, toccare file fuori dal WP, modificare i test congelati; cambiare ADR (può solo proporne) |
-| **Ollama** | Non più usato per il codice (ADR-0015) | — | — |
+| **Bonsai 2** (server in LAN, via server MCP `bonsai-gpt`) | **Autore del codice** (dal 20/10/2026, ADR-0016) | Come implementare dentro i confini del WP, compresi crypto, accesso, privacy, proxy, test e migrazioni | Cambiare architettura, aggiungere dipendenze non previste, toccare file fuori dal WP, modificare i test congelati |
+| **GPT** (processo Codex locale, modello OpenAI) | **Revisore con autorità di consegna** | Approva o blocca la bozza; propone correzioni (max 2 cicli); può proporre un ADR | Approvare merge; cambiare ADR |
+| **Ollama / Codex CLI come autore** | Non più usati per il codice (ADR-0015 → ADR-0016) | — | — |
 | **Gemini** | **Scrittore** (uso intensivo) | Testi, documentazione, microcopy, bozze legali, contenuti marketing e SEO, dati di supporto (sinonimi, test in linguaggio naturale) | Pubblicare testi legali senza la revisione di Claude e del professionista |
 | **ComfyUI** | **Studio grafico** | Proposte visive entro la guida di stile | Volti realistici spacciati per utenti reali; stili che imitano marchi altrui |
 
@@ -54,17 +57,19 @@
 sequenceDiagram
   participant T as Tu
   participant C as Claude (architetto)
-  participant O as Ollama (Codex --oss)
-  participant G as ChatGPT (revisore)
+  participant O as Bonsai 2 (autore)
+  participant G as GPT (revisore)
   participant M as Gemini (scrittore)
-  C->>C: Scrive docs/work-packages/WP-xxx.md + test di accettazione
-  T->>O: Avvia WP sulla branch wp/xxx-nome (prompt da template)
-  O->>O: Implementa finché `pnpm check` è verde
-  T->>G: Diff + template revisione
-  G-->>O: Lista correzioni / patch
-  O->>O: Applica correzioni, `pnpm check` verde
-  T->>C: Apre PR "WP-xxx"
-  C->>C: Verifica ADR, regole R-*, sicurezza, test
+  C->>C: Scrive docs/work-packages/WP-xxx.md con i casi dei test
+  C->>O: start_code_task 1: solo i test (branch wp/xxx-nome)
+  O->>G: Bozza dei test
+  G-->>C: Approvati (delivery_ready) o correzioni (max 2 cicli)
+  C->>C: Integra, controlla i casi, congela i test in un commit
+  C->>O: start_code_task 2: implementazione con i test congelati
+  O->>G: Bozza del codice
+  G-->>C: Approvata (delivery_ready) o correzioni (max 2 cicli)
+  C->>C: Integra, `pnpm check` verde, legge i moduli critici riga per riga
+  C->>T: Apre PR "WP-xxx" con chi ha scritto cosa
   C-->>T: Approva o chiede modifiche
   T->>T: Merge su main (CI verde)
   T->>M: "Aggiorna help/changelog per WP-xxx"
