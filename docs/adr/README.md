@@ -20,4 +20,5 @@ chiunque (anche ChatGPT o Gemini) può proporre un nuovo ADR in stato `Proposta`
 | [0012](ADR-0012-hosting-costo-zero.md) | Hosting a costo (quasi) zero: Cloudflare Tunnel + macchina spostabile | Accettata (sostituisce in parte 0006) |
 | [0013](ADR-0013-auth-in-casa.md) | Autenticazione scritta in casa: codice via email + sessioni nel database | Accettata (sostituisce in parte 0008) |
 | [0014](ADR-0014-cancellazione-e-backup.md) | Cancellazione dell'account: crypto-shredding subito, backup entro la rotazione | Accettata (precisa 0004) |
-| [0015](ADR-0015-chatgpt-sviluppatore.md) | Il codice lo scrive ChatGPT, anche nei moduli critici; l'architetto specifica e valida | Accettata (sostituisce in parte 0013) |
+| [0015](ADR-0015-chatgpt-sviluppatore.md) | Il codice lo scrive ChatGPT, anche nei moduli critici; l'architetto specifica e valida | Accettata (sostituisce in parte 0013; in parte sostituita da 0016) |
+| [0016](ADR-0016-flusso-bonsai-gpt.md) | Flusso di scrittura del codice: Bonsai 2 scrive, GPT rivede, Claude integra | Accettata (sostituisce in parte 0015) |

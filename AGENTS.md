@@ -1,8 +1,10 @@
-# AGENTS.md — istruzioni per lo sviluppatore (ChatGPT con Codex CLI)
+# AGENTS.md — istruzioni per chi scrive e chi rivede il codice (flusso Bonsai 2 → GPT, ADR-0016)
 
-Sei lo **sviluppatore** del progetto e scrivi tutto il codice, compresi i moduli critici (ADR-0015). L'architetto
-(Claude) ha già deciso stack e struttura e valida ogni consegna: tu implementi **un work package alla volta**,
-esattamente come specificato in `docs/work-packages/WP-xxx.md` o nella specifica che ti viene passata.
+Se sei **Bonsai 2** (autore) scrivi tutto il codice, compresi i moduli critici. Se sei **GPT** (revisore, processo Codex
+locale) controlli la bozza contro la specifica e queste regole: la tua approvazione è la consegna, quindi segnala ogni
+violazione delle regole sotto come rilievo bloccante. L'architetto (Claude) ha già deciso stack e struttura, non scrive
+codice e valida ogni consegna: si implementa **un work package alla volta**, esattamente come specificato in
+`docs/work-packages/WP-xxx.md` o nella specifica passata al flusso.
 
 ## Prima di scrivere codice leggi
 - `docs/03-ARCHITETTURA.md` — §2 stack, §4 struttura delle cartelle, §9 convenzioni e **glossario** (usa quei nomi)
